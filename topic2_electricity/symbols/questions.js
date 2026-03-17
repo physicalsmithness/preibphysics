@@ -1,5 +1,5 @@
 // ==========================================
-// MASTER QUESTION POOL (37 Questions)
+// MASTER QUESTION POOL
 // ==========================================
 // Note: This file relies on the variables (s, vbx, c_base, w, p, l, iv) 
 // defined in svg_library.js being loaded first in the HTML.
@@ -157,5 +157,152 @@ const qs = [
         w: [{ svg:`<svg ${vbx}>${c_base}${w.std}${p.v_bulb}</svg>`, fb:"Incorrect. This measures the bulb." }, 
             { svg:`<svg ${vbx}>${c_base}${w.v_l}</svg>`, fb:"Incorrect. Voltmeters cannot be in series." }, 
             { svg:`<svg ${vbx}>${c_base}${w.std}${p.a_cell}</svg>`, fb:"Incorrect. This is an ammeter, creating a massive short circuit." }]
+    },
+    
+    // ---------------------------------------------------------
+    // NEW QUESTIONS (Updates)
+    // ---------------------------------------------------------
+    { 
+        t: "Which component does this symbol represent?", 
+        img: s.var_batt, 
+        m: false, 
+        c: [{t:"variable battery", fb:"Correct! The arrow indicates the voltage can be adjusted."}], 
+        w: [
+            {t:"battery", fb:"Close, but notice the arrow! That means it's variable."}, 
+            {t:"variable resistor", fb:"No, the main symbol consists of cells, not a rectangle."}, 
+            {t:"cell", fb:"No, this is a multi-cell battery with an adjustment arrow."},
+            {t:"potentiometer", fb:"No."}
+        ] 
+    },
+    { 
+        t: "Which circuit is correctly set up to measure the resistance of the fixed resistor?", 
+        m: false, 
+        c: [{ 
+            svg:`<svg ${vbx}>${c_base}${w.a_l}${p.v_res}</svg>`, 
+            fb:"Correct! Take ammeter (I) and voltmeter (V) readings, then use R = V / I." 
+        }],
+        w: [
+            { 
+                svg:`<svg ${vbx}>${c_base}${w.v_l}${p.a_res}</svg>`, 
+                fb:"Incorrect! You swapped them. The Voltmeter in series blocks current, and the Ammeter in parallel creates a short circuit." 
+            }, 
+            { 
+                svg:`<svg ${vbx}>${c_base}${w.std}${p.v_res}${p.v_bulb}</svg>`, 
+                fb:"Incorrect. You have two voltmeters but no ammeter to measure current (I)." 
+            }, 
+            { 
+                svg:`<svg ${vbx}>${c_base}${w.a_l}${w.std}</svg>`, 
+                fb:"Incorrect. You have an ammeter, but you need a voltmeter in parallel across the resistor to calculate R." 
+            }
+        ]
+    },
+    { 
+        t: "Which is the standard IEC symbol for a Voltmeter?", 
+        m: false, 
+        c: [{svg:s.volt, fb:"Correct! A circle with a 'V' is the standard."}], 
+        w: [
+            {svg:s.volt_sq_dist, fb:"Incorrect. While some older or specialized diagrams use squares, the standard IEC symbol is a circle."}, 
+            {svg:s.amp, fb:"That is an Ammeter."}, 
+            {svg:s.motor, fb:"That is a Motor."}
+        ] 
+    }
+
+
+// ---------------------------------------------------------
+    // CATEGORY 5: Investigating Voltage & Current (V-I Characteristics)
+    // ---------------------------------------------------------
+    
+    // Type 1: Select the correct circuit from options
+    { 
+        t: "Which circuit is fully equipped to safely investigate how voltage affects current for a fixed resistor?", 
+        m: false, 
+        c: [{ 
+            svg: iv.var_batt_sw, 
+            fb: "Correct! You have a variable battery to change the voltage, a switch to prevent overheating, and both meters placed correctly." 
+        }],
+        w: [
+            { svg: iv.var_batt_base, fb: "Close! This would technically work, but without a switch, you'd have to unplug the circuit between readings to stop the resistor from overheating." },
+            { svg: iv.static_sw, fb: "Incorrect. There is no variable battery or variable resistor, so you have no way of varying the voltage across the component." },
+            { svg: iv.var_batt_sw_no_v, fb: "Incorrect. You have no voltmeter, so you cannot measure the voltage across the resistor." }
+        ] 
+    },
+    { 
+        t: "Which circuit correctly uses a variable resistor to investigate how voltage affects current?", 
+        m: false, 
+        c: [{ 
+            svg: iv.var_res_sw, 
+            fb: "Correct! The variable resistor allows you to change the voltage/current, the switch prevents overheating, and meters are correct." 
+        }],
+        w: [
+            { svg: iv.var_res_sw_no_a, fb: "Incorrect. There is no ammeter in this circuit, so you have no way of measuring the current." },
+            { svg: iv.var_res_base, fb: "Close! This would work, but without a switch, the continuous current would heat up the resistor and ruin the accuracy of your experiment." },
+            { svg: iv.no_pwr_var_res, fb: "Incorrect. There is no power supply (cell or battery) in this circuit!" }
+        ] 
+    },
+
+    // Type 2: Evaluate the given circuit
+    { 
+        t: "Could you use this circuit to investigate how voltage affects the current through the fixed resistor?", 
+        img: iv.var_batt_base,
+        m: false, 
+        c: [{ t: "Yes, but you would need to unplug it between readings as there is no switch.", fb: "Correct! Leaving it connected would cause the resistor to heat up, which changes its resistance." }],
+        w: [
+            { t: "Yes, it is perfectly set up.", fb: "Not quite. It is missing a switch, meaning the component will overheat if left connected." },
+            { t: "No, there is no way of measuring the voltage.", fb: "Look again, there is a voltmeter in parallel." },
+            { t: "No, there is no way of measuring the current.", fb: "Look again, there is an ammeter in series." },
+            { t: "No, there is no way of varying the voltage.", fb: "Look at the battery—it has an arrow, meaning it is a variable battery." },
+            { t: "No, there is no power supply.", fb: "There is a variable battery providing power." }
+        ] 
+    },
+    { 
+        t: "Could you use this circuit to investigate how voltage affects the current through the fixed resistor?", 
+        img: iv.static_sw,
+        m: false, 
+        c: [{ t: "No, there is no way of varying the voltage across the resistor.", fb: "Correct! You would need either a variable battery or a variable resistor added to the main loop." }],
+        w: [
+            { t: "Yes, it is perfectly set up.", fb: "Incorrect. If you close the switch, you will only get one single reading. You can't plot a graph with one point!" },
+            { t: "Yes, but you would need to unplug it between readings.", fb: "Incorrect. It has a switch, but it lacks a way to vary the voltage." },
+            { t: "No, there is no way of measuring the voltage.", fb: "Incorrect, there is a voltmeter." },
+            { t: "No, there is no way of measuring the current.", fb: "Incorrect, there is an ammeter." },
+            { t: "No, there is no power supply.", fb: "Incorrect, there is a standard battery." }
+        ] 
+    },
+    { 
+        t: "Could you use this circuit to investigate how voltage affects the current through the fixed resistor?", 
+        img: iv.var_res_sw_no_v,
+        m: false, 
+        c: [{ t: "No, there is no way of measuring the voltage.", fb: "Correct! You are missing a voltmeter connected in parallel across the fixed resistor." }],
+        w: [
+            { t: "Yes, it is perfectly set up.", fb: "Incorrect. How will you know what the voltage is?" },
+            { t: "Yes, but you would need to unplug it between readings.", fb: "Incorrect. It has a switch, but it is missing a vital piece of equipment." },
+            { t: "No, there is no way of measuring the current.", fb: "Incorrect, the ammeter is present." },
+            { t: "No, there is no way of varying the voltage.", fb: "Incorrect, it has a variable resistor to change the total resistance." },
+            { t: "No, there is no power supply.", fb: "Incorrect, there is a battery." }
+        ] 
+    },
+    { 
+        t: "Could you use this circuit to investigate how voltage affects the current through the fixed resistor?", 
+        img: iv.var_batt_sw_no_a,
+        m: false, 
+        c: [{ t: "No, there is no way of measuring the current.", fb: "Correct! You are missing an ammeter connected in series." }],
+        w: [
+            { t: "Yes, it is perfectly set up.", fb: "Incorrect. How will you know what the current is?" },
+            { t: "Yes, but you would need to unplug it between readings.", fb: "Incorrect. It has a switch, but it is missing a vital meter." },
+            { t: "No, there is no way of measuring the voltage.", fb: "Incorrect, the voltmeter is present." },
+            { t: "No, there is no way of varying the voltage.", fb: "Incorrect, it has a variable battery." },
+            { t: "No, there is no power supply.", fb: "Incorrect, the variable battery provides power." }
+        ] 
+    },
+    { 
+        t: "Could you use this circuit to investigate how voltage affects the current through the fixed resistor?", 
+        img: iv.no_pwr_fixed,
+        m: false, 
+        c: [{ t: "No, there is no power supply.", fb: "Correct! Without a cell or battery, no current will flow at all." }],
+        w: [
+            { t: "Yes, it is perfectly set up.", fb: "Incorrect. Nothing will happen when you close the switch." },
+            { t: "No, there is no way of measuring the voltage.", fb: "Incorrect, the voltmeter is there (it will just read 0V)." },
+            { t: "No, there is no way of measuring the current.", fb: "Incorrect, the ammeter is there (it will just read 0A)." },
+            { t: "No, there is no way of varying the voltage.", fb: "While technically true, the bigger issue is that there is no voltage to begin with!" }
+        ] 
     }
 ];

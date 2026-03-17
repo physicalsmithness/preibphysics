@@ -44,7 +44,7 @@ function updateStatsDisplay() {
         history.forEach(result => {
             let cssClass = result === 'correct' ? 'dot-correct' : (result === 'half' ? 'dot-half' : 'dot-wrong');
             let icon = result === 'correct' ? '✓' : (result === 'half' ? '!' : '✗');
-            tracker.innerHTML += `<div class="history-dot ${cssClass}">${icon}</div>`;
+            tracker.innerHTML += `<div class="history-dot ${cssClass}"> ${icon} </div>`;
         });
     }
     
@@ -88,7 +88,6 @@ function loadRandomQuestion() {
     let optionsToDisplay = [];
 
     // 1. Pick Correct Options
-    // If multi-select, we need all correct answers. If single, pick 1 random correct answer.
     let correctPool = isMulti ? currentQ.c : [currentQ.c[Math.floor(Math.random() * currentQ.c.length)]];
     correctPool.forEach(opt => optionsToDisplay.push({...opt, status: 'correct'}));
     
