@@ -205,7 +205,7 @@ const qs = [
             {svg:s.amp, fb:"That is an Ammeter."}, 
             {svg:s.motor, fb:"That is a Motor."}
         ] 
-    }
+    },
 
 
 // ---------------------------------------------------------

@@ -82,7 +82,7 @@ function loadRandomQuestion() {
     
     let currentQ = deck.pop();
     
-    document.getElementById('deck-counter').innerText = `Question ${questionsAnswered + 1} of ${qs.length} (No Repeats)`;
+    document.getElementById('deck-counter').innerText = `Question ${questionsAnswered + 1} of ${qs.length} (No repeats - then re-randomised.)`;
     
     let isMulti = currentQ.m; 
     let optionsToDisplay = [];
