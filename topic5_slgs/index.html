@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topic 5 Quiz — Solids, Liquids & Gases</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandTitle">Topic 5 Quiz</div>
+      <div class="brandSub">Solids, liquids and gases • saved progress • teacher view</div>
+    </div>
+
+    <div class="topActions">
+      <button class="btn ghost" id="btnStudent" disabled>Student</button>
+      <button class="btn ghost" id="btnTeacher" style="display:none;">Teacher</button>
+
+      <div class="userBox" id="userBox">
+        <button class="btn primary" id="btnLogin">Sign in with Google</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel" id="studentPanel" style="display:none;">
+      <div class="panelTop">
+        <div class="panelTitle">Student quiz</div>
+        <div class="panelMeta">
+          <span class="pill" id="statusPill">Idle</span>
+          <span class="pill" id="savePill">Not signed in</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="classId">Class (optional)</label>
+          <input id="classId" type="text" placeholder="e.g. 10X1" />
+          <div class="hint">Used for teacher filtering. Leave blank if you don’t need it.</div>
+        </div>
+        <div class="control">
+          <label for="numQ">Questions per set</label>
+          <input id="numQ" type="number" min="5" max="30" value="12" />
+        </div>
+        <div class="control">
+          <label for="diffMix">Difficulty mix</label>
+          <select id="diffMix">
+            <option value="all" selected>Mixed</option>
+            <option value="easy">Mostly easier</option>
+            <option value="med">Mostly medium</option>
+            <option value="hard">Harder</option>
+          </select>
+        </div>
+
+        <div class="control wide">
+          <label>Topics to include</label>
+          <div class="topicGrid">
+            <label class="topic"><input class="topicCb" type="checkbox" value="units" checked /> Units & conversions</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="pressure_calc" checked /> Pressure calculations</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="pressure_qual" checked /> Pressure explanations</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="fluids_equal" checked /> Pressure in fluids at rest</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="gas_pressure" checked /> Gas molecules & pressure</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="kelvin" checked /> Kelvin & absolute zero</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="gaslaws" checked /> Gas relationships (qualitative)</label>
+            <label class="topic"><input class="topicCb" type="checkbox" value="expand_contract" checked /> Expansion / contraction</label>
+          </div>
+        </div>
+
+        <div class="control actions">
+          <button class="btn primary" id="startBtn">Start set</button>
+          <button class="btn" id="newSetBtn" disabled>New random set</button>
+          <button class="btn" id="revealAllBtn" disabled>Reveal mark scheme</button>
+        </div>
+
+        <div class="control wide">
+          <div class="kpis">
+            <div class="kpi"><div class="kpiN" id="kpiChecked">0</div><div class="kpiL">checked</div></div>
+            <div class="kpi"><div class="kpiN" id="kpiFull">0</div><div class="kpiL">full</div></div>
+            <div class="kpi"><div class="kpiN" id="kpiPartial">0</div><div class="kpiL">partial</div></div>
+            <div class="kpi"><div class="kpiN" id="kpiWrong">0</div><div class="kpiL">wrong</div></div>
+          </div>
+          <div class="scoreLine" id="scoreLine">-</div>
+          <div class="hint" id="summaryLine">Start a set to begin.</div>
+        </div>
+      </div>
+
+      <div id="quiz"></div>
+    </section>
+
+    <section class="panel" id="teacherPanel" style="display:none;">
+      <div class="panelTop">
+        <div class="panelTitle">Teacher dashboard</div>
+        <div class="panelMeta">
+          <span class="pill" id="teacherPill">Teacher</span>
+          <span class="pill" id="teacherStatus">-</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="filterClass">Filter by class</label>
+          <input id="filterClass" type="text" placeholder="e.g. 10X1 (leave blank for all)" />
+          <div class="hint">Students can optionally set their class code.</div>
+        </div>
+        <div class="control actions">
+          <button class="btn primary" id="btnRefreshTeacher">Refresh</button>
+          <button class="btn" id="btnExportCsv">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="teacherNote">
+        Access control: teacher status is granted by a Firestore document at <code>teachers/&lt;uid&gt;</code>.
+        Create that doc manually in the Firebase console for each teacher.
+      </div>
+
+      <div class="tableWrap">
+        <table class="table" id="teacherTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Class</th>
+              <th>Attempts</th>
+              <th>Full</th>
+              <th>Partial</th>
+              <th>Wrong</th>
+              <th>Accuracy</th>
+              <th>Weakest tags (rough)</th>
+              <th>Last seen</th>
+            </tr>
+          </thead>
+          <tbody id="teacherTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="setupPanel">
+      <div class="panelTop">
+        <div class="panelTitle">Setup / troubleshooting</div>
+      </div>
+      <div class="setupText">
+        <p><b>If you see this panel, your Firebase config probably isn't set.</b></p>
+        <ol>
+          <li>Open <code>config.js</code> and paste your Firebase web app config.</li>
+          <li>Enable Google sign-in in Firebase Authentication.</li>
+          <li>Create Firestore and apply the security rules in <code>firestore.rules</code>.</li>
+          <li>Deploy with Firebase Hosting (instructions in <code>README.md</code>).</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

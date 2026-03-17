@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Unit 2 Quiz — Electricity</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brandTitle" id="title">Unit 2 Quiz</div>
+    <div class="brandSub" id="subtitle">Electricity • random sets • mark-scheme style feedback</div>
+  </div>
+  <div class="panelMeta">
+    <span class="pill" id="statusPill">Idle</span>
+    <span class="pill">Enter submits (Shift+Enter = new line)</span>
+    <span class="pill">Units are case‑sensitive</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel">
+    <div class="panelTop">
+      <div class="panelTitle">Controls</div>
+      <div class="panelMeta">
+        <span class="pill" id="setPill">No set</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <label for="numQ">Questions per set</label>
+        <input id="numQ" type="number" min="5" max="40" value="14" />
+      </div>
+      <div class="control">
+        <label for="diffMix">Difficulty mix</label>
+        <select id="diffMix">
+          <option value="all" selected>Mixed</option>
+          <option value="easy">Mostly easier</option>
+          <option value="med">Mostly medium</option>
+          <option value="hard">Harder</option>
+        </select>
+      </div>
+
+      <div class="control wide">
+        <label>Topics to include</label>
+        <div class="topicGrid">
+          <label class="topic"><input class="topicCb" type="checkbox" value="units" checked /> Units (A, V, Ω, W, J, s, C)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="mains" checked /> Mains electricity (a.c. vs d.c., P=IV)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="symbols" checked /> Circuit symbols (cell vs battery, lamp, LED, resistors…)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="meters" checked /> Ammeter/voltmeter placement</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="series" checked /> Series circuits (same current, voltages add, resistances add)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="iv" checked /> I–V characteristics (resistor, filament, LED)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="practical" checked /> I–V practical method</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="definitions" checked /> Definitions (current, resistance)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="indicator" checked /> Lamp/LED as current indicator</label>
+        </div>
+        <div class="hint">
+          Notes: written answers are auto-checked for keywords only, and you can adjust marks after checking.
+        </div>
+      </div>
+
+      <div class="control actions">
+        <button class="btn primary" id="startBtn">Start set</button>
+        <button class="btn" id="newSetBtn" disabled>New random set</button>
+        <button class="btn" id="revealAllBtn" disabled>Reveal mark scheme</button>
+      </div>
+
+      <div class="control wide">
+        <div class="kpis">
+          <div class="kpi"><div class="kpiN" id="kpiChecked">0</div><div class="kpiL">checked</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiFull">0</div><div class="kpiL">full</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiPartial">0</div><div class="kpiL">partial</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiWrong">0</div><div class="kpiL">wrong</div></div>
+        </div>
+        <div class="scoreLine" id="scoreLine">-</div>
+        <div class="hint" id="summaryLine">Start a set to begin.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panelTop">
+      <div class="panelTitle">Questions</div>
+      <div class="panelMeta">
+        <span class="pill">Mark scheme style explanations</span>
+      </div>
+    </div>
+    <div id="quiz"></div>
+  </section>
+</main>
+
+<script src="questions.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>

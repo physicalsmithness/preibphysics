@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pre-IB Physics Quizzes</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#070b16;color:#eef2ff}
+    .wrap{max-width:900px;margin:0 auto;padding:28px 18px}
+    h1{margin:0 0 8px;font-size:26px}
+    p{margin:0 0 18px;color:#a8b3d6}
+    a.card{display:block;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);padding:16px 16px;border-radius:14px;margin:10px 0}
+    a.card:hover{border-color:rgba(255,255,255,.25)}
+    .t{font-weight:800}
+    .s{color:#a8b3d6;margin-top:4px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pre-IB Physics Quizzes</h1>
+    <p>Pick a unit to practise. Use “Start set” for a fresh random set each time.</p>
+
+    <a class="card" href="topic1_forces/">
+      <div class="t">Topic 1 — Forces and motion</div>
+      <div class="s">Graphs, acceleration, F=ma, weight, stopping distance factors</div>
+    </a>
+
+    <a class="card" href="topic2_electricity/">
+      <div class="t">Topic 2 — Electricity</div>
+      <div class="s">Units, P=IV, a.c./d.c., series circuits, symbols, I–V shapes</div>
+    </a>
+
+    <a class="card" href="topic5_slgs/">
+      <div class="t">Topic 5 — Solids, liquids and gases</div>
+      <div class="s">Pressure, density ideas, particle model, Kelvin scale, gas behaviour (qualitative)</div>
+    </a>
+  </div>
+</body>
+</html>
