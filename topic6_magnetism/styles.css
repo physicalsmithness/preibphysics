@@ -22,6 +22,13 @@ body{
 }
 a{color:inherit}
 .topbar{
+  background: rgba(7,11,22,.86);
+
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  backdrop-filter: blur(10px);
+
   display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
   padding:16px 18px;
   max-width:1200px; margin:0 auto;
@@ -240,3 +247,94 @@ details .model{
 }
 .scoreBar .small{color:var(--muted); font-size:12px; margin-top:6px}
 .scoreBar code{background:rgba(255,255,255,.08); padding:2px 6px; border-radius:8px}
+/* Compact always-visible stats row inside header */
+.topStats{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.statPill{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  font-size:12px;
+  color: rgba(235,242,255,.92);
+}
+.statPill b{font-weight:1000}
+.topicDetails{
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  background: rgba(255,255,255,.015);
+  padding:10px 10px;
+}
+.topicDetails > summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:900;
+  color:#dbe2ff;
+}
+.topicDetails > summary::-webkit-details-marker{display:none;}
+.topicDetails > summary::before{
+  content:"▸";
+  display:inline-block;
+  margin-right:8px;
+  color: rgba(255,255,255,.7);
+}
+.topicDetails[open] > summary::before{content:"▾";}
+.controls{gap:12px}
+.control label{margin-bottom:6px}
+.topicGrid{gap:10px}
+.topic{padding:10px 10px; font-size:13px}
+/* Fixed header so stats are always visible */
+.topbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 120;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(5,8,18,.78);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+/* Push the main content down under the fixed header */
+.wrap{
+  padding-top: calc(var(--headerOffset, 0px) + 18px);
+}
+/* Report banner: in-flow, non-overlapping */
+.reportBanner{
+  position: relative !important;
+  top: auto !important;
+  z-index: auto !important;
+}
+.reportRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+.reportBox{
+  width:100%;
+  margin-top:8px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+  color: rgba(235,242,255,.95);
+  padding:10px;
+  min-height:84px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size: 12.5px;
+}
+.reportActions{
+  margin-top:8px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}

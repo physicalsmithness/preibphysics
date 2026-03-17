@@ -19,12 +19,21 @@
     kpiWrong: document.getElementById("kpiWrong"),
     title: document.getElementById("title"),
     subtitle: document.getElementById("subtitle"),
-    scoreBarSet: document.getElementById("scoreBarSet"),
-    scoreBarOverall: document.getElementById("scoreBarOverall"),
-    resetOverallBtn: document.getElementById("resetOverallBtn"),
+        resetOverallBtn: document.getElementById("resetOverallBtn"),
+    statSet: document.getElementById("statSet"),
+    statOverall: document.getElementById("statOverall"),
   };
   els.title.textContent = META.title || "Quiz";
   els.subtitle.textContent = META.subtitle || "";
+
+  function applyHeaderOffset(){
+    const h = document.querySelector("header.topbar");
+    if(!h) return;
+    const px = h.offsetHeight || 0;
+    document.documentElement.style.setProperty("--headerOffset", px + "px");
+  }
+  applyHeaderOffset();
+  window.addEventListener("resize", applyHeaderOffset);
 
   function escapeHtml(s){
     return (s ?? "").toString()
@@ -49,6 +58,15 @@
     return a;
   }
   function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+function prettyNum(a){
+  const abs = Math.abs(a);
+  let s = (abs >= 1000 || (abs > 0 && abs < 0.01)) ? a.toExponential(3) : a.toPrecision(4);
+  // trim trailing zeros
+  s = s.replace(/(\.\d*?[1-9])0+$/, '$1');
+  s = s.replace(/\.0+(e|$)/, '$1');
+  s = s.replace(/(\d)0+e/, '$1e');
+  return s;
+}
   function rchoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
   function svgAxesIV(){
@@ -701,17 +719,23 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
   function loadOverall(){
     try{
       const raw = localStorage.getItem(OVERALL_KEY);
-      if(!raw) return {items:{}};
+      if(!raw) return {items:{}, seen:{}};
       const obj = JSON.parse(raw);
       if(!obj || typeof obj !== "object") return {items:{}};
       if(!obj.items || typeof obj.items !== "object") obj.items = {};
+      if(!obj.seen || typeof obj.seen !== "object") obj.seen = {};
       return obj;
     }catch(e){
-      return {items:{}};
+      return {items:{}, seen:{}};
     }
   }
   function saveOverall(obj){
     try{ localStorage.setItem(OVERALL_KEY, JSON.stringify(obj)); }catch(e){}
+  }
+  function computeOverallSeen(){
+    const o = loadOverall();
+    const seen = o.seen || {};
+    return {seenCount: Object.keys(seen).length};
   }
   function computeOverallTotals(){
     const o = loadOverall();
@@ -726,10 +750,11 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     }
     return {totalScore, totalMax, count:Object.keys(o.items).length};
   }
-  function updateOverallForInstance(qid, score, max){
+  function updateOverallForInstance(qid, baseId, score, max){
     const o = loadOverall();
     if(!o.items) o.items = {};
     o.items[qid] = {score:Number(score)||0, max:Number(max)||0, t:Date.now()};
+    if(baseId){ if(!o.seen) o.seen = {}; o.seen[baseId] = 1; }
     saveOverall(o);
   }
   function resetOverall(){
@@ -766,19 +791,27 @@ let currentSet = [];
     els.summaryLine.innerHTML = currentSet.length
       ? `<b>${full}</b> full, <b>${partial}</b> partial, <b>${wrong}</b> wrong, <b>${currentSet.length-checked}</b> unchecked.`
       : "Start a set to begin.";
-
-// Update sticky score bar
+// Update header stats (always visible)
+    const checkedN = Array.from(answered.values()).filter(v => v && v.checked).length;
+    const setN = currentSet.length || 0;
     const maxSet = totalMaxMarks();
     const sSet = totalScore();
-    if(els.scoreBarSet){
-      const pct = maxSet ? (100*sSet/maxSet) : 0;
-      els.scoreBarSet.textContent = maxSet ? `${sSet.toFixed(1)} / ${maxSet.toFixed(1)}  (${pct.toFixed(0)}%)` : "–";
+    const pctSet = maxSet ? (100*sSet/maxSet) : 0;
+
+    if(els.statSet){
+      const prog = setN ? (100*checkedN/setN) : 0;
+      els.statSet.textContent = setN ? `${checkedN}/${setN} tackled • ${pctSet.toFixed(0)}% score` : "–";
     }
-    if(els.scoreBarOverall){
+
+    if(els.statOverall){
       const tot = computeOverallTotals();
+      const seen = computeOverallSeen();
       const pctO = tot.totalMax ? (100*tot.totalScore/tot.totalMax) : 0;
-      els.scoreBarOverall.textContent = tot.totalMax ? `${tot.totalScore.toFixed(1)} / ${tot.totalMax.toFixed(1)}  (${pctO.toFixed(0)}%)` : "–";
+      const bankN = Array.isArray(BANK) ? BANK.length : 0;
+      const seenPct = bankN ? (100*seen.seenCount/bankN) : 0;
+      els.statOverall.textContent = bankN ? `${seen.seenCount}/${bankN} seen (${seenPct.toFixed(0)}%) • ${pctO.toFixed(0)}% score` : "–";
     }
+
   }
 
   function renderChoice(q, idx){
@@ -941,7 +974,7 @@ renderKPIs();
     }
     if(q.type==="numeric"){
       const a = q.answer;
-      const rounded = (Math.abs(a) >= 1000 || Math.abs(a) < 0.01) ? a.toExponential(3) : a.toPrecision(4);
+      const rounded = prettyNum(a);
       const unitShow = q.unitHint ? q.unitHint : "";
       return `Correct answer: ${rounded}${unitShow ? " " + unitShow : ""}`;
     }
@@ -1014,15 +1047,33 @@ renderKPIs();
     let pool = BANK.filter(q => (q.tags||[]).some(t => topics.includes(t)));
     pool = applyDifficultyFilter(pool, els.diffMix.value);
     const n = Number(els.numQ.value);
+
     if(pool.length < 1){
       els.quiz.innerHTML = `<div class="hint">No questions available — select at least one topic.</div>`;
+      els.startBtn.disabled = false;
       return false;
     }
+
+    // Immediate feedback so it never feels "dead"
+    els.statusPill.textContent = "Building set…";
+    els.startBtn.disabled = true;
+    els.newSetBtn.disabled = true;
+    els.revealAllBtn.disabled = true;
+
     const chosen = shuffle(pool).slice(0, clamp(n, 5, pool.length)).map(expandQuestion);
     const now = Date.now().toString(36);
     currentSet = chosen.map((q,i)=> ({...q, _instanceId:`${q.id}_${now}_${i}`}));
+
     answered = new Map();
     renderQuiz();
+
+    els.setPill.textContent = `Set ${now.toUpperCase()}`;
+    els.statusPill.textContent = "In progress";
+    els.revealAllBtn.disabled = false;
+    els.newSetBtn.disabled = false;
+    els.startBtn.disabled = false;
+
+    renderKPIs();
     return true;
   }
 
@@ -1033,7 +1084,7 @@ renderKPIs();
     showFeedback(q, outcome);
     if(outcome.checked){
       answered.set(q._instanceId, {checked:true, status: outcome.status, score: outcome.score, max: outcome.max ?? qMaxMarksSafe(q), auto: !!outcome.auto});
-      updateOverallForInstance(q._instanceId, outcome.score, outcome.max ?? qMaxMarksSafe(q));
+      updateOverallForInstance(q._instanceId, q.id, outcome.score, outcome.max ?? qMaxMarksSafe(q));
       renderKPIs();
     }
   }
@@ -1062,17 +1113,45 @@ const repBtn = e.target.closest("button[data-action='report']");
       const qid = repBtn.getAttribute("data-qid");
       const q = currentSet.find(x => x._instanceId === qid);
       const baseId = q ? q.id : "(unknown)";
-      const msg = `Report this question ID:\n  base id: ${baseId}\n  instance id: ${qid}\n\nPrompt:\n${q ? q.prompt : ""}\n\nPlease send this ID to your teacher.`;
-      // Try copy to clipboard
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(`base id: ${baseId}\ninstance id: ${qid}\nPrompt: ${q ? q.prompt : ""}`).catch(()=>{});
-      }
+      const payload = `Please check this question:\n\nTopic: 6 Magnetism\nbase id: ${baseId}\ninstance id: ${qid}\n\nPrompt:\n${q ? q.prompt : ""}\n`;
       const banner = document.getElementById("reportBanner");
       if(banner){
         banner.style.display = "block";
-        banner.innerHTML = `<b>Report copied (if allowed)</b><div class="small">base id: <code>${escapeHtml(baseId)}</code> • instance id: <code>${escapeHtml(qid)}</code></div>`;
+        banner.innerHTML = `
+          <div class="reportRow">
+            <div>
+              <b>Report a dodgy question</b>
+              <div class="small">Paste the text below into an email (it identifies the exact question).</div>
+            </div>
+            <button class="btn mini" type="button" id="closeReportBtn">Close</button>
+          </div>
+          <textarea class="reportBox" readonly>${escapeHtml(payload)}</textarea>
+          <div class="reportActions">
+            <button class="btn mini" type="button" id="copyReportBtn">Copy</button>
+            <span class="small">If copy is blocked, just select the text and copy manually.</span>
+          </div>
+        `;
+        const cbtn = document.getElementById("copyReportBtn");
+        if(cbtn){
+          cbtn.addEventListener("click", ()=>{
+            if(navigator.clipboard && navigator.clipboard.writeText){
+              navigator.clipboard.writeText(payload).catch(()=>{});
+            }
+          }, {once:true});
+        }
+        const xbtn = document.getElementById("closeReportBtn");
+        if(xbtn){
+          xbtn.addEventListener("click", ()=>{ banner.style.display="none"; }, {once:true});
+        }
+        // Auto-hide after 15 seconds
+        setTimeout(()=>{ try{ banner.style.display="none"; }catch(_){} }, 15000);
+        banner.scrollIntoView({behavior:"smooth", block:"start"});
+        // Attempt immediate clipboard copy
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(payload).catch(()=>{});
+        }
       } else {
-        alert(msg);
+        alert(payload);
       }
       return;
     }
@@ -1096,6 +1175,7 @@ const repBtn = e.target.closest("button[data-action='report']");
       const adj = clamp(val, 0, max);
       const status = (adj===0) ? "wrong" : (adj===max ? "full" : "partial");
       answered.set(qid, {checked:true, status, score:adj, max, auto:(q.type==="short" && Array.isArray(q.markPoints)), selfOverride:true});
+      updateOverallForInstance(qid, q.id, adj, max);
 
       const fb = document.getElementById(`fb_${qid}`);
       if(fb){
