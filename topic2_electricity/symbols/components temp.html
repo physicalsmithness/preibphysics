@@ -3,90 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I-V Characteristic Circuits Review</title>
+    <title>Var Resistor I-V Distractors</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #2c3e50; max-width: 900px; margin: 0 auto; padding: 20px; }
-        .card { background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; text-align: center; border-top: 5px solid #3498db; }
-        h2 { margin-top: 0; color: #34495e; }
+        .card { background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; text-align: center; border-top: 5px solid #e74c3c; }
+        h2 { margin-top: 0; color: #34495e; font-size: 1.3rem; }
         p { color: #7f8c8d; font-size: 0.95rem; margin-bottom: 20px; }
-        /* Symbol size */
-        .symbol-view { width: 100%; max-width: 200px; border: 2px dashed #bdc3c7; border-radius: 8px; padding: 20px; background: #fafafa; display: inline-block; overflow: visible;}
-        /* Circuit size */
-        .circuit-view { width: 100%; max-width: 350px; border: 2px dashed #bdc3c7; border-radius: 8px; padding: 20px; background: #fafafa; display: inline-block; overflow: visible;}
+        .circuit-view { width: 100%; max-width: 300px; border: 2px dashed #bdc3c7; border-radius: 8px; padding: 20px; background: #fafafa; display: inline-block; overflow: visible;}
     </style>
 </head>
 <body>
 
-    <h1 style="text-align: center;">New I-V Circuit Components</h1>
+    <h1 style="text-align: center;">Variable Resistor Setup: Missing Meters</h1>
+    <p style="text-align: center;">Review these faulty layouts before we write the questions for them.</p>
 
     <div class="card">
-        <h2>1. Variable Power Supply / Variable Battery</h2>
-        <p>Standard multiple-cell battery symbol struck by a precise 45-degree arrow.</p>
-        <div class="symbol-view">
-            <svg viewBox="0 0 100 50">
-                <path d="M0,25 L30,25 M70,25 L100,25" stroke="black" stroke-width="2"/>
-                <line x1="30" y1="10" x2="30" y2="40" stroke="black" stroke-width="2"/>
-                <line x1="40" y1="15" x2="40" y2="35" stroke="black" stroke-width="2"/>
-                <line x1="40" y1="25" x2="60" y2="25" stroke="black" stroke-width="2" stroke-dasharray="4,4"/>
-                <line x1="60" y1="10" x2="60" y2="40" stroke="black" stroke-width="2"/>
-                <line x1="70" y1="15" x2="70" y2="35" stroke="black" stroke-width="2"/>
-                <path d="M20,45 L80,5" stroke="black" stroke-width="2"/>
-                <polygon points="80,5 72,5 78,13" fill="black"/>
-            </svg>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>2. I-V Characteristic Circuit (Variable Power Supply)</h2>
-        <p>Uses the variable battery at the top to change the potential difference. Ammeter in series, Voltmeter parallel across the fixed resistor.</p>
+        <h2>1. Missing Voltmeter (Var Resistor Setup)</h2>
+        <p>Uses a standard battery and a variable resistor, has an Ammeter, but completely forgets the Voltmeter.</p>
         <div class="circuit-view">
             <svg viewBox="-20 -20 240 200">
-                <path d="M 40,60 L 40,30 L 60,30 M 140,30 L 160,30 L 160,120 L 120,120 M 80,120 L 40,120 L 40,90" fill="none" stroke="black" stroke-width="2"/>
-
-                <line x1="70" y1="15" x2="70" y2="45" stroke="black" stroke-width="2"/>
-                <line x1="80" y1="20" x2="80" y2="40" stroke="black" stroke-width="2"/>
-                <line x1="80" y1="30" x2="110" y2="30" stroke="black" stroke-width="2" stroke-dasharray="4,4"/>
-                <line x1="120" y1="15" x2="120" y2="45" stroke="black" stroke-width="2"/>
-                <line x1="130" y1="20" x2="130" y2="40" stroke="black" stroke-width="2"/>
-                <path d="M 60,30 L 70,30 M 130,30 L 140,30" stroke="black" stroke-width="2"/>
-                <path d="M 60,55 L 140,5" stroke="black" stroke-width="2"/>
-                <polygon points="140,5 132,5 138,13" fill="black"/>
-
-                <circle cx="40" cy="75" r="15" fill="none" stroke="black" stroke-width="2"/>
-                <text x="40" y="81" font-family="sans-serif" font-size="16" text-anchor="middle">A</text>
-
-                <rect x="80" y="110" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
-
-                <path d="M 70,120 L 70,160 L 85,160 M 115,160 L 130,160 L 130,120" fill="none" stroke="black" stroke-width="2"/>
-                <circle cx="100" cy="160" r="15" fill="none" stroke="black" stroke-width="2"/>
-                <text x="100" y="166" font-family="sans-serif" font-size="16" text-anchor="middle">V</text>
-            </svg>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>3. I-V Characteristic Circuit (Variable Resistor)</h2>
-        <p>Uses a standard battery, with a variable resistor situated on the right side of the series loop to act as a variable voltage divider.</p>
-        <div class="circuit-view">
-            <svg viewBox="-20 -20 240 200">
-                <path d="M 40,60 L 40,30 L 75,30 M 125,30 L 160,30 L 160,50 M 160,90 L 160,120 L 120,120 M 80,120 L 40,120 L 40,90" fill="none" stroke="black" stroke-width="2"/>
-
+                <path d="M 40,30 L 85,30 M 115,30 L 160,30" fill="none" stroke="black" stroke-width="2"/>
                 <line x1="85" y1="15" x2="85" y2="45" stroke="black" stroke-width="2"/>
                 <line x1="95" y1="20" x2="95" y2="40" stroke="black" stroke-width="2"/>
-                <line x1="95" y1="30" x2="105" y2="30" stroke="black" stroke-width="2" stroke-dasharray="4,4"/>
                 <line x1="105" y1="15" x2="105" y2="45" stroke="black" stroke-width="2"/>
                 <line x1="115" y1="20" x2="115" y2="40" stroke="black" stroke-width="2"/>
-                <path d="M 75,30 L 85,30 M 115,30 L 125,30" stroke="black" stroke-width="2"/>
+                <line x1="95" y1="30" x2="105" y2="30" stroke="black" stroke-width="2" stroke-dasharray="4,4"/>
 
+                <path d="M 160,30 L 160,50 M 160,90 L 160,120" fill="none" stroke="black" stroke-width="2"/>
                 <rect x="150" y="50" width="20" height="40" fill="none" stroke="black" stroke-width="2"/>
                 <path d="M 135,85 L 185,55" stroke="black" stroke-width="2"/>
                 <polygon points="185,55 177,55 183,63" fill="black"/>
 
+                <path d="M 40,30 L 40,60 M 40,90 L 40,120" fill="none" stroke="black" stroke-width="2"/>
                 <circle cx="40" cy="75" r="15" fill="none" stroke="black" stroke-width="2"/>
                 <text x="40" y="81" font-family="sans-serif" font-size="16" text-anchor="middle">A</text>
 
+                <path d="M 40,120 L 80,120 M 120,120 L 160,120" fill="none" stroke="black" stroke-width="2"/>
                 <rect x="80" y="110" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
 
+    <div class="card">
+        <h2>2. Missing Ammeter (Var Resistor Setup)</h2>
+        <p>Uses a standard battery and a variable resistor, has the Voltmeter, but forgets the Ammeter.</p>
+        <div class="circuit-view">
+            <svg viewBox="-20 -20 240 200">
+                <path d="M 40,30 L 85,30 M 115,30 L 160,30" fill="none" stroke="black" stroke-width="2"/>
+                <line x1="85" y1="15" x2="85" y2="45" stroke="black" stroke-width="2"/>
+                <line x1="95" y1="20" x2="95" y2="40" stroke="black" stroke-width="2"/>
+                <line x1="105" y1="15" x2="105" y2="45" stroke="black" stroke-width="2"/>
+                <line x1="115" y1="20" x2="115" y2="40" stroke="black" stroke-width="2"/>
+                <line x1="95" y1="30" x2="105" y2="30" stroke="black" stroke-width="2" stroke-dasharray="4,4"/>
+
+                <path d="M 160,30 L 160,50 M 160,90 L 160,120" fill="none" stroke="black" stroke-width="2"/>
+                <rect x="150" y="50" width="20" height="40" fill="none" stroke="black" stroke-width="2"/>
+                <path d="M 135,85 L 185,55" stroke="black" stroke-width="2"/>
+                <polygon points="185,55 177,55 183,63" fill="black"/>
+
+                <path d="M 40,30 L 40,120" fill="none" stroke="black" stroke-width="2"/>
+
+                <path d="M 40,120 L 80,120 M 120,120 L 160,120" fill="none" stroke="black" stroke-width="2"/>
+                <rect x="80" y="110" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
                 <path d="M 70,120 L 70,160 L 85,160 M 115,160 L 130,160 L 130,120" fill="none" stroke="black" stroke-width="2"/>
                 <circle cx="100" cy="160" r="15" fill="none" stroke="black" stroke-width="2"/>
                 <text x="100" y="166" font-family="sans-serif" font-size="16" text-anchor="middle">V</text>
