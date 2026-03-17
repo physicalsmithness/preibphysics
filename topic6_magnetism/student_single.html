@@ -205,6 +205,48 @@ details .model{
 }
 .adjustRow .note{color:var(--muted); font-size:12px}
 .small{font-size:12px; color:var(--muted)}
+/* Mini buttons (e.g., report) */
+.btn.mini{
+  padding:6px 10px;
+  border-radius:10px;
+  font-weight:800;
+  font-size:12px;
+}
+.reportBanner{
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  margin: 10px 0 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(59,108,255,.10);
+  color: #eaf0ff;
+  display:none;
+}
+.reportBanner .small{color:#cfe0ff}
+/* Sticky score bar (always visible) */
+.scoreBar{
+  position: sticky;
+  top: 10px;
+  z-index: 30;
+  max-width:1200px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+.scoreBar > div.scoreBarRow{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  border-radius:16px;
+  padding:10px 12px;
+}
+.scoreBar .small{color:var(--muted); font-size:12px; margin-top:6px}
+.scoreBar code{background:rgba(255,255,255,.08); padding:2px 6px; border-radius:8px}
 
 </style>
 </head>
@@ -221,6 +263,16 @@ details .model{
     <span class="pill">Units are case‑sensitive</span>
   </div>
 </header>
+
+<div id="scoreBar" class="scoreBar">
+  <div class="scoreBarRow">
+    <div><b>Current set:</b> <span id="scoreBarSet">–</span></div>
+    <div><b>Overall:</b> <span id="scoreBarOverall">–</span></div>
+    <button class="btn mini" id="resetOverallBtn" type="button" title="Reset overall stats (this device only)">Reset overall</button>
+  </div>
+  <div class="small">Overall is stored on this device (browser local storage), not online.</div>
+</div>
+
 
 <main class="wrap">
   <section class="panel">
@@ -261,7 +313,7 @@ details .model{
           <label class="topic"><input class="topicCb" type="checkbox" value="changes" checked /> How force changes with field/current</label>
         </div>
         <div class="hint">
-          Notes: written answers are auto-checked for keywords only, and you can adjust marks after checking.
+          Notes: written answers are auto-checked for keywords only (not AI marking). “Start set” applies your current settings; “New random set” generates another set with the same settings.
         </div>
       </div>
 
@@ -283,6 +335,8 @@ details .model{
       </div>
     </div>
   </section>
+
+  <div id="reportBanner" class="reportBanner"></div>
 
   <section class="panel">
     <div class="panelTop">
@@ -660,7 +714,7 @@ Avoid saying the fields “repel” — say “interact”.`
   {"id": "reverse_both", "tags": ["changes"], "difficulty": "med", "type": "mcq", "prompt": "If you reverse BOTH the current direction and the magnetic field direction, the force direction will:", "choices": ["reverse", "stay the same", "become zero", "become random"], "answerIndex": 1, "explanation": "Reversing either one reverses the force. Reversing both gives two reversals, so the force stays the same direction."},
   {"id": "mfl_crossing_reason", "tags": ["fieldlines"], "difficulty": "easy", "type": "mcq", "prompt": "Field lines must not cross because:", "choices": ["crossing makes the field stronger", "a compass would point in two directions at once", "magnets would lose their poles", "it wastes magnetic field"], "answerIndex": 1, "explanation": "At any point the field has one direction; crossing implies two directions."},
   {"id": "mfl_arrow_direction", "tags": ["fieldlines"], "difficulty": "easy", "type": "mcq", "prompt": "In a field diagram, an arrow on a field line shows:", "choices": ["where the magnet will move", "the direction a north pole would be forced", "the direction electrons flow", "the temperature of the field"], "answerIndex": 1, "explanation": "Field direction is defined as the direction of force on a north pole."},
-  {"id": "identify_poles_from_lines", "tags": ["fieldlines"], "difficulty": "med", "type": "mcq", "prompt": "You see field lines outside a bar magnet drawn with arrows pointing left → right across the top. Which end is the NORTH pole?", "choices": ["Left end", "Right end", "Cannot tell from arrows", "Neither end"], "answerIndex": 0, "explanation": "Outside a magnet, field lines go N → S. If arrows go left → right, left end must be N and right end S."},
+  {"id": "identify_poles_from_lines", "tags": ["fieldlines"], "difficulty": "med", "type": "mcq", "prompt": "Field lines are drawn just ABOVE a bar magnet (outside the magnet) with arrows pointing left → right. Which end is the NORTH pole?", "choices": ["Left end", "Right end", "Cannot tell from arrows", "Neither end"], "answerIndex": 0, "explanation": "Outside a magnet, field lines go N → S. Just above the magnet, arrows left → right means the left end is N and the right end is S. (Inside the magnet, direction is S → N.)"},
   {"id": "mfl_near_poles_stronger", "tags": ["fieldlines"], "difficulty": "easy", "type": "mcq", "prompt": "Where is the magnetic field usually strongest for a bar magnet?", "choices": ["Near the middle", "Near the poles", "Everywhere equal", "Outside only, never near magnet"], "answerIndex": 1, "explanation": "Field is strongest near the poles (field lines densest there)."},
   {"id": "practical_one_field_line", "tags": ["practical"], "difficulty": "hard", "type": "short", "prompt": "Using a plotting compass, how do you draw ONE magnetic field line around a bar magnet?", "marks": 5, "markPoints": [{"any": ["place magnet under", "magnet under paper", "paper", "card"]}, {"any": ["compass", "plotting compass"]}, {"any": ["mark", "dot", "mark the direction"]}, {"any": ["move", "move compass", "move the compass", "tail of compass", "move to end of arrow"]}, {"any": ["repeat", "repeat many times", "join", "smooth line", "draw a line"]}], "explanation": "Compass method (one line):\n• Put magnet under paper.\n• Place compass near magnet; mark the direction of the needle.\n• Move the compass so its tail sits at the previous mark.\n• Mark the new direction.\n• Repeat and join marks to make a smooth arrowed field line."},
   {"id": "uniform_why_lines", "tags": ["uniform"], "difficulty": "med", "type": "short", "prompt": "Why are the lines drawn straight and equally spaced for a uniform field?", "marks": 2, "markPoints": [{"any": ["same strength", "constant strength"]}, {"any": ["same direction", "parallel", "direction is constant"]}], "explanation": "Uniform field means the field has the same direction and strength everywhere. Straight parallel lines show constant direction; equal spacing shows constant strength."},
@@ -698,6 +752,9 @@ Avoid saying the fields “repel” — say “interact”.`
     kpiWrong: document.getElementById("kpiWrong"),
     title: document.getElementById("title"),
     subtitle: document.getElementById("subtitle"),
+    scoreBarSet: document.getElementById("scoreBarSet"),
+    scoreBarOverall: document.getElementById("scoreBarOverall"),
+    resetOverallBtn: document.getElementById("resetOverallBtn"),
   };
   els.title.textContent = META.title || "Quiz";
   els.subtitle.textContent = META.subtitle || "";
@@ -1372,7 +1429,47 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     return list;
   }
 
-  let currentSet = [];
+  // ---------------- Overall stats across sets (this device only) ----------------
+  const OVERALL_KEY = "preibphysics_topic6_overall_v1";
+  function loadOverall(){
+    try{
+      const raw = localStorage.getItem(OVERALL_KEY);
+      if(!raw) return {items:{}};
+      const obj = JSON.parse(raw);
+      if(!obj || typeof obj !== "object") return {items:{}};
+      if(!obj.items || typeof obj.items !== "object") obj.items = {};
+      return obj;
+    }catch(e){
+      return {items:{}};
+    }
+  }
+  function saveOverall(obj){
+    try{ localStorage.setItem(OVERALL_KEY, JSON.stringify(obj)); }catch(e){}
+  }
+  function computeOverallTotals(){
+    const o = loadOverall();
+    let totalScore = 0;
+    let totalMax = 0;
+    for(const k of Object.keys(o.items)){
+      const it = o.items[k];
+      if(it && typeof it === "object" && Number.isFinite(it.score) && Number.isFinite(it.max)){
+        totalScore += it.score;
+        totalMax += it.max;
+      }
+    }
+    return {totalScore, totalMax, count:Object.keys(o.items).length};
+  }
+  function updateOverallForInstance(qid, score, max){
+    const o = loadOverall();
+    if(!o.items) o.items = {};
+    o.items[qid] = {score:Number(score)||0, max:Number(max)||0, t:Date.now()};
+    saveOverall(o);
+  }
+  function resetOverall(){
+    try{ localStorage.removeItem(OVERALL_KEY); }catch(e){}
+  }
+
+let currentSet = [];
   let answered = new Map();
 
   function qMaxMarksSafe(q){ return qMaxMarks(q); }
@@ -1402,6 +1499,19 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     els.summaryLine.innerHTML = currentSet.length
       ? `<b>${full}</b> full, <b>${partial}</b> partial, <b>${wrong}</b> wrong, <b>${currentSet.length-checked}</b> unchecked.`
       : "Start a set to begin.";
+
+// Update sticky score bar
+    const maxSet = totalMaxMarks();
+    const sSet = totalScore();
+    if(els.scoreBarSet){
+      const pct = maxSet ? (100*sSet/maxSet) : 0;
+      els.scoreBarSet.textContent = maxSet ? `${sSet.toFixed(1)} / ${maxSet.toFixed(1)}  (${pct.toFixed(0)}%)` : "–";
+    }
+    if(els.scoreBarOverall){
+      const tot = computeOverallTotals();
+      const pctO = tot.totalMax ? (100*tot.totalScore/tot.totalMax) : 0;
+      els.scoreBarOverall.textContent = tot.totalMax ? `${tot.totalScore.toFixed(1)} / ${tot.totalMax.toFixed(1)}  (${pctO.toFixed(0)}%)` : "–";
+    }
   }
 
   function renderChoice(q, idx){
@@ -1462,7 +1572,7 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
             <div class="qnum">Q${qnum} • ${qMaxMarksSafe(q)} mark${qMaxMarksSafe(q)===1?"":"s"}</div>
             <div class="qtext">${escapeHtml(q.prompt)}</div>
           </div>
-          <div class="tags">${tags}</div>
+          <div class="tags">${tags}<button class="btn mini" data-action="report" data-qid="${q._instanceId}" title="Report this question">Report</button></div>
         </div>
         ${inputHTML}
         <div id="fb_${q._instanceId}"></div>
@@ -1471,7 +1581,22 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
 
   function renderQuiz(){
     els.quiz.innerHTML = currentSet.map(renderQuestionCard).join("");
-    renderKPIs();
+    
+  // Extra safety: if focus is on a radio option, Enter submits that question.
+  document.addEventListener("keydown", (e) => {
+    if(e.key !== "Enter") return;
+    const t = e.target;
+    if(!t) return;
+    if(t.matches && t.matches('input[type="radio"]')){
+      const card = t.closest('.qcard');
+      if(card){
+        const id = card.id.replace('card_','');
+        if(id){ e.preventDefault(); checkAndShow(id); }
+      }
+    }
+  });
+
+renderKPIs();
     els.statusPill.textContent = "In progress";
     els.setPill.textContent = `${currentSet.length} Q set`;
     els.newSetBtn.disabled = false;
@@ -1641,6 +1766,7 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     showFeedback(q, outcome);
     if(outcome.checked){
       answered.set(q._instanceId, {checked:true, status: outcome.status, score: outcome.score, max: outcome.max ?? qMaxMarksSafe(q), auto: !!outcome.auto});
+      updateOverallForInstance(q._instanceId, outcome.score, outcome.max ?? qMaxMarksSafe(q));
       renderKPIs();
     }
   }
@@ -1664,6 +1790,26 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
   });
 
   els.quiz.addEventListener("click", (e) => {
+const repBtn = e.target.closest("button[data-action='report']");
+    if(repBtn){
+      const qid = repBtn.getAttribute("data-qid");
+      const q = currentSet.find(x => x._instanceId === qid);
+      const baseId = q ? q.id : "(unknown)";
+      const msg = `Report this question ID:\n  base id: ${baseId}\n  instance id: ${qid}\n\nPrompt:\n${q ? q.prompt : ""}\n\nPlease send this ID to your teacher.`;
+      // Try copy to clipboard
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(`base id: ${baseId}\ninstance id: ${qid}\nPrompt: ${q ? q.prompt : ""}`).catch(()=>{});
+      }
+      const banner = document.getElementById("reportBanner");
+      if(banner){
+        banner.style.display = "block";
+        banner.innerHTML = `<b>Report copied (if allowed)</b><div class="small">base id: <code>${escapeHtml(baseId)}</code> • instance id: <code>${escapeHtml(qid)}</code></div>`;
+      } else {
+        alert(msg);
+      }
+      return;
+    }
+
     const btnCheck = e.target.closest("button[data-action='check']");
     if(btnCheck){
       checkAndShow(btnCheck.getAttribute("data-qid"));
@@ -1693,6 +1839,13 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
       return;
     }
   });
+
+  if(els.resetOverallBtn){
+    els.resetOverallBtn.addEventListener('click', ()=>{
+      resetOverall();
+      renderKPIs();
+    });
+  }
 
   renderKPIs();
 })();

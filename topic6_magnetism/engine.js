@@ -19,6 +19,9 @@
     kpiWrong: document.getElementById("kpiWrong"),
     title: document.getElementById("title"),
     subtitle: document.getElementById("subtitle"),
+    scoreBarSet: document.getElementById("scoreBarSet"),
+    scoreBarOverall: document.getElementById("scoreBarOverall"),
+    resetOverallBtn: document.getElementById("resetOverallBtn"),
   };
   els.title.textContent = META.title || "Quiz";
   els.subtitle.textContent = META.subtitle || "";
@@ -693,7 +696,47 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     return list;
   }
 
-  let currentSet = [];
+  // ---------------- Overall stats across sets (this device only) ----------------
+  const OVERALL_KEY = "preibphysics_topic6_overall_v1";
+  function loadOverall(){
+    try{
+      const raw = localStorage.getItem(OVERALL_KEY);
+      if(!raw) return {items:{}};
+      const obj = JSON.parse(raw);
+      if(!obj || typeof obj !== "object") return {items:{}};
+      if(!obj.items || typeof obj.items !== "object") obj.items = {};
+      return obj;
+    }catch(e){
+      return {items:{}};
+    }
+  }
+  function saveOverall(obj){
+    try{ localStorage.setItem(OVERALL_KEY, JSON.stringify(obj)); }catch(e){}
+  }
+  function computeOverallTotals(){
+    const o = loadOverall();
+    let totalScore = 0;
+    let totalMax = 0;
+    for(const k of Object.keys(o.items)){
+      const it = o.items[k];
+      if(it && typeof it === "object" && Number.isFinite(it.score) && Number.isFinite(it.max)){
+        totalScore += it.score;
+        totalMax += it.max;
+      }
+    }
+    return {totalScore, totalMax, count:Object.keys(o.items).length};
+  }
+  function updateOverallForInstance(qid, score, max){
+    const o = loadOverall();
+    if(!o.items) o.items = {};
+    o.items[qid] = {score:Number(score)||0, max:Number(max)||0, t:Date.now()};
+    saveOverall(o);
+  }
+  function resetOverall(){
+    try{ localStorage.removeItem(OVERALL_KEY); }catch(e){}
+  }
+
+let currentSet = [];
   let answered = new Map();
 
   function qMaxMarksSafe(q){ return qMaxMarks(q); }
@@ -723,6 +766,19 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     els.summaryLine.innerHTML = currentSet.length
       ? `<b>${full}</b> full, <b>${partial}</b> partial, <b>${wrong}</b> wrong, <b>${currentSet.length-checked}</b> unchecked.`
       : "Start a set to begin.";
+
+// Update sticky score bar
+    const maxSet = totalMaxMarks();
+    const sSet = totalScore();
+    if(els.scoreBarSet){
+      const pct = maxSet ? (100*sSet/maxSet) : 0;
+      els.scoreBarSet.textContent = maxSet ? `${sSet.toFixed(1)} / ${maxSet.toFixed(1)}  (${pct.toFixed(0)}%)` : "–";
+    }
+    if(els.scoreBarOverall){
+      const tot = computeOverallTotals();
+      const pctO = tot.totalMax ? (100*tot.totalScore/tot.totalMax) : 0;
+      els.scoreBarOverall.textContent = tot.totalMax ? `${tot.totalScore.toFixed(1)} / ${tot.totalMax.toFixed(1)}  (${pctO.toFixed(0)}%)` : "–";
+    }
   }
 
   function renderChoice(q, idx){
@@ -783,7 +839,7 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
             <div class="qnum">Q${qnum} • ${qMaxMarksSafe(q)} mark${qMaxMarksSafe(q)===1?"":"s"}</div>
             <div class="qtext">${escapeHtml(q.prompt)}</div>
           </div>
-          <div class="tags">${tags}</div>
+          <div class="tags">${tags}<button class="btn mini" data-action="report" data-qid="${q._instanceId}" title="Report this question">Report</button></div>
         </div>
         ${inputHTML}
         <div id="fb_${q._instanceId}"></div>
@@ -792,7 +848,22 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
 
   function renderQuiz(){
     els.quiz.innerHTML = currentSet.map(renderQuestionCard).join("");
-    renderKPIs();
+    
+  // Extra safety: if focus is on a radio option, Enter submits that question.
+  document.addEventListener("keydown", (e) => {
+    if(e.key !== "Enter") return;
+    const t = e.target;
+    if(!t) return;
+    if(t.matches && t.matches('input[type="radio"]')){
+      const card = t.closest('.qcard');
+      if(card){
+        const id = card.id.replace('card_','');
+        if(id){ e.preventDefault(); checkAndShow(id); }
+      }
+    }
+  });
+
+renderKPIs();
     els.statusPill.textContent = "In progress";
     els.setPill.textContent = `${currentSet.length} Q set`;
     els.newSetBtn.disabled = false;
@@ -962,6 +1033,7 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
     showFeedback(q, outcome);
     if(outcome.checked){
       answered.set(q._instanceId, {checked:true, status: outcome.status, score: outcome.score, max: outcome.max ?? qMaxMarksSafe(q), auto: !!outcome.auto});
+      updateOverallForInstance(q._instanceId, outcome.score, outcome.max ?? qMaxMarksSafe(q));
       renderKPIs();
     }
   }
@@ -985,6 +1057,26 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
   });
 
   els.quiz.addEventListener("click", (e) => {
+const repBtn = e.target.closest("button[data-action='report']");
+    if(repBtn){
+      const qid = repBtn.getAttribute("data-qid");
+      const q = currentSet.find(x => x._instanceId === qid);
+      const baseId = q ? q.id : "(unknown)";
+      const msg = `Report this question ID:\n  base id: ${baseId}\n  instance id: ${qid}\n\nPrompt:\n${q ? q.prompt : ""}\n\nPlease send this ID to your teacher.`;
+      // Try copy to clipboard
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(`base id: ${baseId}\ninstance id: ${qid}\nPrompt: ${q ? q.prompt : ""}`).catch(()=>{});
+      }
+      const banner = document.getElementById("reportBanner");
+      if(banner){
+        banner.style.display = "block";
+        banner.innerHTML = `<b>Report copied (if allowed)</b><div class="small">base id: <code>${escapeHtml(baseId)}</code> • instance id: <code>${escapeHtml(qid)}</code></div>`;
+      } else {
+        alert(msg);
+      }
+      return;
+    }
+
     const btnCheck = e.target.closest("button[data-action='check']");
     if(btnCheck){
       checkAndShow(btnCheck.getAttribute("data-qid"));
@@ -1014,6 +1106,13 @@ I = ${P} / ${V} = ${I.toPrecision(4)} A.`
       return;
     }
   });
+
+  if(els.resetOverallBtn){
+    els.resetOverallBtn.addEventListener('click', ()=>{
+      resetOverall();
+      renderKPIs();
+    });
+  }
 
   renderKPIs();
 })();
