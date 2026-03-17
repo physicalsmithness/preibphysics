@@ -1,156 +1,1505 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Topic 5 Quiz — Solids, Liquids & Gases</title>
-  <link rel="stylesheet" href="./styles.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Topic 5 Quiz — Solids, Liquids and Gases</title>
+<style>
+  :root{
+    --bg:#070b16;
+    --ink:#eef2ff;
+    --muted:#a8b3d6;
+    --line:rgba(255,255,255,.10);
+    --good:#21c07a;
+    --bad:#ff5a6a;
+    --accent:#3b6cff;
+    --warn:#f1c40f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background: radial-gradient(1200px 900px at 15% -10%, #14224a 0%, rgba(20,34,74,0) 50%),
+                radial-gradient(1200px 900px at 95% 0%, #1a2a58 0%, rgba(26,42,88,0) 45%),
+                var(--bg);
+    color:var(--ink);
+    line-height:1.35;
+  }
+  header{
+    padding:22px 18px 10px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+  h1{margin:0 0 8px; font-size:22px; letter-spacing:.2px;}
+  .sub{margin:0; color:var(--muted); font-size:14px;}
+  .wrap{
+    display:grid;
+    grid-template-columns: 340px 1fr;
+    gap:14px;
+    max-width:1200px;
+    margin:0 auto;
+    padding:12px 18px 26px;
+  }
+  @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+  .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+  }
+  .panel h2{margin:0 0 10px; font-size:15px;}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  label{font-size:13px; color:var(--muted)}
+  select,input[type="number"],input[type="text"]{
+    width:100%;
+    background: rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:10px 10px;
+    border-radius:12px;
+    outline:none;
+  }
+  input[type="number"]{max-width:120px}
+  .btn{
+    appearance:none;
+    border:1px solid var(--line);
+    background: rgba(255,255,255,.04);
+    color:var(--ink);
+    padding:10px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:650;
+  }
+  .btn:hover{border-color:rgba(255,255,255,.22)}
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(59,108,255,.18), rgba(59,108,255,.10));
+    border-color: rgba(59,108,255,.45);
+  }
+  .btn.secondary{background: rgba(255,255,255,.03)}
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 10px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+    background: rgba(255,255,255,.02);
+  }
+  .kpi{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:10px;
+    margin-top:10px;
+  }
+  .kpi .box{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px;
+    background: rgba(255,255,255,.02);
+  }
+  .kpi .n{font-weight:800; font-size:18px}
+  .kpi .l{color:var(--muted); font-size:12px; margin-top:3px}
+  .small{font-size:12px; color:var(--muted)}
+  .topics{display:grid; grid-template-columns: 1fr; gap:8px; margin-top:10px;}
+  .topicLine{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:10px 10px; border-radius:12px;
+    border:1px solid var(--line); background: rgba(255,255,255,.02);
+  }
+  .topicLine input{margin-top:2px}
+  .topicLine .t{color:var(--ink); font-weight:700; font-size:13px; margin:0}
+  .topicLine .d{margin:4px 0 0; color:var(--muted); font-size:12px}
+  .main{min-height:420px}
+  .metaTop{
+    display:flex; justify-content:space-between; align-items:center;
+    gap:10px; margin-bottom:12px;
+  }
+  .metaTop .left{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .score{
+    font-weight:800;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:7px 10px;
+    background: rgba(255,255,255,.02);
+  }
+  .qcard{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    margin-bottom:12px;
+  }
+  .qhead{display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
+  .qnum{font-size:12px; color:var(--muted); margin-bottom:8px}
+  .qtext{font-size:15px; font-weight:700}
+  .tags{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+  .tag{
+    font-size:11px;
+    border:1px solid var(--line);
+    padding:4px 8px;
+    border-radius:999px;
+    color:var(--muted);
+    background: rgba(255,255,255,.02);
+  }
+  .choice{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:10px 10px; border-radius:12px;
+    border:1px solid var(--line);
+    margin-top:8px; background: rgba(255,255,255,.02);
+    cursor:pointer;
+  }
+  .choice:hover{border-color: rgba(255,255,255,.22)}
+  .choice input{margin-top:2px}
+  .choiceText{width:100%}
+  .choiceTitle{font-weight:750}
+  .choiceViz{margin-top:8px;border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:8px;background:rgba(255,255,255,.015);display:inline-block}
+  .choiceViz svg{display:block}
+  .answerbox{display:flex; gap:10px; margin-top:10px}
+  .answerbox input{flex:1}
+  .feedback{
+    margin-top:12px;
+    border:1px dashed rgba(255,255,255,.20);
+    border-radius:14px;
+    padding:12px;
+    background: rgba(255,255,255,.02);
+  }
+  .feedback.good{border-color: rgba(33,192,122,.55); background: rgba(33,192,122,.07)}
+  .feedback.bad{border-color: rgba(255,90,106,.55); background: rgba(255,90,106,.06)}
+  .feedback .title{font-weight:850; margin-bottom:8px}
+  .explain{margin:0 0 10px; font-size:13px}
+  details summary{cursor:pointer; color:var(--muted); font-weight:700; margin-top:6px}
+  details .model{
+    margin:10px 0 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    font-size:12.5px;
+    color:#dbe2ff;
+    white-space:pre-wrap;
+    line-height:1.4;
+  }
+  .hr{height:1px; background:var(--line); margin:12px 0}
+  .muted{color:var(--muted)}
+
+  .autoWarn{
+    margin-top:10px;
+    border:1px solid rgba(255,193,7,.55);
+    background: rgba(255,193,7,.10);
+    border-radius:14px;
+    padding:10px 12px;
+  }
+  .autoWarnTitle{
+    font-weight:900;
+    color:#ffe08a;
+    margin-bottom:6px;
+  }
+  .autoWarnText{
+    color: rgba(255,255,255,.90);
+    font-size:13px;
+    line-height:1.35;
+  }
+  .autoWarnText b{ color:#fff3c1; }
+
+  .selfAdjust{
+    margin-top:10px;
+    border:1px dashed rgba(255,255,255,.22);
+    background: rgba(255,255,255,.03);
+    border-radius:14px;
+    padding:10px 12px;
+  }
+  .selfAdjustLead{ font-weight:900; margin-bottom:6px; }
+  .selfAdjustText{ color:var(--muted); font-size:13px; line-height:1.35; margin-bottom:8px; }
+  .selfAdjustRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .selfAdjustRow input{ max-width:140px; }
+  .selfAdjustDone{ margin-top:8px; color: rgba(255,255,255,.88); font-size:13px; }
+
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brandTitle">Topic 5 Quiz</div>
-      <div class="brandSub">Solids, liquids and gases • saved progress • teacher view</div>
-    </div>
+<header>
+  <h1>Topic 5 Quiz — Solids, liquids and gases</h1>
+  <p class="sub">Pressure (p = F/A), pressure in fluids, and ideal gas molecules. Randomised sets with mark‑scheme style feedback. Gas‑law questions are qualitative only.</p>
+</header>
 
-    <div class="topActions">
-      <button class="btn ghost" id="btnStudent" disabled>Student</button>
-      <button class="btn ghost" id="btnTeacher" style="display:none;">Teacher</button>
+<div class="wrap">
+  <aside class="panel">
+    <h2>Set options</h2>
 
-      <div class="userBox" id="userBox">
-        <button class="btn primary" id="btnLogin">Sign in with Google</button>
+    <div class="row" style="margin-bottom:10px;">
+      <div style="flex:1; min-width:160px;">
+        <label for="numQ">Questions per set</label>
+        <input id="numQ" type="number" min="5" max="30" value="12" />
+      </div>
+      <div style="flex:1; min-width:160px;">
+        <label for="diffMix">Difficulty mix</label>
+        <select id="diffMix">
+          <option value="all" selected>Mixed</option>
+          <option value="easy">Mostly easier</option>
+          <option value="med">Mostly medium</option>
+          <option value="hard">Harder</option>
+        </select>
       </div>
     </div>
-  </header>
 
-  <main class="wrap">
-    <section class="panel" id="studentPanel" style="display:none;">
-      <div class="panelTop">
-        <div class="panelTitle">Student quiz</div>
-        <div class="panelMeta">
-          <span class="pill" id="statusPill">Idle</span>
-          <span class="pill" id="savePill">Not signed in</span>
-        </div>
+    <div class="row" style="margin-top:8px;">
+      <button class="btn primary" id="startBtn">Start set</button>
+      <button class="btn secondary" id="newSetBtn" disabled>New random set</button>
+      <button class="btn secondary" id="revealAllBtn" disabled>Reveal mark scheme</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="row" style="justify-content:space-between;">
+      <span class="pill" id="statusPill">Idle</span>
+      <span class="pill" id="poolInfo">-</span>
+    </div>
+
+    <div class="kpi">
+      <div class="box"><div class="n" id="kpiDone">0</div><div class="l">checked</div></div>
+      <div class="box"><div class="n" id="kpiRight">0</div><div class="l">full</div></div>
+      <div class="box"><div class="n" id="kpiPartial">0</div><div class="l">partial</div></div>
+      <div class="box"><div class="n" id="kpiWrong">0</div><div class="l">wrong</div></div>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2>Topics to include</h2>
+    <div class="topics">
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="units" checked />
+        <div><p class="t">Units and conversions</p><p class="d">Pa, N, m², °C ↔ K; Pa = N/m².</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="pressure_calc" checked />
+        <div><p class="t">Pressure calculations</p><p class="d">p = F/A, cm² → m², net pressure/net force.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="pressure_qual" checked />
+        <div><p class="t">Pressure explanations</p><p class="d">Snowshoes, sharp knives, pressure on both sides.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="fluids_equal" checked />
+        <div><p class="t">Pressure in fluids at rest</p><p class="d">Acts equally in all directions; particle reasoning.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="gas_pressure" checked />
+        <div><p class="t">Gas molecules and pressure</p><p class="d">Collisions with walls → force → pressure.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="kelvin" checked />
+        <div><p class="t">Kelvin scale & absolute zero</p><p class="d">0 K = −273 °C; 1 K step = 1 °C step.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="gaslaws" checked />
+        <div><p class="t">Gas relationships (qualitative)</p><p class="d">P–V (constant T), P–T(K) (constant V), particle explanations.</p></div>
+      </label>
+
+      <label class="topicLine">
+        <input class="topic" type="checkbox" value="expand_contract" checked />
+        <div><p class="t">Expanding and contracting containers</p><p class="d">Inside vs outside pressure; net force; particle story.</p></div>
+      </label>
+    </div>
+
+    <p class="small" id="summaryBox" style="margin-top:12px;">Start a set to begin.</p>
+  </aside>
+
+  <main class="panel main">
+    <div class="metaTop">
+      <div class="left">
+        <span class="pill">Random set generator</span>
+        <span class="pill">Syllabus‑aligned</span>
       </div>
-
-      <div class="controls">
-        <div class="control">
-          <label for="classId">Class (optional)</label>
-          <input id="classId" type="text" placeholder="e.g. 10X1" />
-          <div class="hint">Used for teacher filtering. Leave blank if you don’t need it.</div>
-        </div>
-        <div class="control">
-          <label for="numQ">Questions per set</label>
-          <input id="numQ" type="number" min="5" max="30" value="12" />
-        </div>
-        <div class="control">
-          <label for="diffMix">Difficulty mix</label>
-          <select id="diffMix">
-            <option value="all" selected>Mixed</option>
-            <option value="easy">Mostly easier</option>
-            <option value="med">Mostly medium</option>
-            <option value="hard">Harder</option>
-          </select>
-        </div>
-
-        <div class="control wide">
-          <label>Topics to include</label>
-          <div class="topicGrid">
-            <label class="topic"><input class="topicCb" type="checkbox" value="units" checked /> Units & conversions</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="pressure_calc" checked /> Pressure calculations</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="pressure_qual" checked /> Pressure explanations</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="fluids_equal" checked /> Pressure in fluids at rest</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="gas_pressure" checked /> Gas molecules & pressure</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="kelvin" checked /> Kelvin & absolute zero</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="gaslaws" checked /> Gas relationships (qualitative)</label>
-            <label class="topic"><input class="topicCb" type="checkbox" value="expand_contract" checked /> Expansion / contraction</label>
-          </div>
-        </div>
-
-        <div class="control actions">
-          <button class="btn primary" id="startBtn">Start set</button>
-          <button class="btn" id="newSetBtn" disabled>New random set</button>
-          <button class="btn" id="revealAllBtn" disabled>Reveal mark scheme</button>
-        </div>
-
-        <div class="control wide">
-          <div class="kpis">
-            <div class="kpi"><div class="kpiN" id="kpiChecked">0</div><div class="kpiL">checked</div></div>
-            <div class="kpi"><div class="kpiN" id="kpiFull">0</div><div class="kpiL">full</div></div>
-            <div class="kpi"><div class="kpiN" id="kpiPartial">0</div><div class="kpiL">partial</div></div>
-            <div class="kpi"><div class="kpiN" id="kpiWrong">0</div><div class="kpiL">wrong</div></div>
-          </div>
-          <div class="scoreLine" id="scoreLine">-</div>
-          <div class="hint" id="summaryLine">Start a set to begin.</div>
-        </div>
+      <div class="right">
+        <span class="score" id="scoreLine">-</span>
       </div>
+    </div>
 
-      <div id="quiz"></div>
-    </section>
-
-    <section class="panel" id="teacherPanel" style="display:none;">
-      <div class="panelTop">
-        <div class="panelTitle">Teacher dashboard</div>
-        <div class="panelMeta">
-          <span class="pill" id="teacherPill">Teacher</span>
-          <span class="pill" id="teacherStatus">-</span>
-        </div>
-      </div>
-
-      <div class="controls">
-        <div class="control">
-          <label for="filterClass">Filter by class</label>
-          <input id="filterClass" type="text" placeholder="e.g. 10X1 (leave blank for all)" />
-          <div class="hint">Students can optionally set their class code.</div>
-        </div>
-        <div class="control actions">
-          <button class="btn primary" id="btnRefreshTeacher">Refresh</button>
-          <button class="btn" id="btnExportCsv">Export CSV</button>
-        </div>
-      </div>
-
-      <div class="teacherNote">
-        Access control: teacher status is granted by a Firestore document at <code>teachers/&lt;uid&gt;</code>.
-        Create that doc manually in the Firebase console for each teacher.
-      </div>
-
-      <div class="tableWrap">
-        <table class="table" id="teacherTable">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Class</th>
-              <th>Attempts</th>
-              <th>Full</th>
-              <th>Partial</th>
-              <th>Wrong</th>
-              <th>Accuracy</th>
-              <th>Weakest tags (rough)</th>
-              <th>Last seen</th>
-            </tr>
-          </thead>
-          <tbody id="teacherTbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="panel" id="setupPanel">
-      <div class="panelTop">
-        <div class="panelTitle">Setup / troubleshooting</div>
-      </div>
-      <div class="setupText">
-        <p><b>If you see this panel, your Firebase config probably isn't set.</b></p>
-        <ol>
-          <li>Open <code>config.js</code> and paste your Firebase web app config.</li>
-          <li>Enable Google sign-in in Firebase Authentication.</li>
-          <li>Create Firestore and apply the security rules in <code>firestore.rules</code>.</li>
-          <li>Deploy with Firebase Hosting (instructions in <code>README.md</code>).</li>
-        </ol>
-      </div>
-    </section>
+    <div id="quiz"></div>
   </main>
+</div>
 
-  <script type="module" src="./app.js"></script>
+<script>
+/* ---------- Utilities ---------- */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+function norm(s){
+  return (s ?? "")
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[“”"]/g,'"')
+    .replace(/[’]/g,"'")
+    .replace(/\s+/g,' ');
+}
+
+/* ---------- Numeric parsing (number + unit) ---------- */
+function numParts(raw){
+  if(raw === null || raw === undefined) return {ok:false};
+  let s = raw.toString().trim();
+  if(!s) return {ok:false};
+  s = s.replace(/×/g,'x');
+  let compact = s.replace(/\s+/g,'');
+  compact = compact.replace(/x10\^?\(?(-?\d+)\)?/i, 'e$1');
+  compact = compact.replace(/10\^\(?(-?\d+)\)?/i, 'e$1');
+  const m = compact.match(/[-+]?\d*\.?\d+(?:e[-+]?\d+)?/i);
+  if(!m) return {ok:false};
+  const numStr = m[0];
+  const num = Number(numStr);
+  if(Number.isNaN(num)) return {ok:false};
+  return {ok:true, num, numStr};
+}
+
+function tidyUnitToken(u){
+  if(!u) return null;
+  let t = u.trim();
+  if(!t) return null;
+
+  // Normalise common glyphs and spacing, but preserve letter case for unit symbols.
+  t = t.replace(/²/g,'^2').replace(/³/g,'^3');
+
+  // Temperature text forms
+  t = t.replace(/degc/ig,'degC').replace(/celsius/ig,'degC');
+
+  t = t.replace(/\s+/g,'');
+  t = t.replace(/per/ig,'/');
+
+  // Normalise area power formatting
+  t = t.replace(/m\^?2/ig,'m^2').replace(/cm\^?2/ig,'cm^2').replace(/mm\^?2/ig,'mm^2');
+
+  return t;
+}
+
+// returns {type, factor, canonical, caseOk}
+// caseOk defaults true unless explicitly false (e.g. k vs K)
+function unitInfo(token){
+  if(!token) return null;
+  const t = tidyUnitToken(token);
+
+  function sameIgnoreCase(a,b){ return (a && b && a.toLowerCase() === b.toLowerCase()); }
+  function pack(canonical, type, factor){
+    if(t === canonical) return {type, factor, canonical, caseOk:true};
+    if(sameIgnoreCase(t, canonical)) return {type, factor, canonical, caseOk:false, wrongCase:true};
+    return null;
+  }
+
+  // Temperature: Kelvin case matters (K is correct; k is wrong-case)
+  if(t === "K") return {type:"tempK", factor:1, canonical:"K", caseOk:true};
+  if(t.toLowerCase() === "k") return {type:"tempK", factor:1, canonical:"K", caseOk:false, wrongCase:true};
+
+  // Temperature: accept °C or degC (and accept °c as a common variant)
+  if(t === "°C" || t === "°c") return {type:"tempC", factor:1, canonical:"°C", caseOk:true};
+  if(t === "degC") return {type:"tempC", factor:1, canonical:"degC", caseOk:true};
+
+  // Pressure
+  let u = pack("Pa","pressure",1); if(u) return u;
+  u = pack("kPa","pressure",1e3); if(u) return u;
+  u = pack("MPa","pressure",1e6); if(u) return u;
+  u = pack("N/m^2","pressure",1); if(u) return u;
+  u = pack("N/cm^2","pressure",1e4); if(u) return u;
+
+  // Force
+  u = pack("N","force",1); if(u) return u;
+  u = pack("kN","force",1e3); if(u) return u;
+
+  // Area
+  u = pack("m^2","area",1); if(u) return u;
+  u = pack("cm^2","area",1e-4); if(u) return u;
+  u = pack("mm^2","area",1e-6); if(u) return u;
+
+  return null;
+}
+
+function parseQuantity(raw){
+  const parts = numParts(raw);
+  if(!parts.ok) return {ok:false};
+  const rawStr = raw.toString().trim();
+
+  const m = rawStr.match(/[-+]?\d*\.?\d+(?:\s*(?:e|E|x\s*10\^?)\s*[-+]?\d+)?/);
+  let suffix = "";
+  if(m){
+    suffix = rawStr.slice(rawStr.indexOf(m[0]) + m[0].length).trim();
+  }
+  const token = tidyUnitToken(suffix);
+  const unitPresent = !!token;
+  const info = unitPresent ? unitInfo(token) : null;
+
+  return {
+    ok:true,
+    num: parts.num,
+    numStr: (m ? m[0].replace(/\s+/g,'') : parts.numStr),
+    unitToken: unitPresent ? token : null,
+    unitType: info ? info.type : null,
+    unitFactor: info ? info.factor : null,
+    unitCanonical: info ? info.canonical : null,
+    unitCaseOk: info ? (info.caseOk !== false) : null,
+    unitPresent
+  };
+}
+
+function expectedUnitInfo(unitHint){
+  if(!unitHint) return null;
+  const info = unitInfo(unitHint);
+  if(!info) return null;
+  return {...info, token: unitHint};
+}
+
+/* ---------- Rounding logic ---------- */
+function countDecimalPlaces(numStr){
+  const s = numStr.toLowerCase();
+  const base = s.split('e')[0];
+  const dot = base.indexOf('.');
+  return (dot === -1) ? 0 : (base.length - dot - 1);
+}
+function countSigFigs(numStr){
+  let s = numStr.toLowerCase();
+  s = s.replace(/^[-+]/,'');
+  s = s.split('e')[0];
+  if(s.includes('.')){
+    s = s.replace(/^0+/, '').replace('.','').replace(/^0+/, '');
+    return Math.max(1, s.length);
+  } else {
+    s = s.replace(/^0+/, '').replace(/0+$/,'');
+    return Math.max(1, s.length || 1);
+  }
+}
+function roundToDp(x, dp){
+  const f = Math.pow(10, dp);
+  return Math.round((x + Number.EPSILON) * f) / f;
+}
+function roundToSf(x, sf){
+  if(x === 0) return 0;
+  return Number(x.toPrecision(sf));
+}
+function nearlyEqual(a,b, rel=1e-4, abs=1e-9){
+  const diff = Math.abs(a-b);
+  if(diff <= abs) return true;
+  const scale = Math.max(Math.abs(a), Math.abs(b), 1e-12);
+  return diff/scale <= rel;
+}
+function roundingMatch(studentVal, trueVal, numStr){
+  if(nearlyEqual(studentVal, trueVal)) return {ok:true, basis:"exact"};
+  const dp = countDecimalPlaces(numStr);
+  const sf = countSigFigs(numStr);
+  const tDp = roundToDp(trueVal, dp);
+  if(nearlyEqual(studentVal, tDp, 1e-10, 1e-12)) return {ok:true, basis:`${dp} d.p.`};
+  const tSf = roundToSf(trueVal, sf);
+  if(nearlyEqual(studentVal, tSf, 1e-10, 1e-12)) return {ok:true, basis:`${sf} s.f.`};
+  return {ok:false};
+}
+function fmtRounded(value, opts){
+  if(opts && Number.isInteger(opts.dp)) return Number(value).toFixed(opts.dp);
+  if(opts && Number.isInteger(opts.sf)) return Number(value).toPrecision(opts.sf);
+  const a = Number(value);
+  return (Math.abs(a) >= 1000 || Math.abs(a) < 0.01) ? a.toExponential(3) : a.toPrecision(4);
+}
+function closeButBadRounding(studentVal, trueVal, numStr, relTolClose){
+  const diff = Math.abs(studentVal-trueVal);
+  const scale = Math.max(Math.abs(trueVal), 1e-12);
+  const rel = diff/scale;
+  const close = rel <= (relTolClose ?? 0.03);
+  if(!close) return null;
+
+  const dp = countDecimalPlaces(numStr);
+  const sf = countSigFigs(numStr);
+  const base = numStr.toLowerCase().split('e')[0];
+  const hasDot = base.includes('.');
+  const target = hasDot ? roundToDp(trueVal, dp) : roundToSf(trueVal, sf);
+
+  let hint = "";
+  if(target > studentVal) hint = "You needed to round up.";
+  if(target < studentVal) hint = "You needed to round down.";
+
+  return {basis: hasDot ? `${dp} d.p.` : `${sf} s.f.`, target, hint, dp: hasDot ? dp : null, sf: hasDot ? null : sf};
+}
+
+/* ---------- Mini graph options (multiple) ---------- */
+function svgAxes(labelX, labelY){
+  return `
+    <line x1="32" y1="12" x2="32" y2="138" stroke="rgba(255,255,255,.35)"/>
+    <line x1="32" y1="138" x2="210" y2="138" stroke="rgba(255,255,255,.35)"/>
+    <text x="10" y="22" fill="rgba(255,255,255,.65)" font-size="11">${labelY}</text>
+    <text x="195" y="160" fill="rgba(255,255,255,.65)" font-size="11">${labelX}</text>
+  `;
+}
+function graphChoiceHTML(title, svgPath, labelX, labelY){
+  return `
+    <div class="choiceText">
+      <div class="choiceTitle">${title}</div>
+      <div class="choiceViz">
+        <svg viewBox="0 0 240 170" width="220" height="150" aria-label="${title}">
+          ${svgAxes(labelX,labelY)}
+          ${svgPath}
+        </svg>
+      </div>
+    </div>
+  `;
+}
+function gLineThroughOrigin(){
+  return `<line x1="32" y1="138" x2="205" y2="35" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+function gCurveThroughOrigin(){
+  return `<path d="M32 138 C 70 130, 110 105, 205 35" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+function gLineNotThroughOrigin(){
+  return `<line x1="32" y1="110" x2="205" y2="35" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+function gDecreasingLine(){
+  return `<line x1="32" y1="35" x2="205" y2="138" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+function gPVInverseCurve(){
+  // decreasing & flattening as V increases
+  return `<path d="M42 30 C 85 70, 130 110, 210 132" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+function gPVWrongIncreasingFlatten(){
+  // increasing & flattening
+  return `<path d="M42 132 C 95 105, 145 70, 210 35" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3"/>`;
+}
+
+/* ---------- Randomised numeric generators ---------- */
+function genPressureCalc(){
+  const Fs = [120,150,180,210,240,300];
+  const As = [4.0,6.0,7.5,8.0,10.0,12.0];
+  const F = Fs[Math.floor(Math.random()*Fs.length)];
+  const A_cm2 = As[Math.floor(Math.random()*As.length)];
+  const A_m2 = A_cm2 * 1e-4;
+  const p = F / A_m2;
+  return {
+    prompt: `A force of ${F} N acts on an area of ${A_cm2} cm². Calculate the pressure.`,
+    answer: p,
+    unitHint: "Pa",
+    explanation:
+`Mark scheme:
+• Convert area: ${A_cm2} cm² = ${A_m2.toExponential(3)} m²
+• Use p = F/A:
+  p = ${F} / ${A_m2.toExponential(3)} = ${p.toExponential(3)} Pa
+
+Trap: Pa = N/m², so the area must be in m².`
+  };
+}
+function genForceFromPressure(){
+  const ps = [80,95,110,120,140];
+  const As = [12,15,18,20,25];
+  const p_kPa = ps[Math.floor(Math.random()*ps.length)];
+  const A_cm2 = As[Math.floor(Math.random()*As.length)];
+  const p = p_kPa*1000;
+  const A_m2 = A_cm2*1e-4;
+  const F = p*A_m2;
+  return {
+    prompt: `A pressure of ${p_kPa} kPa acts on an area of ${A_cm2} cm². Calculate the force.`,
+    answer: F,
+    unitHint: "N",
+    explanation:
+`Mark scheme:
+• Convert pressure: ${p_kPa} kPa = ${p.toLocaleString()} Pa
+• Convert area: ${A_cm2} cm² = ${A_m2.toExponential(3)} m²
+• Use F = pA:
+  F = ${p} × ${A_m2.toExponential(3)} = ${F.toPrecision(4)} N`
+  };
+}
+function genNetPressureForce(){
+  const inside = [80,90,100,110];
+  const outside = [20,30,40,50];
+  const areas = [0.25,0.30,0.40,0.50];
+  const p_in_kPa = inside[Math.floor(Math.random()*inside.length)];
+  const p_out_kPa = outside[Math.floor(Math.random()*outside.length)];
+  const A_m2 = areas[Math.floor(Math.random()*areas.length)];
+  const dp = (p_in_kPa - p_out_kPa)*1000;
+  const F = dp*A_m2;
+  return {
+    prompt: `A cabin window has area ${A_m2} m². Pressure inside is ${p_in_kPa} kPa and pressure outside is ${p_out_kPa} kPa. Calculate the net force on the window.`,
+    answer: F,
+    unitHint: "N",
+    explanation:
+`Mark scheme:
+• Net pressure difference: Δp = (${p_in_kPa} − ${p_out_kPa}) kPa = ${dp.toLocaleString()} Pa
+• Net force: F = Δp × A
+  F = ${dp} × ${A_m2} = ${F.toPrecision(4)} N
+
+Trap: pressure acts on both sides — use the difference.`
+  };
+}
+function genKelvinConvert(){
+  const cs = [-20,0,25,60,100];
+  const c = cs[Math.floor(Math.random()*cs.length)];
+  const k = c + 273;
+  return {
+    prompt: `Convert ${c} °C to kelvin.`,
+    answer: k,
+    unitHint: "K",
+    unitStrict: true,
+    explanation:`Mark scheme:
+T(K) = T(°C) + 273 = ${c} + 273 = ${k} K
+
+Note: unit case matters (K, not k).`
+  };
+}
+function genCelsiusConvert(){
+  const ks = [250,273,300,350,400];
+  const k = ks[Math.floor(Math.random()*ks.length)];
+  const c = k - 273;
+  return {
+    prompt: `Convert ${k} K to degrees Celsius.`,
+    answer: c,
+    unitHint: "degC",
+    unitStrict: true,
+    explanation:`Mark scheme:
+T(°C) = T(K) − 273 = ${k} − 273 = ${c} °C
+
+Accepted units: °C or degC.`
+  };
+}
+function genKERatio(){
+  const t1s = [250,300,400];
+  const t2s = [500,600,800];
+  const t1 = t1s[Math.floor(Math.random()*t1s.length)];
+  const t2 = t2s[Math.floor(Math.random()*t2s.length)];
+  const ratio = t2/t1;
+  return {
+    prompt: `The Kelvin temperature changes from ${t1} K to ${t2} K. By what factor does the average kinetic energy change? (Number only.)`,
+    answer: ratio,
+    unitHint: "",
+    explanation:`Mark scheme:
+Average KE ∝ Kelvin temperature, so factor = T₂/T₁ = ${t2}/${t1} = ${ratio.toPrecision(4)}`
+  };
+}
+
+function genPressureCalcMM2(){
+  const Fs=[40,60,75,90,120,150];
+  const As=[25,40,50,80,100,125,200]; // mm^2
+  const F=Fs[Math.floor(Math.random()*Fs.length)];
+  const A_mm2=As[Math.floor(Math.random()*As.length)];
+  const A_m2=A_mm2*1e-6;
+  const p=F/A_m2;
+  return {
+    prompt:`A force of ${F} N acts on an area of ${A_mm2} mm². Calculate the pressure.`,
+    answer:p, unitHint:"Pa",
+    explanation:`Mark scheme:
+• Convert area: ${A_mm2} mm² = ${A_m2.toExponential(3)} m²
+• Use p = F/A:
+  p = ${F} / ${A_m2.toExponential(3)} = ${p.toExponential(3)} Pa
+
+Trap: 1 mm² = 10⁻⁶ m², and Pa = N/m².`
+  };
+}
+
+function genFootPressure(){
+  const weights=[420,480,520,560,600,650];
+  const footAreas=[160,180,200,220,240,260]; // cm^2 (one foot)
+  const standingOn=[1,2];
+  const W=weights[Math.floor(Math.random()*weights.length)];
+  const A1=footAreas[Math.floor(Math.random()*footAreas.length)];
+  const feet=standingOn[Math.floor(Math.random()*standingOn.length)];
+  const Atotal_cm2=A1*feet;
+  const Atotal_m2=Atotal_cm2*1e-4;
+  const p=W/Atotal_m2;
+  const feetText = feet===1 ? "one foot" : "both feet";
+  return {
+    prompt:`A student has weight ${W} N. The contact area of one foot is ${A1} cm². Calculate the pressure on the ground when the student is standing on ${feetText}.`,
+    answer:p, unitHint:"Pa",
+    explanation:`Mark scheme:
+• Total contact area = ${A1} cm² × ${feet} = ${Atotal_cm2} cm²
+• Convert: ${Atotal_cm2} cm² = ${Atotal_m2.toExponential(3)} m²
+• p = F/A, and here F = weight = ${W} N
+  p = ${W} / ${Atotal_m2.toExponential(3)} = ${p.toExponential(3)} Pa
+
+Trap: if standing on both feet, area doubles so pressure halves (for same weight).`
+  };
+}
+
+function genAreaConvertCm2(){
+  const vals=[45,72,95,120,180,250,360,420,500,750];
+  const cm2=vals[Math.floor(Math.random()*vals.length)];
+  const m2=cm2*1e-4;
+  return {
+    prompt:`Convert ${cm2} cm² to m².`,
+    answer:m2, unitHint:"m^2", unitStrict:true,
+    explanation:`Mark scheme:
+1 cm = 0.01 m, so 1 cm² = (0.01)² m² = 10⁻⁴ m².
+So ${cm2} cm² = ${cm2} × 10⁻⁴ = ${m2.toExponential(3)} m².`
+  };
+}
+
+function genAreaConvertMm2(){
+  const vals=[120,250,400,650,800,1000,2400,5000];
+  const mm2=vals[Math.floor(Math.random()*vals.length)];
+  const m2=mm2*1e-6;
+  return {
+    prompt:`Convert ${mm2} mm² to m².`,
+    answer:m2, unitHint:"m^2", unitStrict:true,
+    explanation:`Mark scheme:
+1 mm = 0.001 m, so 1 mm² = (0.001)² m² = 10⁻⁶ m².
+So ${mm2} mm² = ${mm2} × 10⁻⁶ = ${m2.toExponential(3)} m².`
+  };
+}
+
+function genPressureCircle(){
+  const diameters=[2.0,2.5,3.0,3.5,4.0,5.0]; // cm
+  const forces=[80,100,120,150,180,200];
+  const d_cm=diameters[Math.floor(Math.random()*diameters.length)];
+  const F=forces[Math.floor(Math.random()*forces.length)];
+  const r_m=(d_cm/2)*0.01;
+  const A=Math.PI*r_m*r_m;
+  const p=F/A;
+  return {
+    prompt:`A circular piston has diameter ${d_cm} cm. A force of ${F} N acts on it. Calculate the pressure. (Use area A = πr².)`,
+    answer:p, unitHint:"Pa",
+    explanation:`Mark scheme:
+• Radius r = (${d_cm}/2) cm = ${(d_cm/2).toFixed(2)} cm = ${r_m.toExponential(3)} m
+• Area A = πr² = π × (${r_m.toExponential(3)})² = ${A.toExponential(3)} m²
+• p = F/A = ${F} / ${A.toExponential(3)} = ${p.toExponential(3)} Pa`
+  };
+}
+
+function genGaugeReading(){
+  // Inspired by PPQ: read a gauge with major/minor divisions.
+  const base=[80,100,120,140][Math.floor(Math.random()*4)];
+  const minor=10; // kPa per minor
+  const steps=[1,2,3,4][Math.floor(Math.random()*4)];
+  const reading=base + steps*minor;
+  return {
+    prompt:`A pressure gauge is marked every 50 kPa with 10 kPa minor divisions. The needle is at ${steps} minor divisions above ${base} kPa. What is the reading?`,
+    answer:reading, unitHint:"kPa",
+    explanation:`Mark scheme:
+Each minor division is 10 kPa.
+Reading = ${base} kPa + ${steps} × 10 kPa = ${reading} kPa.`
+  };
+}
+
+
+
+function genTempDifference(){
+  const dC=[5,12,20,30,45,60][Math.floor(Math.random()*6)];
+  return {
+    prompt:`A gas warms up by ${dC} °C. By how many kelvin does its temperature increase? (Number only.)`,
+    answer:dC, unitHint:"",
+    explanation:`Mark scheme:
+A temperature difference of 1 °C is the same size as 1 K.
+So an increase of ${dC} °C is an increase of ${dC} K.`
+  };
+}
+
+/* ---------- Question bank ---------- */
+const BANK = [
+  // -------- Units --------
+  {id:"u_pa_def", type:"mcq", difficulty:"easy", tags:["units"], prompt:"One pascal (Pa) is equal to:", choices:["1 N × m²","1 N / m²","1 J / s","1 kg / m²"], answerIndex:1, explanation:"Pressure = force / area. So 1 Pa = 1 N per m²."},
+  {id:"u_kpa_def", type:"mcq", difficulty:"easy", tags:["units"], prompt:"1 kPa is equal to:", choices:["0.001 Pa","10 Pa","1000 Pa","100 000 Pa"], answerIndex:2, explanation:"kilo- means ×1000, so 1 kPa = 1000 Pa."},
+  {id:"u_pressure_unit", type:"mcq", difficulty:"easy", tags:["units"], prompt:"Which is the unit of pressure?", choices:["newton (N)","pascal (Pa)","joule (J)","kilogram (kg)"], answerIndex:1, explanation:"Pressure is measured in pascals (Pa)."},
+  {id:"u_force_unit", type:"mcq", difficulty:"easy", tags:["units"], prompt:"Which is the unit of force?", choices:["pascal (Pa)","newton (N)","watt (W)","metre squared (m²)"], answerIndex:1, explanation:"Force is measured in newtons (N)."},
+  {id:"u_area_unit", type:"mcq", difficulty:"easy", tags:["units"], prompt:"Which is the unit of area?", choices:["m","m²","m³","m/s"], answerIndex:1, explanation:"Area is measured in square metres (m²)."},
+  {id:"u_cm2_to_m2_mcq", type:"mcq", difficulty:"med", tags:["units"], prompt:"1 cm² is equal to:", choices:["10⁻² m²","10⁻⁴ m²","10⁻⁶ m²","10⁴ m²"], answerIndex:1, explanation:"1 cm = 0.01 m, so 1 cm² = (0.01)² = 10⁻⁴ m²."},
+  {id:"u_mm2_to_m2_mcq", type:"mcq", difficulty:"med", tags:["units"], prompt:"1 mm² is equal to:", choices:["10⁻² m²","10⁻⁴ m²","10⁻⁶ m²","10⁶ m²"], answerIndex:2, explanation:"1 mm = 0.001 m, so 1 mm² = (0.001)² = 10⁻⁶ m²."},
+  {id:"u_pa_npermsq_mcq", type:"mcq", difficulty:"med", tags:["units"], prompt:"Which is exactly the same as 250 Pa?", choices:["250 N","250 N/m²","250 J","250 kg/m²"], answerIndex:1, explanation:"Pa is N/m², so 250 Pa = 250 N/m²."},
+
+  // -------- Pressure calculations (p = F/A) --------
+  {id:"p_formula", type:"short", difficulty:"easy", tags:["pressure_calc","units"], prompt:"State the formula linking pressure, force and area.", marks:1,
+    markPoints:[{any:["p=f/a","p = f / a","pressure = force/area","pressure = force / area","p = force / area","force per unit area"]}],
+    explanation:"Expected: p = F/A (pressure is force per unit area)."},
+  {id:"p_rearrange_F", type:"mcq", difficulty:"easy", tags:["pressure_calc"], prompt:"Which is a correct rearrangement of p = F/A for force?", choices:["F = p/A","F = p × A","F = A/p","F = p − A"], answerIndex:1, explanation:"Multiply both sides by A: F = pA."},
+  {id:"p_rearrange_A", type:"mcq", difficulty:"easy", tags:["pressure_calc"], prompt:"Which is a correct rearrangement of p = F/A for area?", choices:["A = F/p","A = p/F","A = p×F","A = F−p"], answerIndex:0, explanation:"Rearrange p = F/A → A = F/p."},
+
+  // Numeric (random)
+  {id:"p_calc_cm2", type:"numeric", difficulty:"med", tags:["pressure_calc"], generator: genPressureCalc},
+  {id:"p_calc_mm2", type:"numeric", difficulty:"med", tags:["pressure_calc"], generator: genPressureCalcMM2},
+  {id:"p_force_from_pressure", type:"numeric", difficulty:"med", tags:["pressure_calc"], generator: genForceFromPressure},
+  {id:"p_net_force", type:"numeric", difficulty:"hard", tags:["pressure_calc","expand_contract"], generator: genNetPressureForce},
+  {id:"p_foot_pressure", type:"numeric", difficulty:"med", tags:["pressure_calc","pressure_qual"], generator: genFootPressure},
+  {id:"p_circle_pressure", type:"numeric", difficulty:"hard", tags:["pressure_calc"], generator: genPressureCircle},
+  {id:"p_gauge_reading", type:"numeric", difficulty:"easy", tags:["pressure_calc","units"], generator: genGaugeReading},
+
+  // Unit conversions (numeric)
+  {id:"u_area_conv_cm2", type:"numeric", difficulty:"easy", tags:["units"], generator: genAreaConvertCm2},
+  {id:"u_area_conv_mm2", type:"numeric", difficulty:"easy", tags:["units"], generator: genAreaConvertMm2},
+
+  // -------- Pressure explanations / applications --------
+  {id:"p_snowshoes_mcq", type:"mcq", difficulty:"easy", tags:["pressure_qual"],
+    prompt:"Why do snowshoes help you avoid sinking into snow?",
+    choices:["They increase your weight so you sink less","They increase contact area, so pressure on the snow is smaller","They decrease friction, so you slide on top","They warm the snow so it supports you"],
+    answerIndex:1, explanation:"Same weight (force) over larger area gives smaller pressure: p = F/A."},
+  {id:"p_sharp_knife_mcq", type:"mcq", difficulty:"easy", tags:["pressure_qual"],
+    prompt:"Why does a sharp knife cut better than a blunt knife?",
+    choices:["A sharp knife has a larger contact area, so pressure is smaller","A sharp knife has a smaller contact area, so pressure is larger","A sharp knife makes the force smaller","A sharp knife increases the mass of the food"],
+    answerIndex:1, explanation:"Smaller area gives larger pressure for the same force: p = F/A."},
+  {id:"p_stiletto_short", type:"short", difficulty:"med", tags:["pressure_qual"],
+    prompt:"Explain why a stiletto heel can damage a wooden floor more than a flat shoe, even if the person’s weight is the same.",
+    marks:3, markPoints:[
+      {any:["same force","same weight","force is the same","weight is the same"]},
+      {any:["smaller area","smaller contact area","less area","tiny area"]},
+      {any:["p=f/a","pressure = force/area","pressure increases","higher pressure","greater pressure"]}
+    ],
+    explanation:`Mark points:
+• Same force/weight.
+• Smaller contact area.
+• p = F/A so pressure is larger, so it is more likely to damage the floor.`},
+  {id:"p_pin_coin_mcq", type:"mcq", difficulty:"med", tags:["pressure_qual"],
+    prompt:"A drawing pin has the same force pressing down as a coin. Which gives the larger pressure on the table?",
+    choices:["Coin, because it is heavier","Drawing pin, because the contact area is smaller","Coin, because the contact area is smaller","They give the same pressure"],
+    answerIndex:1, explanation:"Same force but smaller area gives larger pressure (p = F/A)."},
+  {id:"p_two_sides_mcq", type:"mcq", difficulty:"med", tags:["pressure_qual","expand_contract"],
+    prompt:"A window has air pressure pushing on it from inside and outside. The net force on the window depends on:",
+    choices:["Inside pressure only","Outside pressure only","The difference between inside and outside pressure","The sum of inside and outside pressure"],
+    answerIndex:2, explanation:"Forces act in opposite directions, so you subtract to get the net pressure difference."},
+
+  // -------- Pressure in fluids at rest (acts equally) --------
+  {id:"fluids_equal_short", type:"short", difficulty:"hard", tags:["fluids_equal"],
+    prompt:"Explain why the pressure at a point in a liquid (or gas) at rest acts equally in all directions.",
+    marks:3, markPoints:[
+      {any:["random","move randomly","random motion"]},
+      {any:["collide","collisions","hit surfaces","hit walls"]},
+      {any:["all directions","equally in all directions","same in every direction","pressure is the same in all directions"]}
+    ],
+    explanation:`Mark points:
+• Particles move randomly.
+• They collide with surfaces from all directions.
+• So the average force per unit area is the same in every direction: pressure is equal in all directions.`},
+  {id:"fluids_equal_mcq", type:"mcq", difficulty:"med", tags:["fluids_equal"],
+    prompt:"In a fluid at rest, why is pressure the same in all directions at a point?",
+    choices:["Because fluid particles are stationary","Because particles move randomly and collide with surfaces from all directions","Because gravity acts equally in all directions","Because pressure only acts downward"],
+    answerIndex:1, explanation:"Random motion means collisions (and average force per area) occur in all directions."},
+
+  // -------- Gas molecules and pressure --------
+  {id:"gas_pressure_walls", type:"short", difficulty:"med", tags:["gas_pressure"],
+    prompt:"Explain how gas molecules exert a pressure on the walls of a container.",
+    marks:3, gateAny:["wall","walls","container"],
+    markPoints:[
+      {any:["collide","hit","bounce","collisions"]},
+      {any:["force","push","exert a force"]},
+      {any:["pressure = force/area","p=f/a","force per unit area","pressure is force per area"]}
+    ],
+    explanation:`Typical 3 marks:
+1) Molecules collide with the walls.
+2) This produces a force on the walls.
+3) Pressure is force per unit area: p = F/A.
+
+Common trap: “collide with each other” is not the main mark point.`},
+  {id:"gas_pressure_mcq", type:"mcq", difficulty:"easy", tags:["gas_pressure"],
+    prompt:"Gas pressure is caused mainly by:",
+    choices:["molecules attracting each other","molecules colliding with the walls of the container","molecules sitting still in the container","gravity pulling molecules down"],
+    answerIndex:1, explanation:"Pressure comes from collisions with the container walls producing a force per unit area."},
+
+  // -------- Kelvin scale, absolute zero, temperature & KE --------
+  {id:"k_0c_mcq", type:"mcq", difficulty:"easy", tags:["kelvin","units"],
+    prompt:"Which temperature is the same as 0 °C?", choices:["−273 K","3 K","273 K","373 K"], answerIndex:2, explanation:"0 °C corresponds to 273 K."},
+  {id:"k_abszero_mcq", type:"mcq", difficulty:"easy", tags:["kelvin"],
+    prompt:"Absolute zero is:", choices:["0 °C","0 K","273 K","−273 K"], answerIndex:1, explanation:"Absolute zero is 0 K (about −273 °C)."},
+  {id:"k_convert_1", type:"numeric", difficulty:"easy", tags:["kelvin","units"], generator: genKelvinConvert},
+  {id:"k_convert_2", type:"numeric", difficulty:"easy", tags:["kelvin","units"], generator: genCelsiusConvert},
+  {id:"k_temp_diff", type:"numeric", difficulty:"easy", tags:["kelvin","units"], generator: genTempDifference},
+
+  {id:"abs_zero_short", type:"short", difficulty:"hard", tags:["kelvin"],
+    prompt:"Explain why there is an absolute zero of temperature (−273 °C).",
+    marks:3, markPoints:[
+      {any:["kelvin","absolute scale","absolute temperature"]},
+      {any:["proportional to average kinetic energy","kelvin temperature is proportional to kinetic energy","temperature in kelvin proportional to average ke","ke proportional to kelvin"]},
+      {any:["molecules stop moving","particles stop moving","minimum kinetic energy","cannot have less than zero kinetic energy","no random motion"]}
+    ],
+    explanation:`Mark points:
+• Kelvin is an absolute temperature scale.
+• Kelvin temperature is proportional to average kinetic energy.
+• At 0 K the average KE would be zero (no random motion). You cannot go below that.`},
+
+  {id:"temp_speed_short", type:"short", difficulty:"med", tags:["kelvin","gas_pressure"],
+    prompt:"Explain why an increase in temperature increases the average speed of gas molecules.",
+    marks:2, markPoints:[
+      {any:["kinetic energy increases","average kinetic energy increases","more kinetic energy","ke increases"]},
+      {any:["speed increases","move faster","higher speed","average speed increases"]}
+    ],
+    explanation:`Mark points:
+• Higher temperature means higher average kinetic energy.
+• Higher kinetic energy means higher average speed.`},
+
+  {id:"ke_prop_short", type:"short", difficulty:"easy", tags:["kelvin"],
+    prompt:"How is the average kinetic energy of gas molecules related to the Kelvin temperature?",
+    marks:1, markPoints:[{any:["proportional","directly proportional","ke ∝ t","average kinetic energy is proportional to kelvin temperature"]}],
+    explanation:"Expected: average kinetic energy is proportional to Kelvin temperature."},
+  {id:"ke_ratio_numeric", type:"numeric", difficulty:"med", tags:["kelvin"], generator: genKERatio},
+  {id:"ke_double_mcq", type:"mcq", difficulty:"med", tags:["kelvin"],
+    prompt:"If the Kelvin temperature of a gas doubles, what happens to the average kinetic energy of its molecules?",
+    choices:["It halves","It doubles","It stays the same","It increases by 273"],
+    answerIndex:1, explanation:"Average kinetic energy ∝ Kelvin temperature, so doubling T doubles average KE."},
+
+  // -------- Gas laws (qualitative + proportional reasoning) --------
+  {id:"pv_inverse_mcq", type:"mcq", difficulty:"easy", tags:["gaslaws"],
+    prompt:"For a fixed amount of gas at constant temperature, if volume increases, pressure will:",
+    choices:["increase","decrease","stay the same","become zero"],
+    answerIndex:1, explanation:"At constant temperature, pressure and volume are inversely related."},
+  {id:"pv_graph_mcq", type:"mcq", difficulty:"med", tags:["gaslaws"],
+    prompt:"Which graph best represents pressure vs volume for a fixed amount of gas at constant temperature?",
+    choices:[
+      graphChoiceHTML("A) Straight line through origin", gLineThroughOrigin(), "V", "P"),
+      graphChoiceHTML("B) Straight line not through origin", gLineNotThroughOrigin(), "V", "P"),
+      graphChoiceHTML("C) Curve decreasing and flattening", gPVInverseCurve(), "V", "P"),
+      graphChoiceHTML("D) Curve increasing and flattening", gPVWrongIncreasingFlatten(), "V", "P"),
+    ],
+    answerIndex:2,
+    explanation:"Constant temperature: as volume increases, collisions with the walls are less frequent, so pressure decreases (a curve, not a straight line)."},
+
+  {id:"pv_explain_particles", type:"short", difficulty:"hard", tags:["gaslaws","gas_pressure"],
+    prompt:"Explain (in terms of particles) why decreasing the volume of a gas at constant temperature increases its pressure.",
+    marks:4, gateAny:["wall","walls","container","syringe"],
+    markPoints:[
+      {any:["walls closer","less distance","smaller volume","compressed"]},
+      {any:["more frequent collisions","collide more often","hit walls more often","collision frequency increases"]},
+      {any:["greater average force","more force","bigger force on walls","force increases"]},
+      {any:["pressure increases","p=f/a","force per unit area increases"]}
+    ],
+    explanation:`Mark points:
+• Smaller volume -> walls closer.
+• Molecules hit walls more often.
+• Average force on walls increases.
+• p = F/A so pressure increases.
+
+Mark-scheme trap: must talk about collisions with the walls.`},
+
+  {id:"pt_prop_mcq", type:"mcq", difficulty:"easy", tags:["gaslaws","kelvin"],
+    prompt:"For a fixed amount of gas at constant volume, pressure is proportional to:",
+    choices:["temperature in °C","temperature in K","volume","area"],
+    answerIndex:1,
+    explanation:"At constant volume, pressure is proportional to Kelvin temperature."},
+  {id:"pt_graph_mcq", type:"mcq", difficulty:"med", tags:["gaslaws","kelvin"],
+    prompt:"Which graph best represents pressure vs temperature (K) for a fixed amount of gas at constant volume?",
+    choices:[
+      graphChoiceHTML("A) Curve through origin", gCurveThroughOrigin(), "T / K", "P"),
+      graphChoiceHTML("B) Straight line through origin", gLineThroughOrigin(), "T / K", "P"),
+      graphChoiceHTML("C) Straight line not through origin", gLineNotThroughOrigin(), "T / K", "P"),
+      graphChoiceHTML("D) Decreasing line", gDecreasingLine(), "T / K", "P"),
+    ],
+    answerIndex:1,
+    explanation:"At constant volume, pressure is directly proportional to Kelvin temperature: straight line through the origin."},
+
+  {id:"pt_celsius_graph_mcq", type:"mcq", difficulty:"hard", tags:["gaslaws","kelvin"],
+    prompt:"At constant volume, pressure vs temperature in °C is linear but not proportional. Which graph matches this?",
+    choices:[
+      graphChoiceHTML("A) Straight line through origin (°C)", gLineThroughOrigin(), "T / °C", "P"),
+      graphChoiceHTML("B) Straight line not through origin (°C)", gLineNotThroughOrigin(), "T / °C", "P"),
+      graphChoiceHTML("C) Decreasing line (°C)", gDecreasingLine(), "T / °C", "P"),
+      graphChoiceHTML("D) Curve (°C)", gCurveThroughOrigin(), "T / °C", "P"),
+    ],
+    answerIndex:1,
+    explanation:"Using °C, the straight line would cross the temperature axis at about −273 °C, so it is not through the origin."},
+
+  {id:"pt_explain_particles", type:"short", difficulty:"hard", tags:["gaslaws","gas_pressure"],
+    prompt:"Explain (in terms of particles) why increasing the Kelvin temperature of a gas at constant volume increases its pressure.",
+    marks:4, gateAny:["wall","walls","container"],
+    markPoints:[
+      {any:["kinetic energy increases","more kinetic energy","ke increases"]},
+      {any:["move faster","higher speed","speed increases"]},
+      {any:["more frequent collisions","hit walls more often","collide more often","collision frequency increases"]},
+      {any:["hit harder","greater force","more force on walls","average force increases","pressure increases","p=f/a"]}
+    ],
+    explanation:`Mark points:
+• Higher temperature -> higher average kinetic energy.
+• Molecules move faster.
+• They collide with walls more often (and more forcefully).
+• Average force on walls increases -> p = F/A -> pressure increases.`},
+
+  {id:"abs_zero_graph", type:"mcq", difficulty:"med", tags:["kelvin","gaslaws"],
+    prompt:"Extrapolating a pressure–temperature (°C) line to zero pressure gives about −273 °C. This represents:",
+    choices:["the boiling point of water","absolute zero","room temperature","the melting point of ice"],
+    answerIndex:1,
+    explanation:"Extrapolated zero pressure corresponds to 0 K, i.e. absolute zero."},
+
+  // -------- Expansion / contraction situations --------
+  {id:"can_collapse", type:"short", difficulty:"med", tags:["expand_contract","gas_pressure"],
+    prompt:"A metal container is heated with a hole open, then sealed while hot and allowed to cool. It collapses inwards. Explain why.",
+    marks:3, markPoints:[
+      {any:["cool","cools","temperature decreases","temperature falls"]},
+      {any:["particles move slower","molecules slower","lower speed","less kinetic energy"]},
+      {any:["pressure inside decreases","lower pressure inside","outside pressure greater","higher pressure outside","net pressure inward","resultant force inward"]}
+    ],
+    explanation:`Mark points:
+• On cooling, gas particles slow down.
+• They hit the walls less often/less hard so internal pressure drops.
+• Outside air pressure is now greater -> net force inwards -> container collapses.`},
+  {id:"balloon_heat", type:"short", difficulty:"hard", tags:["expand_contract","gaslaws","gas_pressure"],
+    prompt:"A balloon is warmed. Explain why it expands. (You may answer in terms of pressure and forces, or in terms of particles.)",
+    marks:4, markPoints:[
+      {any:["temperature increases","heated","warmer"]},
+      {any:["pressure inside increases","inside pressure greater","net pressure outwards","resultant force outwards"]},
+      {any:["collide with walls more often","more frequent collisions","hit walls more frequently"]},
+      {any:["hit with more force","hit harder","greater force on walls","balloon expands","stretches"]}
+    ],
+    explanation:`Any coherent route earns marks. Typical particle route:
+• Temperature rises -> molecules move faster.
+• They collide with the balloon walls more often and with more force.
+• So pressure inside increases.
+• Inside pressure > outside pressure -> net force outwards -> balloon expands.`},
+];
+
+
+/* ---------- Selection + rendering ---------- */
+const quizEl = document.getElementById("quiz");
+const startBtn = document.getElementById("startBtn");
+const newSetBtn = document.getElementById("newSetBtn");
+const revealAllBtn = document.getElementById("revealAllBtn");
+const statusPill = document.getElementById("statusPill");
+const poolInfo = document.getElementById("poolInfo");
+const summaryBox = document.getElementById("summaryBox");
+
+let currentSet = [];
+let answered = new Map();
+
+function qMaxMarks(q){
+  if(Number.isFinite(q.marks)) return q.marks;
+  if(Array.isArray(q.markPoints)) return q.markPoints.length;
+  return 1;
+}
+function totalMaxMarks(){
+  return currentSet.reduce((s,q)=> s + qMaxMarks(q), 0);
+}
+function totalScore(){
+  let s=0;
+  for(const v of answered.values()) if(v.checked) s += (v.score ?? 0);
+  return s;
+}
+function updateKPIs(){
+  const vals = Array.from(answered.values());
+  const checked = vals.filter(x => x.checked).length;
+  const full = vals.filter(x => x.checked && x.status==="full").length;
+  const partial = vals.filter(x => x.checked && x.status==="partial").length;
+  const wrong = vals.filter(x => x.checked && x.status==="wrong").length;
+
+  document.getElementById("kpiDone").textContent = checked;
+  document.getElementById("kpiRight").textContent = full;
+  document.getElementById("kpiPartial").textContent = partial;
+  document.getElementById("kpiWrong").textContent = wrong;
+
+  const max = totalMaxMarks();
+  const s = totalScore();
+  document.getElementById("scoreLine").textContent = max ? `${s.toFixed(1)} / ${max}` : "-";
+
+  if(currentSet.length){
+    summaryBox.innerHTML = `<div><b>${full}</b> full, <b>${partial}</b> partial, <b>${wrong}</b> wrong, <b>${currentSet.length-checked}</b> unchecked.</div>`;
+  } else {
+    summaryBox.textContent = "Start a set to begin.";
+  }
+}
+function getSelectedTopics(){
+  return Array.from(document.querySelectorAll(".topic")).filter(cb=>cb.checked).map(cb=>cb.value);
+}
+function applyDifficultyFilter(list, mix){
+  if(mix === "all") return list;
+  if(mix === "easy") return list.filter(q => q.difficulty==="easy" || q.difficulty==="med");
+  if(mix === "med") return list.filter(q => q.difficulty!=="easy");
+  if(mix === "hard") return list.filter(q => q.difficulty==="hard");
+  return list;
+}
+function buildPool(){
+  const topics = getSelectedTopics();
+  let pool = BANK.filter(q => q.tags.some(t => topics.includes(t)));
+  pool = applyDifficultyFilter(pool, document.getElementById("diffMix").value);
+  return pool;
+}
+function expandQuestion(q){
+  if(typeof q.generator === "function"){
+    const inst = q.generator();
+    return {...q, ...inst};
+  }
+  return {...q};
+}
+
+function renderChoice(q, idx){
+  const name = `q_${q._instanceId}`;
+  return `
+    <label class="choice">
+      <input type="radio" name="${name}" value="${idx}" />
+      <div class="choiceText">${q.choices[idx]}</div>
+    </label>`;
+}
+function renderQuestionCard(q, index){
+  const qnum = index+1;
+  const tags = q.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+  let inputHTML = "";
+  if(q.type==="mcq"){
+    inputHTML = q.choices.map((_,i)=>renderChoice(q,i)).join("") + `<div class="row" style="margin-top:8px;"><button class="btn secondary" data-action="check" data-qid="${q._instanceId}">Check</button></div>`;
+  } else {
+    const ph = q.type==="numeric" ? "Type a number (include units if you can)" : "Type your answer…";
+    inputHTML = `<div class="answerbox">
+      <input type="text" id="in_${q._instanceId}" placeholder="${ph}" />
+      <button class="btn secondary" data-action="check" data-qid="${q._instanceId}">Check</button>
+    </div>`;
+  }
+
+  return `
+  <div class="qcard" id="card_${q._instanceId}">
+    <div class="qhead">
+      <div>
+        <div class="qnum">Q${qnum} • ${qMaxMarks(q)} mark${qMaxMarks(q)===1?"":"s"}</div>
+        <div class="qtext">${q.prompt}</div>
+      </div>
+      <div class="tags">${tags}</div>
+    </div>
+    ${inputHTML}
+    <div id="fb_${q._instanceId}"></div>
+  </div>`;
+}
+function renderQuiz(){
+  quizEl.innerHTML = currentSet.map(renderQuestionCard).join("");
+  updateKPIs();
+  statusPill.textContent = "In progress";
+}
+
+/* ---------- Checking logic ---------- */
+function getMCQSelection(q){
+  const name = `q_${q._instanceId}`;
+  const sel = document.querySelector(`input[name="${name}"]:checked`);
+  return sel ? Number(sel.value) : null;
+}
+function textIncludesAny(t, arr){ return arr.some(x => t.includes(norm(x))); }
+
+function checkShortMarkPoints(q, raw){
+  const t = norm(raw);
+  if(q.gateAny && q.gateAny.length){
+    const gateOk = q.gateAny.some(x => t.includes(norm(x)));
+    if(!gateOk){
+      return {score:0, max:qMaxMarks(q), status:"wrong", reason:"Gate condition not met: you did not mention collisions with the walls/container."};
+    }
+  }
+  const points = q.markPoints || [];
+  let got = 0;
+  const missing = [];
+  for(const mp of points){
+    if(mp.any){
+      const ok = textIncludesAny(t, mp.any);
+      if(ok) got += 1; else missing.push(mp.any[0]);
+    }
+  }
+  const max = qMaxMarks(q);
+  const status = (got===0) ? "wrong" : (got===max ? "full" : "partial");
+  return {score:got, max, status, missing};
+}
+function checkShort(q, raw){
+  if(q.markPoints) return checkShortMarkPoints(q, raw);
+  return {score:qMaxMarks(q), max:qMaxMarks(q), status:"full"};
+}
+
+function checkNumeric(q, raw){
+  const parsed = parseQuantity(raw);
+  if(!parsed.ok) return {checked:false, msg:"Enter a number (you can add units)."};
+
+  const exp = expectedUnitInfo(q.unitHint || "");
+  const unitStrict = !!q.unitStrict;
+  const max = qMaxMarks(q);
+
+  let studentInExpected = parsed.num;
+  let unitMsg = "";
+
+  function convertTemp(value, fromType, toType){
+    if(fromType === toType) return value;
+    if(fromType === "tempC" && toType === "tempK") return value + 273;
+    if(fromType === "tempK" && toType === "tempC") return value - 273;
+    return value;
+  }
+
+  if(exp){
+    if(parsed.unitPresent){
+      if(exp.type.startsWith("temp") && parsed.unitType && parsed.unitType.startsWith("temp")){
+        studentInExpected = convertTemp(parsed.num, parsed.unitType, exp.type);
+
+        if(exp.canonical === "K" && parsed.unitCaseOk === false){
+          unitMsg = "Unit case matters: use K (capital), not k.";
+        } else if(unitStrict){
+          const want = exp.canonical;
+          const used = parsed.unitCanonical || parsed.unitToken;
+          if(want && used && norm(want) !== norm(used)){
+            unitMsg = `Unit: you used ${used}, but the question asked for ${want}.`;
+          }
+        }
+      } else if(parsed.unitType === exp.type && parsed.unitFactor !== null){
+        const studentSI = parsed.num * parsed.unitFactor;
+        studentInExpected = studentSI / exp.factor;
+
+        if(exp.canonical === "K" && parsed.unitCaseOk === false){
+          unitMsg = "Unit case matters: use K (capital), not k.";
+        } else if(unitStrict){
+          const want = exp.canonical || exp.token;
+          const used = parsed.unitCanonical || parsed.unitToken;
+          if(want && used && norm(want) !== norm(used)){
+            unitMsg = `Unit: you used ${used}, but the question asked for ${want}.`;
+          }
+        }
+      } else {
+        // special: if student entered 'k' for K, parsed.unitType will be tempK but caseOk false;
+        if(parsed.unitType === "tempK" && exp.type === "tempK" && parsed.unitCaseOk === false){
+          unitMsg = "Unit case matters: use K (capital), not k.";
+        } else {
+          unitMsg = "Unit looks wrong for this quantity.";
+        }
+      }
+    } else {
+      unitMsg = "Unit missing.";
+    }
+  }
+
+
+  // Unit case matters (e.g. Pa vs pa, N vs n, K vs k)
+  if(exp && parsed.unitPresent && parsed.unitCaseOk === false && unitMsg === ""){
+    unitMsg = `Unit case matters: use ${exp.canonical || q.unitHint} with correct capitalisation.`;
+  }
+  const trueVal = q.answer;
+  const rm = roundingMatch(studentInExpected, trueVal, parsed.numStr);
+  const okNumeric = rm.ok;
+  const badRound = okNumeric ? null : closeButBadRounding(studentInExpected, trueVal, parsed.numStr, q.relTol ?? 0.03);
+
+  const unitNeeded = !!exp;
+  const unitOkForFull = (!unitNeeded) ? true : (parsed.unitPresent && unitMsg === "");
+
+  let status = "wrong";
+  let score = 0;
+  let reason = "";
+
+  if(okNumeric && unitOkForFull){
+    status = "full"; score = max;
+  } else if(okNumeric && unitNeeded){
+    status = "partial"; score = max/2;
+    if(!parsed.unitPresent) reason = "Number is correct, but the unit is missing.";
+    else reason = "Number is correct, but the unit is not acceptable (or wrong case).";
+  } else if(badRound){
+    status = "partial"; score = max/2;
+    const tgtStr = fmtRounded(badRound.target, {dp: badRound.dp, sf: badRound.sf});
+    reason = `Close, but rounding is off. To ${badRound.basis}, it should be ${tgtStr}. ${badRound.hint}`;
+  }
+
+  return {checked:true, status, score, max, reason, unitMsg};
+}
+
+function checkQuestion(q){
+  if(q.type==="mcq"){
+    const sel = getMCQSelection(q);
+    if(sel === null) return {checked:false, msg:"Choose an option first."};
+    const correct = sel === q.answerIndex;
+    const max = qMaxMarks(q);
+    return {checked:true, status: correct ? "full" : "wrong", score: correct ? max : 0, max};
+  }
+  if(q.type==="numeric"){
+    const input = document.getElementById(`in_${q._instanceId}`);
+    return checkNumeric(q, input ? input.value : "");
+  }
+  if(q.type==="short"){
+    const input = document.getElementById(`in_${q._instanceId}`);
+    const raw = input ? input.value : "";
+    if(!raw.trim()) return {checked:false, msg:"Type an answer first."};
+    return {checked:true, ...checkShort(q, raw)};
+  }
+  return {checked:false, msg:"Unsupported question type."};
+}
+
+function formatCorrectLine(q){
+  if(q.type==="mcq") {
+    const raw = q.choices[q.answerIndex];
+    const stripped = raw.replace(/<[^>]*>/g,'').trim();
+    return `Correct answer: ${stripped || ("Option " + String.fromCharCode(65+q.answerIndex))}`;
+  }
+  if(q.type==="numeric"){
+    const a = q.answer;
+    const rounded = (Math.abs(a) >= 1000 || Math.abs(a) < 0.01) ? a.toExponential(3) : a.toPrecision(4);
+    const unitShow = q.unitHint ? (q.unitHint === "degC" ? "°C" : q.unitHint) : "";
+    return `Correct answer: ${rounded}${unitShow ? " " + unitShow : ""}`;
+  }
+  if(q.type==="short"){
+    if(q.markPoints) return `Mark scheme: ${qMaxMarks(q)} point(s).`;
+    return "Mark scheme shown below.";
+  }
+  return "";
+}
+
+function showFeedback(q, outcome){
+  const fb = document.getElementById(`fb_${q._instanceId}`);
+  if(!fb) return;
+
+  if(!outcome.checked){
+    fb.innerHTML = `<div class="feedback bad"><div class="title">Not checked</div><p class="explain">${outcome.msg}</p></div>`;
+    return;
+  }
+
+  const correctLine = formatCorrectLine(q);
+  const good = outcome.status === "full";
+  const partial = outcome.status === "partial";
+  const title = good ? "Correct" : (partial ? "Partly correct" : "Not quite");
+  const cls = good ? "good" : (partial ? "" : "bad");
+  const titleExtra = outcome.selfAdjusted ? " (self-marked)" : "";
+
+  let diag = "";
+  const autoMarked = (q.type==="short" && q.markPoints);
+  const autoWarnHTML = autoMarked ? `
+    <div class="autoWarn">
+      <div class="autoWarnTitle">Auto-marked (keyword check only)</div>
+      <div class="autoWarnText">This is <b>not</b> “AI marking”. It only checks whether certain words/phrases are present. It can miss good answers and it can also award marks to weak answers. <b>Use the mark scheme below and self-check.</b></div>
+    </div>
+  ` : "";
+
+  const maxMarks = qMaxMarks(q);
+  const selfAdjustNote = autoMarked
+    ? (outcome.selfAdjusted
+        ? `Self-mark applied: ${(outcome.score??0).toFixed(1)} / ${maxMarks.toFixed(1)}.`
+        : `Leave blank if you don't want to change the auto-mark.`)
+    : "";
+  const selfAdjustHTML = autoMarked ? `
+    <div class="selfAdjust">
+      <div class="selfAdjustLead">Optional self-mark (adjusts totals)</div>
+      <div class="selfAdjustText">If you think the keyword check under/over-marked you, enter the marks you believe you earned (0–${maxMarks.toFixed(1)}). This is <b>not</b> re-marking; it only changes your totals. Always self-check the mark scheme.</div>
+      <div class="selfAdjustRow">
+        <input class="selfAdjustInput" type="number" step="0.5" min="0" max="${maxMarks}" placeholder="e.g. 2" value="${outcome.selfAdjusted ? (outcome.score ?? 0) : ""}">
+        <button class="btn small" data-action="selfAdjust" data-qid="${q._instanceId}">Apply</button>
+      </div>
+      <div class="selfAdjustDone">${selfAdjustNote}</div>
+    </div>
+  ` : "";
+
+
+  if(outcome.unitMsg) diag += outcome.unitMsg + "\n";
+  if(outcome.reason) diag += outcome.reason + "\n";
+
+  if(q.type==="short" && q.markPoints && outcome.status !== "full"){
+    if(!outcome.reason && outcome.missing && outcome.missing.length){
+      diag += `Missing ideas (examples): ${outcome.missing.slice(0,3).join("; ")}\n`;
+    }
+  }
+
+  const explainText = (diag ? (diag + "\n") : "") + (q.explanation || "");
+  const open = !good;
+
+  fb.innerHTML = `
+    <div class="feedback ${cls}">
+      <div class="title">${title}${titleExtra} (${(outcome.score??0).toFixed(1)} / ${(outcome.max??qMaxMarks(q)).toFixed(1)} marks)</div>
+      ${autoWarnHTML}
+      ${selfAdjustHTML}
+      <p class="explain">${good ? "✔" : (partial ? "△" : "✘")} ${correctLine}</p>
+      <details ${open ? "open" : ""}>
+        <summary>${good ? "Show explanation" : "Explanation (mark-scheme style)"}</summary>
+        <p class="model">${explainText}</p>
+      </details>
+    </div>`;
+}
+
+function updatePoolInfo(){
+  const pool = buildPool();
+  poolInfo.textContent = `Pool: ${pool.length} question(s)`;
+}
+document.querySelectorAll(".topic").forEach(cb => cb.addEventListener("change", updatePoolInfo));
+document.getElementById("diffMix").addEventListener("change", updatePoolInfo);
+
+function startNewSet(){
+  const pool = buildPool();
+  const n = Number(document.getElementById("numQ").value);
+  if(pool.length < 1){
+    quizEl.innerHTML = `<div class="muted">No questions available — select at least one topic.</div>`;
+    return;
+  }
+  const chosen = shuffle(pool).slice(0, clamp(n, 5, pool.length)).map(expandQuestion);
+  const now = Date.now().toString(36);
+  currentSet = chosen.map((q,i)=> ({...q, _instanceId:`${q.id}_${now}_${i}`}));
+
+  answered = new Map();
+  renderQuiz();
+  newSetBtn.disabled = false;
+  revealAllBtn.disabled = false;
+  statusPill.textContent = "In progress";
+}
+startBtn.addEventListener("click", startNewSet);
+newSetBtn.addEventListener("click", startNewSet);
+
+revealAllBtn.addEventListener("click", () => {
+  currentSet.forEach(q => {
+    const fb = document.getElementById(`fb_${q._instanceId}`);
+    const autoWarnHTML = (q.type==="short" && q.markPoints) ? `
+        <div class="autoWarn">
+          <div class="autoWarnTitle">Auto-marked (keyword check only)</div>
+          <div class="autoWarnText">This is <b>not</b> “AI marking”. It only checks whether certain words/phrases are present. It can miss good answers and it can also award marks to weak answers. <b>Use the mark scheme below and self-check.</b></div>
+        </div>
+      ` : "";
+    fb.innerHTML = `
+      <div class="feedback">
+        <div class="title">Mark scheme</div>
+        ${autoWarnHTML}
+        <p class="explain">${formatCorrectLine(q)}</p>
+        <details open>
+          <summary>Explanation</summary>
+          <p class="model">${q.explanation || ""}</p>
+        </details>
+      </div>`;
+  });
+  statusPill.textContent = "Revealed";
+});
+
+document.getElementById("quiz").addEventListener("click", (e) => {
+  const adjBtn = e.target.closest("button[data-action='selfAdjust']");
+  if(adjBtn){
+    const qid = adjBtn.getAttribute("data-qid");
+    const q = currentSet.find(x => x._instanceId === qid);
+    if(!q) return;
+    const card = adjBtn.closest(".qcard");
+    const inp = card ? card.querySelector(".selfAdjustInput") : null;
+    const raw = inp ? String(inp.value).trim() : "";
+    if(!raw) return;
+    const v = Number(raw);
+    if(!Number.isFinite(v)) return;
+    const max = qMaxMarks(q);
+    const newScore = clamp(v, 0, max);
+    const prev = answered.get(q._instanceId);
+    if(!prev || !prev.checked) return;
+    prev.score = newScore;
+    prev.max = max;
+    prev.selfAdjusted = true;
+    prev.status = (newScore===0) ? "wrong" : (newScore===max ? "full" : "partial");
+    answered.set(q._instanceId, prev);
+    showFeedback(q, prev);
+    updateKPIs();
+    return;
+  }
+
+  const btn = e.target.closest("button[data-action='check']");
+  if(!btn) return;
+  const qid = btn.getAttribute("data-qid");
+  const q = currentSet.find(x => x._instanceId === qid);
+  if(!q) return;
+  const outcome = checkQuestion(q);
+  showFeedback(q, outcome);
+  if(outcome.checked){
+    answered.set(q._instanceId, {...outcome, checked:true, max: outcome.max ?? qMaxMarks(q), autoScore: outcome.score});
+    updateKPIs();
+  }
+});
+
+// Allow Enter to submit the current question (numeric/short inputs and MCQs)
+document.getElementById("quiz").addEventListener("keydown", (e) => {
+  if(e.key !== "Enter") return;
+  if(e.shiftKey) return;
+  const card = e.target && e.target.closest ? e.target.closest(".qcard") : null;
+  if(!card) return;
+
+  // If the user is in the self-mark box, Enter applies the self-mark instead of re-checking.
+  const adjBox = e.target && e.target.closest ? e.target.closest(".selfAdjust") : null;
+  if(adjBox){
+    const btn = adjBox.querySelector("button[data-action='selfAdjust']");
+    if(btn){
+      e.preventDefault();
+      btn.click();
+    }
+    return;
+  }
+
+  const btn = card.querySelector("button[data-action='check']");
+  if(btn){
+    e.preventDefault();
+    btn.click();
+  }
+});
+
+updatePoolInfo();
+updateKPIs();
+</script>
 </body>
 </html>

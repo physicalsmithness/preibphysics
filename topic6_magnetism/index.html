@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Topic 6 Quiz — Magnetism</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brandTitle" id="title">Topic 6 Quiz</div>
+    <div class="brandSub" id="subtitle">Magnetism & electromagnetism • random sets • mark-scheme style feedback</div>
+  </div>
+  <div class="panelMeta">
+    <span class="pill" id="statusPill">Idle</span>
+    <span class="pill">Enter submits (Shift+Enter = new line)</span>
+    <span class="pill">Units are case‑sensitive</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel">
+    <div class="panelTop">
+      <div class="panelTitle">Controls</div>
+      <div class="panelMeta">
+        <span class="pill" id="setPill">No set</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <label for="numQ">Questions per set</label>
+        <input id="numQ" type="number" min="5" max="40" value="14" />
+      </div>
+      <div class="control">
+        <label for="diffMix">Difficulty mix</label>
+        <select id="diffMix">
+          <option value="all" selected>Mixed</option>
+          <option value="easy">Mostly easier</option>
+          <option value="med">Mostly medium</option>
+          <option value="hard">Harder</option>
+        </select>
+      </div>
+
+      <div class="control wide">
+        <label>Topics to include</label>
+        <div class="topicGrid">
+          <label class="topic"><input class="topicCb" type="checkbox" value="units" checked /> Units (A, V, W)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="fieldlines" checked /> Magnetic field lines (rules, strength, direction)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="practical" checked /> Practical: plotting field patterns</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="uniform" checked /> Uniform magnetic fields</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="currentfield" checked /> Field around a current‑carrying wire</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="motoreffect" checked /> Motor effect: force on a wire</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="lefthand" checked /> Fleming’s left‑hand rule</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="motor" checked /> Simple d.c. motors (qualitative)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="speaker" checked /> Loudspeakers (motor effect + a.c.)</label>
+          <label class="topic"><input class="topicCb" type="checkbox" value="changes" checked /> How force changes with field/current</label>
+        </div>
+        <div class="hint">
+          Notes: written answers are auto-checked for keywords only, and you can adjust marks after checking.
+        </div>
+      </div>
+
+      <div class="control actions">
+        <button class="btn primary" id="startBtn">Start set</button>
+        <button class="btn" id="newSetBtn" disabled>New random set</button>
+        <button class="btn" id="revealAllBtn" disabled>Reveal mark scheme</button>
+      </div>
+
+      <div class="control wide">
+        <div class="kpis">
+          <div class="kpi"><div class="kpiN" id="kpiChecked">0</div><div class="kpiL">checked</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiFull">0</div><div class="kpiL">full</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiPartial">0</div><div class="kpiL">partial</div></div>
+          <div class="kpi"><div class="kpiN" id="kpiWrong">0</div><div class="kpiL">wrong</div></div>
+        </div>
+        <div class="scoreLine" id="scoreLine">-</div>
+        <div class="hint" id="summaryLine">Start a set to begin.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panelTop">
+      <div class="panelTitle">Questions</div>
+      <div class="panelMeta">
+        <span class="pill">Mark scheme style explanations</span>
+      </div>
+    </div>
+    <div id="quiz"></div>
+  </section>
+</main>
+
+<script src="questions.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
