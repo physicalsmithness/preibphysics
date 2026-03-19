@@ -206,7 +206,14 @@ function symbolSVG(kind){
       </svg>`;
     }
 
-    // Custom SVGs for magnetism diagrams (used in MCQ choices via {svgKind: "..."}).
+    
+
+return "";
+  }
+
+
+
+  // Custom SVGs for magnetism diagrams (used in MCQ choices via {svgKind: "..."}).
   function customSVG(kind){
     const stroke = 'stroke="rgba(255,255,255,.88)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"';
     const faint  = 'stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"';
@@ -394,9 +401,6 @@ if(kind==="twoMagnets_attract"){
     }
 
     return `<svg viewBox="0 0 260 160" width="240" height="150"><text x="20" y="80" ${txt}>[unknown svgKind]</text></svg>`;
-  }
-
-return "";
   }
 
   function numParts(raw){
