@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Oscillation Odyssey</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #fdf6e3; display: flex; justify-content: center; padding: 20px; color: #586e75; }
+        .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 600px; border: 2px solid #eee8d5; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: #073642; color: #93a1a1; padding: 15px; border-radius: 10px; text-align: center; font-size: 0.85rem; }
+        .stats-grid span { color: #268bd2; font-weight: bold; }
+        .question-box { background: #fdfdfd; padding: 30px; border-radius: 12px; margin-bottom: 20px; font-size: 1.3rem; line-height: 1.5; text-align: center; border: 1px dashed #93a1a1; color: #002b36; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        .input-area { display: flex; gap: 12px; margin-bottom: 10px; }
+        input { padding: 14px; border: 2px solid #eee8d5; border-radius: 8px; font-size: 1.1rem; transition: all 0.2s; background: #fdf6e3; width: 100%; }
+        input:focus { border-color: #268bd2; outline: none; background: white; }
+        #calc-input { flex: 2; }
+        #unit-input { flex: 1; }
+        button { padding: 16px; background: #268bd2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; transition: background 0.2s; }
+        button:hover { background: #2aa198; }
+        .feedback-panel { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; border-left: 6px solid; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .feedback-correct { background: #d7ffd9; border-color: #859900; color: #586e75; }
+        .feedback-wrong { background: #fee; border-color: #dc322f; color: #586e75; }
+        .route { font-family: 'Courier New', monospace; background: rgba(0,0,0,0.04); padding: 12px; border-radius: 6px; margin-top: 12px; display: block; line-height: 1.4; white-space: pre-wrap; font-size: 0.95rem; }
+        .streak { margin: 15px 0; display: flex; gap: 6px; justify-content: center; }
+        .tick { width: 14px; height: 14px; border-radius: 50%; background: #eee8d5; transition: 0.3s; }
+        .tick.correct { background: #859900; box-shadow: 0 0 5px #859900; }
+        .tick.incorrect { background: #dc322f; }
+        .error-log { font-size: 0.8rem; color: #93a1a1; margin-top: 20px; border-top: 1px solid #eee8d5; padding-top: 15px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="stats-grid">
+        <div>Calc Accuracy: <span id="score-calc">0/0</span> (<span id="perc-calc">0%</span>)</div>
+        <div>Unit Accuracy: <span id="score-unit">0/0</span> (<span id="perc-unit">0%</span>)</div>
+    </div>
+
+    <div class="question-box" id="question">Preparing the next mystery...</div>
+
+    <div id="input-container">
+        <div class="input-area">
+            <input type="text" id="calc-input" placeholder="Number" autocomplete="off">
+            <input type="text" id="unit-input" placeholder="Unit" autocomplete="off">
+        </div>
+        <button id="submit-btn" onclick="checkAnswer()">Submit (Enter)</button>
+    </div>
+
+    <div id="feedback-panel" class="feedback-panel">
+        <div id="feedback-text"></div>
+        <div id="route-text" class="route"></div>
+        <button id="next-btn" onclick="nextQuestion()" style="margin-top:15px; background: #859900;">Next Challenge (Enter)</button>
+    </div>
+
+    <div class="streak" id="streak-container"></div>
+
+    <div class="error-log">
+        <span>Rounding: <b id="err-round">0</b></span>
+        <span>Math Logic: <b id="err-calc">0</b></span>
+        <span>Unit/Case: <b id="err-unit">0</b></span>
+    </div>
+</div>
+
+<script>
+    let scores = { calc: 0, unit: 0, attempts: 0 };
+    let errors = { rounding: 0, calc: 0, unit: 0 };
+    let lastTen = [];
+    let currentQ = {};
+    let isShowingFeedback = false;
+
+    const subjects = [
+        "A hyperactive hummingbird", "A caffeinated squirrel", "A wobbly jelly on a plate", 
+        "Grandpa's rusty old pendulum clock", "A drum skin after a heavy hit", 
+        "A very nervous bouncy ball", "The Earth (if it wobbled weirdly)",
+        "A malfunctioning washing machine", "A disco dancer's left leg", 
+        "A heavy metal guitarist's finger"
+    ];
+
+    const verbs = ["vibrates", "oscillates", "wobbles", "pulses", "shakes", "repeats its cycle"];
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            if (!isShowingFeedback) checkAnswer();
+            else nextQuestion();
+        }
+    });
+
+    function generateQuestion() {
+        const type = ['TtoF', 'FtoT', 'OscToF', 'OscToT'][Math.floor(Math.random() * 4)];
+        const sub = subjects[Math.floor(Math.random() * subjects.length)];
+        const v = verbs[Math.floor(Math.random() * verbs.length)];
+        const useMinutes = Math.random() > 0.7;
+        
+        let qText = "", route = "", targets = [];
+
+        if (type === 'TtoF') {
+            let T = (Math.random() * 4 + 0.05).toFixed(2);
+            qText = `${sub} ${v} with a period of exactly ${T} seconds. What's its frequency?`;
+            targets.push({val: 1/T, unit: "Hz"});
+            route = `The link is: f = 1 / T\nf = 1 / ${T}\nf ≈ ${(1/T).toFixed(4)} Hz`;
+        } 
+        else if (type === 'FtoT') {
+            let F = (Math.random() * 50 + 1).toFixed(1);
+            qText = `We measured ${sub} ${v} at ${F} Hz. Can you find the period in seconds?`;
+            targets.push({val: 1/F, unit: "s"});
+            route = `The link is: T = 1 / f\nT = 1 / ${F}\nT ≈ ${(1/F).toFixed(4)} s`;
+        } 
+        else {
+            let osc = Math.floor(Math.random() * 80) + 10;
+            let time = Math.floor(Math.random() * 20) + 2;
+            let unitLabel = useMinutes ? "minutes" : "seconds";
+            let totalSec = useMinutes ? time * 60 : time;
+
+            if (type === 'OscToF') {
+                qText = `${sub} ${v} ${osc} times in ${time} ${unitLabel}. Calculate the frequency in Hz.`;
+                let val = osc / totalSec;
+                targets.push({val, unit: "Hz"});
+                route = useMinutes ? 
+                    `1. Convert minutes to seconds: ${time} × 60 = ${totalSec} s\n2. Frequency = Oscillations / Total Time\n3. f = ${osc} / ${totalSec}\nf ≈ ${val.toFixed(4)} Hz` :
+                    `f = Oscillations / Time\nf = ${osc} / ${time}\nf ≈ ${val.toFixed(4)} Hz`;
+            } else {
+                qText = `${sub} ${v} ${osc} times in ${time} ${unitLabel}. What is the period?`;
+                let valS = totalSec / osc;
+                targets.push({val: valS, unit: "s"});
+                if(useMinutes) targets.push({val: time / osc, unit: "min"});
+                
+                route = useMinutes ? 
+                    `In seconds: T = (${time} × 60) / ${osc} = ${valS.toFixed(4)} s\nIn minutes: T = ${time} / ${osc} = ${(time/osc).toFixed(4)} min` :
+                    `T = Total Time / Oscillations\nT = ${time} / ${osc}\nT ≈ ${valS.toFixed(4)} s`;
+            }
+        }
+
+        currentQ = { targets, route };
+        document.getElementById('question').innerText = qText;
+    }
+
+    function isCorrectRounding(userVal, targetVal) {
+        if (isNaN(userVal)) return false;
+        for (let i = 0; i <= 4; i++) {
+            if (userVal.toString() === targetVal.toFixed(i)) return true;
+        }
+        return false;
+    }
+
+    function checkAnswer() {
+        const valStr = document.getElementById('calc-input').value.trim();
+        const userVal = parseFloat(valStr);
+        const userUnit = document.getElementById('unit-input').value.trim();
+        
+        let calcOk = false, unitOk = false, matchedTarget = currentQ.targets[0];
+
+        currentQ.targets.forEach(t => {
+            if (userUnit === t.unit) {
+                unitOk = true;
+                if (isCorrectRounding(userVal, t.val)) {
+                    calcOk = true;
+                    matchedTarget = t;
+                }
+            }
+        });
+
+        if (calcOk) scores.calc++;
+        else {
+            if (Math.abs(userVal - matchedTarget.val) < 0.08) errors.rounding++;
+            else errors.calc++;
+        }
+
+        if (unitOk) scores.unit++;
+        else errors.unit++;
+
+        scores.attempts++;
+        isShowingFeedback = true;
+
+        const panel = document.getElementById('feedback-panel');
+        panel.style.display = 'block';
+        document.getElementById('input-container').style.display = 'none';
+
+        if (calcOk && unitOk) {
+            document.getElementById('feedback-text').innerHTML = "<strong>🌟 Brilliant!</strong> You nailed it.";
+            panel.className = "feedback-panel feedback-correct";
+            lastTen.push(true);
+        } else {
+            let msg = "<strong>⚠️ Not quite!</strong><br>";
+            if (!calcOk) msg += "• Your calculation is off (or rounded incorrectly).<br>";
+            if (!unitOk) msg += `• The unit should be "${matchedTarget.unit}" (remember, case matters!).`;
+            document.getElementById('feedback-text').innerHTML = msg;
+            panel.className = "feedback-panel feedback-wrong";
+            lastTen.push(false);
+        }
+
+        document.getElementById('route-text').innerText = "The Route:\n" + currentQ.route;
+        updateUI();
+    }
+
+    function nextQuestion() {
+        isShowingFeedback = false;
+        document.getElementById('feedback-panel').style.display = 'none';
+        document.getElementById('input-container').style.display = 'block';
+        document.getElementById('calc-input').value = '';
+        document.getElementById('unit-input').value = '';
+        document.getElementById('calc-input').focus();
+        generateQuestion();
+    }
+
+    function updateUI() {
+        document.getElementById('score-calc').innerText = `${scores.calc}/${scores.attempts}`;
+        document.getElementById('score-unit').innerText = `${scores.unit}/${scores.attempts}`;
+        document.getElementById('perc-calc').innerText = Math.round((scores.calc/scores.attempts)*100) + "%";
+        document.getElementById('perc-unit').innerText = Math.round((scores.unit/scores.attempts)*100) + "%";
+        document.getElementById('err-round').innerText = errors.rounding;
+        document.getElementById('err-calc').innerText = errors.calc;
+        document.getElementById('err-unit').innerText = errors.unit;
+
+        if (lastTen.length > 10) lastTen.shift();
+        const sc = document.getElementById('streak-container');
+        sc.innerHTML = '';
+        lastTen.forEach(res => {
+            let d = document.createElement('div');
+            d.className = 'tick ' + (res ? 'correct' : 'incorrect');
+            sc.appendChild(d);
+        });
+    }
+
+    generateQuestion();
+</script>
+
+</body>
+</html>
