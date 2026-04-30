@@ -590,6 +590,16 @@
     card.className = "qcard";
     card.innerHTML = "";
 
+    // When loading a new question, scroll the page back to the top so the
+    // student sees the prompt. Without this, after a long answer's smooth-
+    // scroll-down to feedback, the next question loads and the student is
+    // still scrolled to the previous feedback's position.
+    try {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
+
     const filterSub = store.activeFilter;
     current = pickNextQuestion(filterSub);
     phase = "answering";
@@ -861,6 +871,36 @@
     fb.appendChild(nextBtn);
 
     card.appendChild(fb);
+
+    // Hide the now-redundant input controls. The student's answer is already
+    // echoed in the "Your answer" block of the feedback. Leaving the textarea
+    // and "Check answer" button visible after submission caused students on
+    // phones to think nothing had happened (the feedback panel rendered below
+    // the fold).
+    const inputWrap = card.querySelector(".qinput");
+    if (inputWrap) inputWrap.style.display = "none";
+
+    // Scroll the score into view so the student sees the result and the
+    // "Next question" call-to-action without having to hunt for them. On
+    // mobile this is the difference between "I clicked submit and nothing
+    // happened" and "here's my mark".
+    // Use rAF + a small timeout so the layout has settled (especially after
+    // the inputWrap was hidden, which changes scrollHeight). Account for the
+    // sticky header height so the score doesn't tuck under it.
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        const scoreEl = fb.querySelector(".fb-score");
+        if (!scoreEl) return;
+        const header = document.querySelector(".app-header");
+        const headerH = header ? header.getBoundingClientRect().height : 0;
+        const targetTop = scoreEl.getBoundingClientRect().top + window.scrollY - headerH - 12;
+        try {
+          window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+        } catch (e) {
+          window.scrollTo(0, Math.max(0, targetTop));
+        }
+      }, 30);
+    });
 
     // Capture Enter for next-question
     function nextOnEnter(e) {
