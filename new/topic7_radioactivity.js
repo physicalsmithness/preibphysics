@@ -1,26 +1,30 @@
 // ============================================================================
 // Topic 7: Radioactivity — Pre-IB question bank
-// Edexcel 4SS0 alignment
-// 134 base questions, 459 deliverables
+// Edexcel 4SS0 alignment (schema v0.4)
+// 173 base questions, 498 deliverables
+//
+// Active (non-parked): 158
+// Parked: 15
 //
 // PASS 2 PROGRESS:
 //   Structural refactor: DONE
 //   Markscheme synonym expansion:
-//     Calibration sample (Q1-Q8): DONE
-//     Chunk 1 (radiation_types + penetration): DONE
+//     Calibration sample (Q1-Q8): DONE (pre-v0.4)
+//     Chunk 1 (radiation_types + penetration): DONE (pre-v0.4)
 //     Chunks 2-9: pending
+//   count_vs_time_table units: ADDED (per v0.4)
+//   Parked field applied: 15 questions parked (over-pitched longs + out-of-spec)
+//   Atomic-foundation chunk: chunk10 added (39 questions, 7.5 / 7.18 / 7.14 areas)
 //
 // Engine assumptions: see NOTES_FOR_ENGINE_CHAT.md.
-// Synonym lists enumerate variants for: GB/US spelling, hyphenation,
-// contractions, articles, and word-order rearrangements (the engine does not
-// normalise these).
 // ============================================================================
 //
-// Type mix: short 77, mcq 45, long 12
+// Active type mix: short 76, mcq 81, long 1
+// Active difficulty: 1:42, 2:77, 3:39, 4:0
 // ============================================================================
 
 window.PREIB_RAD_QUESTIONS = [
-// ===== Calibration sample (Q1-Q8) — Pass 2 markschemes DONE =======
+// ===== Calibration sample (Q1-Q8) — Pass 2 markschemes DONE (pre-v0.4) =======
 
 // ---------------------------------------------------------------
   // 1. radiation_types: definition / nature
@@ -953,6 +957,8 @@ window.PREIB_RAD_QUESTIONS = [
   // ---------------------------------------------------------------
   {
     id: "most_dangerous_close_vs_far",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; synthesis-across-cases at 4m exceeds past-paper practice; could be Pre-IB stretch tutorials",
     tags: ["which_most_dangerous", "extended_writing"],
     specRefs: ["7.16"],
     difficultyRating: 4,
@@ -1284,7 +1290,7 @@ window.PREIB_RAD_QUESTIONS = [
     ]
   },
 
-// ===== Chunk 1: radiation_types + penetration — Pass 2 markschemes DONE ===
+// ===== Chunk 1: radiation_types + penetration — Pass 2 markschemes DONE (pre-v0.4) ===
 
 // ===== radiation_types continued =====================================
 
@@ -4853,6 +4859,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q35: half-life from a count rate table
   {
     id: "halflife_from_table",
+    parked: true,
+    parkedFor: "4PH1 stretch; half-life calculations not in 4SS0 spec (no 7.13)",
     tags: ["halflife"],
     specRefs: ["7.12"],
     difficultyRating: 3,
@@ -4882,11 +4890,11 @@ window.PREIB_RAD_QUESTIONS = [
     allowAdjust: true,
     explanation: "The half-life is 5 minutes. Reading from the table: the count rate falls from 800 to 400 in 5 minutes (one half-life), from 400 to 200 in another 5 minutes, and from 200 to 100 in another 5 minutes. The count rate halves every 5 minutes, so the half-life is 5 minutes.",
     examinerNote: "Show your working: state the halving pattern, not just the answer. Two marks are for the answer plus the reasoning that gives it.",
-    diagram: { kind: "count_vs_time_table", params: { times: [0, 5, 10, 15], counts: [800, 400, 200, 100] } },
+    diagram: { kind: "count_vs_time_table", params: { times: [0, 5, 10, 15], counts: [800, 400, 200, 100], units: { time: "min", counts: "counts/min" } } },
     instances: [
       {
         prompt: "A student measures the count rate of a different radioactive sample: at t = 0 hours, 1600 counts/min; at t = 2 hours, 800 counts/min; at t = 4 hours, 400 counts/min; at t = 6 hours, 200 counts/min. State the half-life and justify.",
-        diagram: { kind: "count_vs_time_table", params: { times: [0, 2, 4, 6], counts: [1600, 800, 400, 200] } },
+        diagram: { kind: "count_vs_time_table", params: { times: [0, 2, 4, 6], counts: [1600, 800, 400, 200], units: { time: "h", counts: "counts/min" } } },
         explanation: "The half-life is 2 hours. The count rate halves every 2 hours: 1600 to 800 in 2 hours, 800 to 400 in another 2 hours, 400 to 200 in another 2 hours."
       },
       {
@@ -4949,6 +4957,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q36: half-life from a graph (qualitative reading)
   {
     id: "halflife_from_graph",
+    parked: true,
+    parkedFor: "4PH1 stretch; half-life calculations not in 4SS0 spec (no 7.13)",
     tags: ["halflife"],
     specRefs: ["7.12"],
     difficultyRating: 3,
@@ -5797,6 +5807,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q44: short range as both safety AND function
   {
     id: "alpha_short_range_double",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; dual-advantage synthesis not in 4SS0; replaced by atomic mcqs in chunk10",
     tags: ["uses_alpha"],
     specRefs: ["7.14"],
     difficultyRating: 3,
@@ -5930,6 +5942,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q45: thickness gauge using beta - the canonical use
   {
     id: "beta_thickness_gauge",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; 5m extended writing exceeds 4SS0 norm; replaced by atomic mcqs in chunk10",
     tags: ["uses_beta"],
     specRefs: ["7.14"],
     difficultyRating: 3,
@@ -6368,6 +6382,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q49: gamma in medical imaging tracer
   {
     id: "gamma_medical_tracer",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; 5m extended writing exceeds 4SS0 norm; replaced by atomic mcqs in chunk10",
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     difficultyRating: 3,
@@ -6583,6 +6599,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q51: gamma in cancer radiotherapy from external source
   {
     id: "gamma_external_radiotherapy",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; multi-beam dose-overlap reasoning beyond 4SS0 spec; could be Pre-IB stretch tutorials",
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     difficultyRating: 3,
@@ -7880,6 +7898,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q64: extended writing — when the same property is good and bad
   {
     id: "danger_property_dual",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; same-property-two-contexts meta-synthesis not in past papers at this level",
     tags: ["which_most_dangerous", "extended_writing"],
     specRefs: ["7.16"],
     difficultyRating: 4,
@@ -8773,6 +8793,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q72: arguments for and against nuclear power
   {
     id: "nuclear_power_evaluation",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; 6m advantages-disadvantages with off-spec content (CO2, decommissioning cost)",
     tags: ["waste_disposal", "energy_from_nuclear"],
     specRefs: ["7.17"],
     difficultyRating: 4,
@@ -9582,6 +9604,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q80: nuclear power station overview
   {
     id: "nuclear_station_overview",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; 5m single prompt; replaced by atomic shorts in chunk10",
     tags: ["energy_from_nuclear"],
     specRefs: ["7.17"],
     difficultyRating: 3,
@@ -9852,6 +9876,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q82: chain reaction
   {
     id: "fission_chain_reaction",
+    parked: true,
+    parkedFor: "4SS0 spec point 7.19 explicitly excludes chain reaction",
     tags: ["fission"],
     specRefs: ["7.18"],
     difficultyRating: 3,
@@ -9943,6 +9969,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q83: critical mass
   {
     id: "critical_mass",
+    parked: true,
+    parkedFor: "4SS0 spec point 7.19 explicitly excludes chain reaction",
     tags: ["fission"],
     specRefs: ["7.18"],
     difficultyRating: 3,
@@ -10765,6 +10793,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q91: experimental design — investigating thickness
   {
     id: "penetration_thickness_dependence",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; duplicates practical_penetration_method; graph-plotting is 4PH1 stretch (7.13)",
     tags: ["practical_penetration"],
     specRefs: ["7.13"],
     difficultyRating: 3,
@@ -11954,6 +11984,8 @@ window.PREIB_RAD_QUESTIONS = [
 // Q104: real-world risk ranking synthesis
   {
     id: "real_world_risk_ranking",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; multi-scenario ranking not in any 4SS0 past paper at this level",
     tags: ["which_most_dangerous", "bio_effects", "contam_irrad", "extended_writing"],
     specRefs: ["7.16", "7.15"],
     difficultyRating: 4,
@@ -12083,6 +12115,8 @@ window.PREIB_RAD_QUESTIONS = [
   // Q105: choosing isotopes for purposes
   {
     id: "choosing_isotopes_for_uses",
+    parked: true,
+    parkedFor: "too hard for Pre-IB; 8m synthesis across four scenarios; no past paper has 8m radioactivity question",
     tags: ["uses_alpha", "uses_beta", "uses_gamma", "halflife", "atomic_struct", "extended_writing"],
     specRefs: ["7.14", "7.12", "7.4"],
     difficultyRating: 4,
@@ -12206,6 +12240,654 @@ window.PREIB_RAD_QUESTIONS = [
       }
     ]
   },
+
+// ===== Chunk 10: atomic-foundation drill (NEW) ===================
+
+// ===========================================================================
+  // 7.5 — Nature of α/β/γ; penetration and ionisation
+  // ===========================================================================
+
+  {
+    id: "atomic_alpha_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of an alpha particle?",
+    options: ["+2", "+1", "-1", "0"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "An alpha particle is 2 protons (charge +1 each) and 2 neutrons (no charge). Net charge: +2.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_beta_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of a beta particle?",
+    options: ["-1", "+1", "+2", "0"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "A beta-minus particle is a fast-moving electron, charge -1.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_gamma_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of a gamma ray?",
+    options: ["0", "+1", "-1", "+2"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma is electromagnetic radiation; it has no charge.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_what_is_alpha",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is an alpha particle?",
+    options: [
+      "A helium nucleus (2 protons and 2 neutrons)",
+      "A fast-moving electron",
+      "A high-frequency electromagnetic wave",
+      "A free neutron"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "An alpha particle is a helium nucleus: 2 protons and 2 neutrons bound together.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_what_is_beta",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is a beta-minus particle?",
+    options: [
+      "A fast-moving electron emitted from the nucleus",
+      "A helium nucleus",
+      "A high-frequency electromagnetic wave",
+      "A proton emitted from the nucleus"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "A beta-minus particle is a fast electron emitted from the nucleus when a neutron decays into a proton.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_what_is_gamma",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is gamma radiation?",
+    options: [
+      "A high-frequency electromagnetic wave",
+      "A helium nucleus",
+      "A fast-moving electron",
+      "A proton emitted from the nucleus"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma radiation is high-frequency electromagnetic radiation, like x-rays but more energetic.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_most_ionising",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is the most ionising?",
+    options: ["Alpha", "Beta", "Gamma"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Alpha is the most ionising. It has the highest charge and largest mass, so it interacts most strongly with the atoms it passes through.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_least_ionising",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is the least ionising?",
+    options: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma is the least ionising. It has no charge and travels through matter mostly without interacting.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_most_penetrating",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is the most penetrating?",
+    options: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma is the most penetrating. It can pass through several centimetres of lead. It is the least ionising too — these two facts are linked.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_least_penetrating",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is the least penetrating?",
+    options: ["Alpha", "Beta", "Gamma"],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Alpha is the least penetrating. It is stopped by a few centimetres of air or a sheet of paper.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_alpha_stopped_by",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Alpha radiation is stopped by:",
+    options: [
+      "A sheet of paper or a few centimetres of air",
+      "A few millimetres of aluminium",
+      "A few centimetres of lead",
+      "Nothing — it passes through everything"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Alpha is the least penetrating, stopped by a sheet of paper or a few cm of air.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_beta_stopped_by",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Beta radiation is stopped by:",
+    options: [
+      "A few millimetres of aluminium",
+      "A sheet of paper",
+      "A few centimetres of lead",
+      "Air alone"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "A few mm of aluminium absorbs beta. Paper does not stop beta; lead would also stop it but is overkill.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_gamma_stopped_by",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Gamma radiation is mostly stopped by:",
+    options: [
+      "A few centimetres of lead",
+      "A sheet of paper",
+      "A few millimetres of aluminium",
+      "Air alone"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma is highly penetrating. Several centimetres of lead reduce it substantially but never absorb it completely.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_alpha_range_air",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "How far does alpha radiation typically travel in air before being absorbed?",
+    options: [
+      "A few centimetres",
+      "A few metres",
+      "Hundreds of metres",
+      "Hundreds of kilometres"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Alpha has a range of just a few cm in air. This is why it is harmless from a distance.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_beta_range_air",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "How far does beta radiation typically travel in air before being absorbed?",
+    options: [
+      "Tens of metres",
+      "A few centimetres",
+      "Hundreds of kilometres",
+      "It never gets absorbed"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Beta has a range of tens of metres in air, much further than alpha but much less than gamma.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_gamma_range_air",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Roughly how far can gamma radiation travel in air before being absorbed?",
+    options: [
+      "Hundreds of kilometres (it is barely absorbed by air)",
+      "A few centimetres",
+      "Tens of metres",
+      "It is absorbed within one metre"
+    ],
+    answerIndex: 0,
+    tags: ["radiation_types"],
+    specRefs: ["7.5"],
+    explanation: "Gamma is barely absorbed by air at all. This is why distance from the source is the main protection from a gamma source outside the body.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.18 / 7.19 — Fission and U-235
+  // ===========================================================================
+
+  {
+    id: "atomic_fission_fuel",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What nucleus is most commonly used as fuel in a nuclear power station?",
+    options: ["Uranium-235", "Hydrogen-2", "Carbon-14", "Iron-56"],
+    answerIndex: 0,
+    tags: ["fission_fusion", "energy_from_nuclear"],
+    specRefs: ["7.18"],
+    explanation: "Uranium-235 is the standard fission fuel. Plutonium-239 is also used.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_starter",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What particle starts the fission of a uranium-235 nucleus?",
+    options: ["A neutron", "A proton", "An alpha particle", "A gamma ray"],
+    answerIndex: 0,
+    tags: ["fission_fusion"],
+    specRefs: ["7.18"],
+    explanation: "A neutron is absorbed by the U-235 nucleus, briefly making U-236, which then splits.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_intermediate",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "When uranium-235 absorbs a neutron, it briefly becomes:",
+    options: ["Uranium-236", "Uranium-234", "Plutonium-239", "Barium-141"],
+    answerIndex: 0,
+    tags: ["fission_fusion"],
+    specRefs: ["7.18"],
+    explanation: "U-235 + neutron → U-236, which is unstable and immediately splits. Mark schemes credit students who mention this intermediate step.",
+    examinerNote: "Past papers (Q22, Q30) award a separate markpoint for naming U-236 as the intermediate."
+  },
+  {
+    id: "atomic_fission_means",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Nuclear fission is:",
+    options: [
+      "A large nucleus splitting into smaller nuclei",
+      "Small nuclei joining to make a larger nucleus",
+      "An electron leaving a nucleus",
+      "A nucleus emitting a gamma ray"
+    ],
+    answerIndex: 0,
+    tags: ["fission_fusion"],
+    specRefs: ["7.17", "7.18"],
+    explanation: "Fission = splitting a large nucleus into smaller (daughter) nuclei. Fusion = the opposite.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_neutrons_released",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "When a U-235 nucleus splits in fission, how many neutrons are typically released?",
+    options: ["Two or three", "Always exactly one", "Always exactly four", "Zero"],
+    answerIndex: 0,
+    tags: ["fission_fusion"],
+    specRefs: ["7.19"],
+    explanation: "Fission of U-235 typically releases 2 or 3 neutrons, plus two daughter nuclei.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_daughter_count",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "When U-235 splits in fission, how many daughter nuclei are produced?",
+    options: ["Two", "One", "Three or four", "It varies from zero to five"],
+    answerIndex: 0,
+    tags: ["fission_fusion"],
+    specRefs: ["7.19"],
+    explanation: "Two daughter nuclei are produced from each U-235 fission event.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_daughters_radioactive",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Are the daughter nuclei produced by fission radioactive?",
+    options: ["Yes", "No", "Only if the reactor is running"],
+    answerIndex: 0,
+    tags: ["fission_fusion", "waste_disposal"],
+    specRefs: ["7.19"],
+    explanation: "The daughter nuclei are radioactive. This is why nuclear waste from a reactor is radioactive: the spent fuel contains many radioactive fission products.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_fission_energy_form",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Energy released in nuclear fission appears mainly as:",
+    options: [
+      "Kinetic energy of the fission products",
+      "Sound",
+      "Light",
+      "Chemical energy"
+    ],
+    answerIndex: 0,
+    tags: ["fission_fusion", "energy_from_nuclear"],
+    specRefs: ["7.18"],
+    explanation: "The energy released appears as kinetic energy of the daughter nuclei and the released neutrons. This kinetic energy heats the surrounding material — that's how the reactor produces heat.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.14 — Uses of radioactivity
+  // ===========================================================================
+
+  {
+    id: "atomic_smoke_alarm_radiation",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Smoke alarms typically use a source of which radiation?",
+    options: ["Alpha", "Beta", "Gamma"],
+    answerIndex: 0,
+    tags: ["uses_alpha"],
+    specRefs: ["7.14"],
+    explanation: "Smoke alarms use an alpha source (americium-241). Alpha ionises the air gap inside; smoke disrupts this and triggers the alarm.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_paper_thickness_gauge_radiation",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Which radiation is used in a thickness gauge for paper or thin foil?",
+    options: ["Beta", "Alpha", "Gamma"],
+    answerIndex: 0,
+    tags: ["uses_beta"],
+    specRefs: ["7.14"],
+    explanation: "Beta is used: alpha would be stopped by even very thin paper (no signal), and gamma would pass through almost unchanged regardless of thickness (no sensitivity). Beta's penetration is sensitive to small thickness changes.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_steel_thickness_gauge_radiation",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Which radiation is used in a thickness gauge for thick steel?",
+    options: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"],
+    explanation: "Steel is too thick for beta to penetrate at all. Gamma can penetrate steel and small thickness changes affect the count rate at the detector.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_sterilisation_radiation",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is used to sterilise medical equipment?",
+    options: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"],
+    explanation: "Gamma is used because it can penetrate the packaging and reach the bacteria inside. Alpha and beta wouldn't get through the packaging.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_medical_tracer_radiation",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which radiation is used in a medical tracer?",
+    options: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"],
+    explanation: "Gamma is used because it can leave the body and reach a detector outside. Alpha would be absorbed by tissue inside the body.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_smoke_alarm_property",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why is alpha used in a smoke alarm? It is the radiation that:",
+    options: [
+      "Ionises the air gap, but is stopped inside the device",
+      "Has the longest half-life",
+      "Has the highest penetrating power",
+      "Is the least dangerous"
+    ],
+    answerIndex: 0,
+    tags: ["uses_alpha"],
+    specRefs: ["7.14"],
+    explanation: "Alpha is most ionising (which is what makes the smoke alarm work) AND has very low penetration (which means it stays inside the device, safe).",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_sterilisation_property",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why is gamma used to sterilise medical equipment? It is the radiation that:",
+    options: [
+      "Can penetrate the packaging and kill bacteria inside",
+      "Is the most ionising",
+      "Has the shortest half-life",
+      "Is the least dangerous"
+    ],
+    answerIndex: 0,
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"],
+    explanation: "Gamma's high penetrating power lets it pass through the sealed packaging to reach the bacteria.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_medical_tracer_property",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why is gamma used as a medical tracer? It is the radiation that:",
+    options: [
+      "Can leave the body and be detected outside",
+      "Is the most ionising",
+      "Has the longest half-life",
+      "Has the largest charge"
+    ],
+    answerIndex: 0,
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"],
+    explanation: "Gamma's high penetration lets it leave the body and reach a detector. Alpha would be absorbed by tissue and never reach the detector.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_tracer_halflife",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "A medical tracer should have a half-life of about:",
+    options: [
+      "A few hours",
+      "A few seconds",
+      "Many years",
+      "A few months"
+    ],
+    answerIndex: 0,
+    tags: ["uses_gamma", "halflife"],
+    specRefs: ["7.14", "7.12"],
+    explanation: "Long enough to do the scan (so not seconds); short enough to fall to safe levels soon afterwards (so not years).",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_smoke_alarm_halflife",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "A smoke alarm needs a source with a half-life of about:",
+    options: [
+      "Many years",
+      "A few hours",
+      "A few minutes",
+      "A few seconds"
+    ],
+    answerIndex: 0,
+    tags: ["uses_alpha", "halflife"],
+    specRefs: ["7.14", "7.12"],
+    explanation: "A smoke alarm needs to keep working for years without being replaced; the source's half-life must be long enough that activity barely decreases over its lifetime. Americium-241 has a half-life of about 432 years.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_thickness_gauge_halflife",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "An industrial thickness gauge needs a source with a half-life of about:",
+    options: [
+      "Many years",
+      "A few seconds",
+      "A few hours",
+      "A few days"
+    ],
+    answerIndex: 0,
+    tags: ["uses_beta", "halflife"],
+    specRefs: ["7.14", "7.12"],
+    explanation: "An industrial gauge runs for years and needs steady activity throughout. A long half-life means it doesn't have to be recalibrated or replaced frequently.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_radiotherapy_term",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the use of radiation to treat cancer called?",
+    options: ["Radiotherapy", "Chemotherapy", "Sterilisation", "Tracing"],
+    answerIndex: 0,
+    tags: ["uses_gamma", "uses_beta"],
+    specRefs: ["7.14"],
+    explanation: "Radiotherapy: using ionising radiation to damage cancer cells. (Chemotherapy uses drugs, not radiation.)",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_use_alpha_list",
+    type: "short",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "State one use of alpha radiation.",
+    markPoints: [{
+      any: [
+        "smoke detector",
+        "smoke alarm",
+        "fire alarm",
+        "static eliminator",
+        "powering spacecraft",
+        "powering space probes",
+        "spacecraft power",
+        "space probe power",
+        "radiotherapy implant",
+        "radiotherapy"
+      ]
+    }],
+    explanation: "Common uses: smoke detector, static eliminator, powering spacecraft, radiotherapy implant.",
+    examinerNote: "Past paper Q48 markscheme accepts smoke detectors / radiotherapy / powering spacecraft / static eliminator. Allows 'fire alarms' as a synonym for smoke detector.",
+    tags: ["uses_alpha"],
+    specRefs: ["7.14"]
+  },
+  {
+    id: "atomic_use_beta_list",
+    type: "short",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "State one use of beta radiation.",
+    markPoints: [{
+      any: [
+        "thickness gauge",
+        "paper thickness gauge",
+        "foil thickness gauge",
+        "betalight",
+        "watch dial",
+        "fishing lure",
+        "radiotherapy implant",
+        "radiotherapy",
+        "tracer"
+      ]
+    }],
+    explanation: "Common uses: thickness gauge for paper or thin foil; betalights (watch dials, fishing lures); radiotherapy implant.",
+    examinerNote: "",
+    tags: ["uses_beta"],
+    specRefs: ["7.14"]
+  },
+  {
+    id: "atomic_use_gamma_list",
+    type: "short",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "State one use of gamma radiation.",
+    markPoints: [{
+      any: [
+        "sterilising medical equipment",
+        "sterilisation",
+        "sterilising food",
+        "sterilising bacteria",
+        "killing bacteria",
+        "medical tracer",
+        "industrial tracer",
+        "tracer",
+        "radiotherapy",
+        "gamma knife",
+        "thickness gauge for steel",
+        "steel thickness gauge",
+        "treating cancer",
+        "cancer treatment"
+      ]
+    }],
+    explanation: "Common uses: sterilisation (medical equipment, food); medical or industrial tracer; radiotherapy / gamma knife; thickness gauge for thick steel.",
+    examinerNote: "",
+    tags: ["uses_gamma"],
+    specRefs: ["7.14"]
+  },
 ];
 
 // Per-chunk references:
@@ -12219,3 +12901,4 @@ window.PREIB_RAD_QUESTIONS = [
   window.PREIB_RAD_QUESTIONS_CHUNK7               = window.PREIB_RAD_QUESTIONS.slice(111, 115);
   window.PREIB_RAD_QUESTIONS_CHUNK8               = window.PREIB_RAD_QUESTIONS.slice(115, 132);
   window.PREIB_RAD_QUESTIONS_CHUNK9               = window.PREIB_RAD_QUESTIONS.slice(132, 134);
+  window.PREIB_RAD_QUESTIONS_CHUNK10              = window.PREIB_RAD_QUESTIONS.slice(134, 173);
