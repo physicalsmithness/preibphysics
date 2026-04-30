@@ -648,6 +648,45 @@
     const inputWrap = el("div", { class: "qinput" });
     const type = v.type;
 
+    // Defence: catch malformed questions before they render as a dead card.
+    // The known modes of failure: type === "mcq" but choices missing/empty;
+    // type === "numeric" but no expectedNumeric/answer; or type missing
+    // entirely. Render a clear notice with a Skip button instead of a card
+    // the student can't interact with.
+    let brokenReason = null;
+    if (!type) {
+      brokenReason = "Question has no type field.";
+    } else if (type === "mcq" && (!Array.isArray(v.choices) || v.choices.length === 0)) {
+      brokenReason = "MCQ question is missing its choices.";
+    } else if (type === "numeric"
+               && typeof v.expectedNumeric !== "number"
+               && typeof v.answer !== "number") {
+      brokenReason = "Numeric question has no expected answer.";
+    } else if ((type === "short" || type === "long") && !Array.isArray(v.markPoints)) {
+      // Not strictly broken — a 0-mark FYI question could exist — but flag it
+      // because most short/long questions need markPoints to mark anything.
+      // We still render the input; this is a soft warning only and we don't
+      // surface it to the student.
+    }
+
+    if (brokenReason) {
+      const notice = el("div", { class: "qbroken" }, [
+        el("div", { class: "qbroken-h", text: "Question can't be displayed" }),
+        el("div", { class: "qbroken-b", text: brokenReason + " Question id: " + (current.question.id || "?") + ". Please report this to your teacher." }),
+        el("button", {
+          class: "btn btn-primary",
+          type: "button",
+          onClick: function () { renderQuestion(); renderCoverage(); updateProgressLine(); },
+          text: "Skip to next question  →"
+        })
+      ]);
+      inputWrap.appendChild(notice);
+      card.appendChild(inputWrap);
+      // Log to console so the developer/teacher can spot the bad id.
+      console.warn("Broken question id=" + current.question.id + ":", brokenReason, v);
+      return;
+    }
+
     if (type === "mcq") {
       const choices = el("div", { class: "qchoices" });
       (v.choices || []).forEach(function (choice, i) {
@@ -880,20 +919,25 @@
     const inputWrap = card.querySelector(".qinput");
     if (inputWrap) inputWrap.style.display = "none";
 
-    // Scroll the score into view so the student sees the result and the
-    // "Next question" call-to-action without having to hunt for them. On
-    // mobile this is the difference between "I clicked submit and nothing
-    // happened" and "here's my mark".
-    // Use rAF + a small timeout so the layout has settled (especially after
-    // the inputWrap was hidden, which changes scrollHeight). Account for the
-    // sticky header height so the score doesn't tuck under it.
+    // If — and ONLY if — the score line is below the visible viewport,
+    // scroll just enough to bring it into view. Don't scroll on desktop where
+    // the whole card already fits: doing so hides the prompt the student just
+    // answered, and (worse) hides the coloured top-border on the card that
+    // signals "right / partial / wrong".
     requestAnimationFrame(function () {
       setTimeout(function () {
         const scoreEl = fb.querySelector(".fb-score");
         if (!scoreEl) return;
+        const rect = scoreEl.getBoundingClientRect();
+        const viewportH = window.innerHeight;
+        // Already in view? Leave the page where it is.
+        if (rect.top >= 0 && rect.bottom <= viewportH) return;
+        // Otherwise, scroll just enough to reveal the score under the sticky
+        // header. Use the minimum scroll that puts the score on-screen — we
+        // don't want to fling the prompt off-screen if it isn't necessary.
         const header = document.querySelector(".app-header");
         const headerH = header ? header.getBoundingClientRect().height : 0;
-        const targetTop = scoreEl.getBoundingClientRect().top + window.scrollY - headerH - 12;
+        const targetTop = rect.top + window.scrollY - headerH - 12;
         try {
           window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
         } catch (e) {

@@ -1,28 +1,21 @@
 // ============================================================================
 // Topic 7: Radioactivity — Pre-IB question bank
 // Edexcel 4SS0 alignment (schema v0.4)
-// 173 base questions, 498 deliverables
-//
-// Active (non-parked): 158
-// Parked: 15
+// 218 base questions, 543 deliverables
+// Active: 203, Parked: 15
 //
 // PASS 2 PROGRESS:
 //   Structural refactor: DONE
-//   Markscheme synonym expansion:
-//     Calibration sample (Q1-Q8): DONE (pre-v0.4)
-//     Chunk 1 (radiation_types + penetration): DONE (pre-v0.4)
-//     Chunks 2-9: pending
-//   count_vs_time_table units: ADDED (per v0.4)
-//   Parked field applied: 15 questions parked (over-pitched longs + out-of-spec)
-//   Atomic-foundation chunk: chunk10 added (39 questions, 7.5 / 7.18 / 7.14 areas)
-//
-// Engine assumptions: see NOTES_FOR_ENGINE_CHAT.md.
+//   Markscheme synonym expansion (chunks 2-9): pending
+//   Calibration + chunk 1 markschemes: DONE (pre-v0.4)
+//   count_vs_time_table units: ADDED
+//   Parked field applied: 15 questions
+//   Atomic-foundation chunk: chunk10 added (84 questions, all 15 spec points,
+//     with distractorRationales on every mcq)
 // ============================================================================
-//
-// Active type mix: short 76, mcq 81, long 1
-// Active difficulty: 1:42, 2:77, 3:39, 4:0
+// Active type mix: short 77, mcq 125, long 1
+// Active difficulty: 1:70, 2:94, 3:39, 4:0
 // ============================================================================
-
 window.PREIB_RAD_QUESTIONS = [
 // ===== Calibration sample (Q1-Q8) — Pass 2 markschemes DONE (pre-v0.4) =======
 
@@ -12241,7 +12234,7 @@ window.PREIB_RAD_QUESTIONS = [
     ]
   },
 
-// ===== Chunk 10: atomic-foundation drill (NEW) ===================
+// ===== Chunk 10: atomic-foundation drill (NEW, with distractorRationales) ====
 
 // ===========================================================================
   // 7.5 — Nature of α/β/γ; penetration and ionisation
@@ -12253,8 +12246,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is the charge of an alpha particle?",
-    options: ["+2", "+1", "-1", "0"],
+    choices: ["+2", "+1", "-1", "0"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "+1 is the charge of a proton. An alpha particle has two protons, so it carries +2.",
+      "2": "−1 is the charge of an electron (a beta particle).",
+      "3": "0 is the charge of a neutron, or of gamma radiation. Alpha particles do carry charge."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "An alpha particle is 2 protons (charge +1 each) and 2 neutrons (no charge). Net charge: +2.",
@@ -12266,8 +12264,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is the charge of a beta particle?",
-    options: ["-1", "+1", "+2", "0"],
+    choices: ["-1", "+1", "+2", "0"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "+1 is the charge of a proton. A beta-minus particle is an electron, charge −1.",
+      "2": "+2 is the charge of an alpha particle.",
+      "3": "0 is the charge of gamma. A beta particle is charged because it is an electron."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "A beta-minus particle is a fast-moving electron, charge -1.",
@@ -12279,8 +12282,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is the charge of a gamma ray?",
-    options: ["0", "+1", "-1", "+2"],
+    choices: ["0", "+1", "-1", "+2"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "+1 is the charge of a proton. Gamma is electromagnetic radiation; it has no charge.",
+      "2": "−1 is the charge of an electron (a beta particle). Gamma is uncharged.",
+      "3": "+2 is the charge of an alpha particle. Gamma is uncharged."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma is electromagnetic radiation; it has no charge.",
@@ -12292,13 +12300,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is an alpha particle?",
-    options: [
+    choices: [
       "A helium nucleus (2 protons and 2 neutrons)",
       "A fast-moving electron",
       "A high-frequency electromagnetic wave",
       "A free neutron"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A fast-moving electron is a beta-minus particle, not an alpha particle.",
+      "2": "A high-frequency electromagnetic wave is gamma radiation, not alpha.",
+      "3": "A free neutron is sometimes emitted in nuclear reactions, but it is not what alpha radiation is."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "An alpha particle is a helium nucleus: 2 protons and 2 neutrons bound together.",
@@ -12310,13 +12323,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is a beta-minus particle?",
-    options: [
+    choices: [
       "A fast-moving electron emitted from the nucleus",
       "A helium nucleus",
       "A high-frequency electromagnetic wave",
       "A proton emitted from the nucleus"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A helium nucleus is an alpha particle, not a beta particle.",
+      "2": "A high-frequency electromagnetic wave is gamma radiation, not beta.",
+      "3": "A beta-minus particle is an electron, not a proton. (Beta-minus is the standard 'beta' in this course.)"
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "A beta-minus particle is a fast electron emitted from the nucleus when a neutron decays into a proton.",
@@ -12328,13 +12346,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is gamma radiation?",
-    options: [
+    choices: [
       "A high-frequency electromagnetic wave",
       "A helium nucleus",
       "A fast-moving electron",
       "A proton emitted from the nucleus"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A helium nucleus is an alpha particle.",
+      "2": "A fast-moving electron is a beta-minus particle.",
+      "3": "A proton from the nucleus is not gamma. Gamma is an electromagnetic wave, not a particle."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma radiation is high-frequency electromagnetic radiation, like x-rays but more energetic.",
@@ -12346,8 +12369,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is the most ionising?",
-    options: ["Alpha", "Beta", "Gamma"],
+    choices: ["Alpha", "Beta", "Gamma"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Beta is moderately ionising, less than alpha.",
+      "2": "Gamma is the least ionising of the three nuclear radiations."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Alpha is the most ionising. It has the highest charge and largest mass, so it interacts most strongly with the atoms it passes through.",
@@ -12359,8 +12386,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is the least ionising?",
-    options: ["Gamma", "Alpha", "Beta"],
+    choices: ["Gamma", "Alpha", "Beta"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha is the most ionising, not the least.",
+      "2": "Beta is in the middle. Gamma is the least ionising — it has no charge and barely interacts."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma is the least ionising. It has no charge and travels through matter mostly without interacting.",
@@ -12372,8 +12403,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is the most penetrating?",
-    options: ["Gamma", "Alpha", "Beta"],
+    choices: ["Gamma", "Alpha", "Beta"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha is the LEAST penetrating — stopped by paper or a few cm of air.",
+      "2": "Beta is in the middle — stopped by a few mm of aluminium. Gamma is the most penetrating."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma is the most penetrating. It can pass through several centimetres of lead. It is the least ionising too — these two facts are linked.",
@@ -12385,8 +12420,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is the least penetrating?",
-    options: ["Alpha", "Beta", "Gamma"],
+    choices: ["Alpha", "Beta", "Gamma"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Beta is in the middle. Alpha is the least penetrating — stopped by paper.",
+      "2": "Gamma is the MOST penetrating, not the least."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Alpha is the least penetrating. It is stopped by a few centimetres of air or a sheet of paper.",
@@ -12398,13 +12437,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Alpha radiation is stopped by:",
-    options: [
+    choices: [
       "A sheet of paper or a few centimetres of air",
       "A few millimetres of aluminium",
       "A few centimetres of lead",
       "Nothing — it passes through everything"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few mm of aluminium will stop alpha (and stops beta), but paper or air alone is enough for alpha.",
+      "2": "Lead will stop alpha, but it's overkill — paper is enough.",
+      "3": "Alpha is the easiest of the three radiations to stop. Almost anything blocks it."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Alpha is the least penetrating, stopped by a sheet of paper or a few cm of air.",
@@ -12416,13 +12460,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Beta radiation is stopped by:",
-    options: [
+    choices: [
       "A few millimetres of aluminium",
       "A sheet of paper",
       "A few centimetres of lead",
       "Air alone"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Paper is enough to stop alpha but does not stop beta — beta passes through paper.",
+      "2": "Lead will stop beta, but a few mm of aluminium is enough.",
+      "3": "Beta has a range of tens of metres in air, so air alone (over normal lab distances) does NOT stop beta."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "A few mm of aluminium absorbs beta. Paper does not stop beta; lead would also stop it but is overkill.",
@@ -12434,13 +12483,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Gamma radiation is mostly stopped by:",
-    options: [
+    choices: [
       "A few centimetres of lead",
       "A sheet of paper",
       "A few millimetres of aluminium",
       "Air alone"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Paper barely affects gamma at all — gamma is highly penetrating.",
+      "2": "A few mm of aluminium has very little effect on gamma. Gamma needs much denser shielding.",
+      "3": "Gamma travels easily through normal air — it can reach hundreds of km."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma is highly penetrating. Several centimetres of lead reduce it substantially but never absorb it completely.",
@@ -12452,13 +12506,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "How far does alpha radiation typically travel in air before being absorbed?",
-    options: [
+    choices: [
       "A few centimetres",
       "A few metres",
       "Hundreds of metres",
       "Hundreds of kilometres"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha's range is much shorter than a few metres — only a few cm.",
+      "2": "Hundreds of metres is roughly the range of beta. Alpha goes much less far.",
+      "3": "Hundreds of km is the range of gamma. Alpha goes nowhere near that far."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Alpha has a range of just a few cm in air. This is why it is harmless from a distance.",
@@ -12470,13 +12529,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "How far does beta radiation typically travel in air before being absorbed?",
-    options: [
+    choices: [
       "Tens of metres",
       "A few centimetres",
       "Hundreds of kilometres",
       "It never gets absorbed"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few cm is the range of alpha. Beta goes much further.",
+      "2": "Hundreds of km is the range of gamma. Beta does get absorbed by air over tens of metres.",
+      "3": "Beta IS absorbed by air, just slowly — its range is tens of metres."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Beta has a range of tens of metres in air, much further than alpha but much less than gamma.",
@@ -12488,13 +12552,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Roughly how far can gamma radiation travel in air before being absorbed?",
-    options: [
+    choices: [
       "Hundreds of kilometres (it is barely absorbed by air)",
       "A few centimetres",
       "Tens of metres",
       "It is absorbed within one metre"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few cm is the range of alpha. Gamma travels much, much further.",
+      "2": "Tens of metres is the range of beta. Gamma penetrates further still.",
+      "3": "Gamma is barely absorbed by air — it travels far further than one metre."
+    },
     tags: ["radiation_types"],
     specRefs: ["7.5"],
     explanation: "Gamma is barely absorbed by air at all. This is why distance from the source is the main protection from a gamma source outside the body.",
@@ -12511,8 +12580,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What nucleus is most commonly used as fuel in a nuclear power station?",
-    options: ["Uranium-235", "Hydrogen-2", "Carbon-14", "Iron-56"],
+    choices: ["Uranium-235", "Hydrogen-2", "Carbon-14", "Iron-56"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Hydrogen-2 (deuterium) is used in fusion reactors, not fission. Fission needs a heavy nucleus.",
+      "2": "Carbon-14 is a radioactive isotope used for dating, but not as a power-station fuel.",
+      "3": "Iron-56 is the most stable nucleus; it cannot be split for energy."
+    },
     tags: ["fission_fusion", "energy_from_nuclear"],
     specRefs: ["7.18"],
     explanation: "Uranium-235 is the standard fission fuel. Plutonium-239 is also used.",
@@ -12524,8 +12598,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What particle starts the fission of a uranium-235 nucleus?",
-    options: ["A neutron", "A proton", "An alpha particle", "A gamma ray"],
+    choices: ["A neutron", "A proton", "An alpha particle", "A gamma ray"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Protons are positively charged like the U-235 nucleus, so they would be repelled. Neutrons are uncharged and can get in.",
+      "2": "Alpha particles are charged and would be repelled by the nucleus.",
+      "3": "Gamma rays don't usually trigger fission of U-235."
+    },
     tags: ["fission_fusion"],
     specRefs: ["7.18"],
     explanation: "A neutron is absorbed by the U-235 nucleus, briefly making U-236, which then splits.",
@@ -12537,8 +12616,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "When uranium-235 absorbs a neutron, it briefly becomes:",
-    options: ["Uranium-236", "Uranium-234", "Plutonium-239", "Barium-141"],
+    choices: ["Uranium-236", "Uranium-234", "Plutonium-239", "Barium-141"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "U-234 has fewer neutrons than U-235, not more. Adding a neutron gives more.",
+      "2": "Plutonium-239 is a different fuel made by neutron capture on U-238, not from U-235.",
+      "3": "Barium-141 is a daughter nucleus produced AFTER U-236 splits, not the intermediate."
+    },
     tags: ["fission_fusion"],
     specRefs: ["7.18"],
     explanation: "U-235 + neutron → U-236, which is unstable and immediately splits. Mark schemes credit students who mention this intermediate step.",
@@ -12550,13 +12634,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Nuclear fission is:",
-    options: [
+    choices: [
       "A large nucleus splitting into smaller nuclei",
       "Small nuclei joining to make a larger nucleus",
       "An electron leaving a nucleus",
       "A nucleus emitting a gamma ray"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Small nuclei joining is fusion, not fission.",
+      "2": "An electron leaving the nucleus is beta decay, not fission.",
+      "3": "Gamma emission is part of decay but is not fission."
+    },
     tags: ["fission_fusion"],
     specRefs: ["7.17", "7.18"],
     explanation: "Fission = splitting a large nucleus into smaller (daughter) nuclei. Fusion = the opposite.",
@@ -12568,8 +12657,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "When a U-235 nucleus splits in fission, how many neutrons are typically released?",
-    options: ["Two or three", "Always exactly one", "Always exactly four", "Zero"],
+    choices: ["Two or three", "Always exactly one", "Always exactly four", "Zero"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Only one neutron triggered the fission — but more come out. (Two or three is the typical answer.)",
+      "2": "Four neutrons is too many. The typical number is 2 or 3.",
+      "3": "If zero neutrons came out, there would be no chain reaction at all (and chain reactions ARE possible — though not in 4SS0)."
+    },
     tags: ["fission_fusion"],
     specRefs: ["7.19"],
     explanation: "Fission of U-235 typically releases 2 or 3 neutrons, plus two daughter nuclei.",
@@ -12581,8 +12675,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "When U-235 splits in fission, how many daughter nuclei are produced?",
-    options: ["Two", "One", "Three or four", "It varies from zero to five"],
+    choices: ["Two", "One", "Three or four", "It varies from zero to five"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Just one daughter would mean the nucleus didn't really split. Two daughters are produced.",
+      "2": "Three or four would imply a much more complex split. Two daughters is the standard fission picture.",
+      "3": "The number of daughters is two, every time. Two is the defining feature of fission."
+    },
     tags: ["fission_fusion"],
     specRefs: ["7.19"],
     explanation: "Two daughter nuclei are produced from each U-235 fission event.",
@@ -12594,8 +12693,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Are the daughter nuclei produced by fission radioactive?",
-    options: ["Yes", "No", "Only if the reactor is running"],
+    choices: ["Yes", "No", "Only if the reactor is running"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Yes — the daughters are radioactive. This is the source of the radioactivity in nuclear waste.",
+      "2": "The daughters are radioactive whether the reactor is running or not."
+    },
     tags: ["fission_fusion", "waste_disposal"],
     specRefs: ["7.19"],
     explanation: "The daughter nuclei are radioactive. This is why nuclear waste from a reactor is radioactive: the spent fuel contains many radioactive fission products.",
@@ -12607,13 +12710,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Energy released in nuclear fission appears mainly as:",
-    options: [
+    choices: [
       "Kinetic energy of the fission products",
       "Sound",
       "Light",
       "Chemical energy"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Sound energy is not significant in fission.",
+      "2": "Some gamma is emitted, but most energy is kinetic energy of the daughter nuclei.",
+      "3": "Fission is a nuclear process, not a chemical one — there are no chemical bonds involved."
+    },
     tags: ["fission_fusion", "energy_from_nuclear"],
     specRefs: ["7.18"],
     explanation: "The energy released appears as kinetic energy of the daughter nuclei and the released neutrons. This kinetic energy heats the surrounding material — that's how the reactor produces heat.",
@@ -12630,8 +12738,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Smoke alarms typically use a source of which radiation?",
-    options: ["Alpha", "Beta", "Gamma"],
+    choices: ["Alpha", "Beta", "Gamma"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Beta would not work as well: alpha is much more ionising, and the alarm relies on ionisation.",
+      "2": "Gamma would penetrate right out of the device. We need radiation that is stopped inside the alarm — alpha."
+    },
     tags: ["uses_alpha"],
     specRefs: ["7.14"],
     explanation: "Smoke alarms use an alpha source (americium-241). Alpha ionises the air gap inside; smoke disrupts this and triggers the alarm.",
@@ -12643,8 +12755,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Which radiation is used in a thickness gauge for paper or thin foil?",
-    options: ["Beta", "Alpha", "Gamma"],
+    choices: ["Beta", "Alpha", "Gamma"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha would be stopped by even thin paper, so the count rate would always be zero — no useful signal.",
+      "2": "Gamma would pass through paper almost unchanged regardless of thickness — no sensitivity to thickness."
+    },
     tags: ["uses_beta"],
     specRefs: ["7.14"],
     explanation: "Beta is used: alpha would be stopped by even very thin paper (no signal), and gamma would pass through almost unchanged regardless of thickness (no sensitivity). Beta's penetration is sensitive to small thickness changes.",
@@ -12656,8 +12772,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Which radiation is used in a thickness gauge for thick steel?",
-    options: ["Gamma", "Alpha", "Beta"],
+    choices: ["Gamma", "Alpha", "Beta"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha cannot penetrate even paper. It would never get through steel.",
+      "2": "Beta is stopped by a few mm of aluminium. Steel is denser; beta would be stopped completely. Gamma is needed."
+    },
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     explanation: "Steel is too thick for beta to penetrate at all. Gamma can penetrate steel and small thickness changes affect the count rate at the detector.",
@@ -12669,8 +12789,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is used to sterilise medical equipment?",
-    options: ["Gamma", "Alpha", "Beta"],
+    choices: ["Gamma", "Alpha", "Beta"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha would not penetrate the sealed packaging — bacteria inside would survive.",
+      "2": "Beta would not reliably penetrate thicker packaging."
+    },
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     explanation: "Gamma is used because it can penetrate the packaging and reach the bacteria inside. Alpha and beta wouldn't get through the packaging.",
@@ -12682,8 +12806,12 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "Which radiation is used in a medical tracer?",
-    options: ["Gamma", "Alpha", "Beta"],
+    choices: ["Gamma", "Alpha", "Beta"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha would be absorbed by tissue inside the body and never reach a detector outside.",
+      "2": "Beta has limited range in tissue — most would be absorbed before reaching a detector."
+    },
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     explanation: "Gamma is used because it can leave the body and reach a detector outside. Alpha would be absorbed by tissue inside the body.",
@@ -12695,13 +12823,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Why is alpha used in a smoke alarm? It is the radiation that:",
-    options: [
+    choices: [
       "Ionises the air gap, but is stopped inside the device",
       "Has the longest half-life",
       "Has the highest penetrating power",
       "Is the least dangerous"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Half-life matters (it should be long), but the operating principle of a smoke alarm is alpha's ionisation.",
+      "2": "Alpha is the LEAST penetrating, not the most. That's actually why it's safe inside the device.",
+      "3": "Alpha is actually highly dangerous if it gets inside the body. The reason we use it here is its ionising power."
+    },
     tags: ["uses_alpha"],
     specRefs: ["7.14"],
     explanation: "Alpha is most ionising (which is what makes the smoke alarm work) AND has very low penetration (which means it stays inside the device, safe).",
@@ -12713,13 +12846,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Why is gamma used to sterilise medical equipment? It is the radiation that:",
-    options: [
+    choices: [
       "Can penetrate the packaging and kill bacteria inside",
       "Is the most ionising",
       "Has the shortest half-life",
       "Is the least dangerous"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha is the most ionising but cannot penetrate packaging. Penetration is what matters here.",
+      "2": "Half-life affects how long the source lasts but isn't the reason gamma is chosen for sterilisation.",
+      "3": "Gamma is one of the more dangerous radiations from outside the body — that's why shielding is needed during use."
+    },
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     explanation: "Gamma's high penetrating power lets it pass through the sealed packaging to reach the bacteria.",
@@ -12731,13 +12869,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "Why is gamma used as a medical tracer? It is the radiation that:",
-    options: [
+    choices: [
       "Can leave the body and be detected outside",
       "Is the most ionising",
       "Has the longest half-life",
       "Has the largest charge"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha is the most ionising but cannot leave the body. We need radiation that escapes for detection.",
+      "2": "Half-life matters too, but the property allowing the tracer to be detected is gamma's penetrating ability.",
+      "3": "Gamma has no charge, so its 'large charge' is wrong. (Alpha has the largest charge but cannot escape the body.)"
+    },
     tags: ["uses_gamma"],
     specRefs: ["7.14"],
     explanation: "Gamma's high penetration lets it leave the body and reach a detector. Alpha would be absorbed by tissue and never reach the detector.",
@@ -12749,13 +12892,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "A medical tracer should have a half-life of about:",
-    options: [
+    choices: [
       "A few hours",
       "A few seconds",
       "Many years",
       "A few months"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few seconds is too short — the tracer would decay before the scan could be completed.",
+      "2": "Many years is too long — the tracer would remain in the body and continue to expose the patient long after the scan.",
+      "3": "A few months is too long for diagnostic use; the tracer would be giving an unnecessary dose for far too long."
+    },
     tags: ["uses_gamma", "halflife"],
     specRefs: ["7.14", "7.12"],
     explanation: "Long enough to do the scan (so not seconds); short enough to fall to safe levels soon afterwards (so not years).",
@@ -12767,13 +12915,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "A smoke alarm needs a source with a half-life of about:",
-    options: [
+    choices: [
       "Many years",
       "A few hours",
       "A few minutes",
       "A few seconds"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few hours is far too short. The smoke alarm would stop working after a single day.",
+      "2": "A few minutes is much too short — the source would decay almost immediately.",
+      "3": "A few seconds is way too short — almost no source would be left by the time you installed the alarm."
+    },
     tags: ["uses_alpha", "halflife"],
     specRefs: ["7.14", "7.12"],
     explanation: "A smoke alarm needs to keep working for years without being replaced; the source's half-life must be long enough that activity barely decreases over its lifetime. Americium-241 has a half-life of about 432 years.",
@@ -12785,13 +12938,18 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 2,
     marks: 1,
     prompt: "An industrial thickness gauge needs a source with a half-life of about:",
-    options: [
+    choices: [
       "Many years",
       "A few seconds",
       "A few hours",
       "A few days"
     ],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "A few seconds is far too short. The source would decay almost immediately and need constant replacement.",
+      "2": "A few hours is too short for an industrial gauge that runs continuously for years.",
+      "3": "A few days is still too short. Industrial gauges run for years; the source needs to last that long."
+    },
     tags: ["uses_beta", "halflife"],
     specRefs: ["7.14", "7.12"],
     explanation: "An industrial gauge runs for years and needs steady activity throughout. A long half-life means it doesn't have to be recalibrated or replaced frequently.",
@@ -12803,8 +12961,13 @@ window.PREIB_RAD_QUESTIONS = [
     difficultyRating: 1,
     marks: 1,
     prompt: "What is the use of radiation to treat cancer called?",
-    options: ["Radiotherapy", "Chemotherapy", "Sterilisation", "Tracing"],
+    choices: ["Radiotherapy", "Chemotherapy", "Sterilisation", "Tracing"],
     answerIndex: 0,
+    distractorRationales: {
+      "1": "Chemotherapy uses drugs, not radiation. (Often used together with radiotherapy in cancer treatment.)",
+      "2": "Sterilisation kills bacteria using gamma, but it's done to medical equipment or food, not patients.",
+      "3": "'Tracing' isn't the term. Radioactive tracers are used in diagnostic scans, but treatment is called radiotherapy."
+    },
     tags: ["uses_gamma", "uses_beta"],
     specRefs: ["7.14"],
     explanation: "Radiotherapy: using ionising radiation to damage cancer cells. (Chemotherapy uses drugs, not radiation.)",
@@ -12888,6 +13051,1041 @@ window.PREIB_RAD_QUESTIONS = [
     tags: ["uses_gamma"],
     specRefs: ["7.14"]
   },
+
+  // ===========================================================================
+  // 7.1 — Units (Bq, cm, h, min, s)
+  // ===========================================================================
+
+  {
+    id: "atomic_unit_of_activity",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Activity is measured in:",
+    choices: ["Becquerel (Bq)", "Joule (J)", "Newton (N)", "Metre (m)"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "The joule is the unit of energy, not activity.",
+      "2": "The newton is the unit of force, not activity.",
+      "3": "The metre is the unit of length, not activity."
+    },
+    tags: ["units"],
+    specRefs: ["7.1"],
+    explanation: "The becquerel (Bq) is the SI unit of activity. 1 Bq = 1 decay per second.",
+    examinerNote: "Past paper Q13 markscheme accepts kBq, MBq, Ci as well; bare 'Bq' or 'becquerel' is the canonical answer."
+  },
+  {
+    id: "atomic_one_becquerel",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "1 becquerel (Bq) is equal to:",
+    choices: [
+      "1 decay per second",
+      "1 decay per minute",
+      "1 decay per hour",
+      "100 decays per second"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "1 decay per minute would be too small a unit. The Bq is per second.",
+      "2": "1 decay per hour is far too small. The Bq is per second.",
+      "3": "100 decays per second would be 100 Bq, not 1 Bq."
+    },
+    tags: ["units"],
+    specRefs: ["7.1"],
+    explanation: "1 Bq = 1 decay per second. So a sample with activity 50 Bq has 50 decays happening every second.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.2 — Atom structure
+  // ===========================================================================
+
+  {
+    id: "atomic_proton_location",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Where in an atom are protons found?",
+    choices: ["In the nucleus", "Orbiting the nucleus", "Outside the atom", "Between atoms"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Electrons orbit the nucleus, not protons. Protons are inside the nucleus.",
+      "2": "Protons are inside the atom, in the nucleus.",
+      "3": "Protons are part of the atom, not between atoms."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "Protons are in the nucleus, along with neutrons.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_neutron_location",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Where in an atom are neutrons found?",
+    choices: ["In the nucleus", "Orbiting the nucleus", "Outside the atom", "Inside the protons"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Electrons orbit the nucleus, not neutrons. Neutrons are inside the nucleus.",
+      "2": "Neutrons are inside atoms, in the nucleus.",
+      "3": "Protons and neutrons are themselves made of smaller particles (quarks), but neutrons are not 'inside protons'."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "Neutrons are in the nucleus, along with protons. Together protons and neutrons are called nucleons.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_electron_location",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Where in an atom are electrons found?",
+    choices: ["Orbiting the nucleus", "In the nucleus", "Inside the protons", "There are no electrons in atoms"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Electrons are NOT in the nucleus — they orbit it. Only protons and neutrons are in the nucleus.",
+      "2": "Electrons exist as separate particles, not inside protons.",
+      "3": "Atoms do have electrons. They orbit the nucleus."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "Electrons orbit the nucleus in shells.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_proton_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of a proton?",
+    choices: ["+1", "-1", "0", "+2"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "−1 is the charge of an electron, not a proton.",
+      "2": "0 is the charge of a neutron, not a proton.",
+      "3": "+2 is the charge of an alpha particle (which contains two protons)."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "A proton has charge +1.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_neutron_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of a neutron?",
+    choices: ["0 (no charge)", "+1", "-1", "+2"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "+1 is the charge of a proton. The neutron is the uncharged particle.",
+      "2": "−1 is the charge of an electron. The neutron has no charge.",
+      "3": "+2 is the charge of an alpha particle (two protons). A single neutron has charge 0."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "A neutron has no charge — that's why it's called neutron.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_electron_charge",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What is the charge of an electron?",
+    choices: ["-1", "+1", "0", "-2"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "+1 is the charge of a proton. Electrons are negatively charged.",
+      "2": "0 is the charge of a neutron. Electrons are negatively charged.",
+      "3": "−2 is too large in magnitude. A single electron has charge −1."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "An electron has charge -1.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_proton_vs_electron_mass",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Compared to an electron, the mass of a proton is:",
+    choices: [
+      "About 2000 times bigger",
+      "About 2 times bigger",
+      "About the same",
+      "About 100 times smaller"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Much closer to 2000 times. Two times is far too small a ratio.",
+      "2": "Protons and electrons have very different masses. The proton is far more massive.",
+      "3": "The proton is much MORE massive than the electron, not less."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.2"],
+    explanation: "A proton is about 1836 times more massive than an electron. Most of the mass of an atom is in its nucleus.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.3 — Atomic number, mass number, isotope
+  // ===========================================================================
+
+  {
+    id: "atomic_atomic_number_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "The atomic number of an atom is the number of:",
+    choices: [
+      "Protons in the nucleus",
+      "Neutrons in the nucleus",
+      "Electrons in orbit",
+      "Protons and neutrons combined"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Number of neutrons varies between isotopes of the same element. Atomic number is fixed for each element — the proton count.",
+      "2": "Number of electrons equals number of protons in a neutral atom, but the atomic number is defined by protons specifically.",
+      "3": "Protons + neutrons combined is the mass number, not the atomic number."
+    },
+    tags: ["atomic_struct", "nuclide_notation"],
+    specRefs: ["7.3"],
+    explanation: "Atomic number = number of protons. The atomic number identifies which element the atom is.",
+    examinerNote: "Past paper Q21 asks this exactly: 'C (number of protons in the nucleus)' is the marked answer."
+  },
+  {
+    id: "atomic_mass_number_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "The mass number of an atom is the number of:",
+    choices: [
+      "Protons and neutrons added together",
+      "Protons only",
+      "Neutrons only",
+      "Electrons only"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Protons only is the atomic number, not the mass number.",
+      "2": "Neutrons only doesn't have a standard name as a single quantity.",
+      "3": "Electrons only doesn't relate to mass number."
+    },
+    tags: ["atomic_struct", "nuclide_notation"],
+    specRefs: ["7.3"],
+    explanation: "Mass number = protons + neutrons (the total number of nucleons).",
+    examinerNote: "Past paper Q21 asks this exactly: 'D (number of protons and neutrons in the nucleus)'."
+  },
+  {
+    id: "atomic_isotope_definition",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Two isotopes of the same element have:",
+    choices: [
+      "The same number of protons but different numbers of neutrons",
+      "The same number of neutrons but different numbers of protons",
+      "Different numbers of protons and different numbers of neutrons",
+      "The same number of protons and the same number of neutrons"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Isotopes have the same protons (same element); different neutrons. This describes the wrong way round.",
+      "2": "Different protons would mean different elements, not isotopes.",
+      "3": "Isotopes are different from each other — having all three quantities the same would mean the same isotope."
+    },
+    tags: ["atomic_struct", "nuclide_notation"],
+    specRefs: ["7.3", "7.4"],
+    explanation: "Isotopes have the same atomic number (so same element) but different mass numbers (different neutron count).",
+    examinerNote: "Past paper Q21 asks exactly this: 'D (atoms with the same number of protons but a different number of neutrons)'."
+  },
+  {
+    id: "atomic_isotopes_chemistry",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Two isotopes of the same element behave the same in chemical reactions because they have:",
+    choices: [
+      "The same number of electrons",
+      "The same number of neutrons",
+      "The same mass",
+      "The same colour"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Number of neutrons differs between isotopes — that's their defining feature, not the reason chemistry is the same.",
+      "2": "Isotopes of the same element have different masses (different mass numbers).",
+      "3": "Colour isn't usually relevant to elemental chemistry, and isotopes look the same anyway."
+    },
+    tags: ["atomic_struct"],
+    specRefs: ["7.3", "7.4"],
+    explanation: "Chemistry depends on electron arrangement. Isotopes of the same element have the same number of protons and therefore the same number of electrons, so the chemistry is identical.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.4 — Ionising radiation, unstable nuclei, random decay
+  // ===========================================================================
+
+  {
+    id: "atomic_what_ionisation_means",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Ionisation means:",
+    choices: [
+      "Removing an electron from an atom",
+      "Adding an electron to an atom",
+      "Splitting a nucleus",
+      "Joining two atoms together"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Adding an electron is the OPPOSITE of ionisation. Past papers (Q22, June 2025) explicitly reject this answer.",
+      "2": "Splitting a nucleus is fission, not ionisation.",
+      "3": "Joining atoms is bonding, not ionisation."
+    },
+    tags: ["radiation_types"],
+    specRefs: ["7.4"],
+    explanation: "Ionisation is the removal of one or more electrons, leaving a positively charged ion.",
+    examinerNote: "Past paper Q22 (June 2025) explicitly REJECTS 'gaining electrons' as a valid answer. The bank follows the strict recent position: ionisation = removing electrons."
+  },
+  {
+    id: "atomic_where_radiation_emitted_from",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Alpha, beta and gamma radiation are emitted from:",
+    choices: [
+      "The nucleus of an unstable atom",
+      "The electron shells of an atom",
+      "Chemical bonds between atoms",
+      "Inside protons"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Electron shells are involved in chemistry, not nuclear radiation.",
+      "2": "Chemical bonds release small amounts of energy (chemistry), not nuclear radiation.",
+      "3": "Protons themselves are not unstable in the usual sense — the unstable thing is the nucleus as a whole."
+    },
+    tags: ["radiation_types"],
+    specRefs: ["7.4"],
+    explanation: "All three radiations come from the nucleus, specifically from unstable nuclei.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_decay_random_meaning",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Radioactive decay is described as 'random' because:",
+    choices: [
+      "We cannot predict when an individual nucleus will decay",
+      "The decay rate changes randomly over time",
+      "The radiation emitted varies randomly",
+      "The half-life changes from day to day"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "The decay rate decreases predictably (according to half-life), it doesn't change randomly.",
+      "2": "The radiation type emitted by a given isotope is fixed, not random.",
+      "3": "Half-life is fixed for each isotope; it does not change."
+    },
+    tags: ["random_decay"],
+    specRefs: ["7.4"],
+    explanation: "We can predict the bulk behaviour (e.g. half-life is fixed for a given isotope), but for any individual nucleus we have no way to predict when it will decay.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.10 — Background radiation
+  // ===========================================================================
+
+  {
+    id: "atomic_background_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Background radiation is:",
+    choices: [
+      "Ionising radiation that is always present in the environment",
+      "Radiation only present near nuclear power stations",
+      "Radiation only present during a thunderstorm",
+      "Radiation that comes only from radioactive sources in a school lab"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Background radiation is everywhere, not just near nuclear power stations.",
+      "2": "Background is always present, not only during storms.",
+      "3": "Background includes natural sources too — it's not just from labs."
+    },
+    tags: ["background"],
+    specRefs: ["7.10"],
+    explanation: "Background radiation is the low level of ionising radiation that is always present everywhere, from natural and man-made sources.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_background_source_natural",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which of these is a natural source of background radiation?",
+    choices: [
+      "Cosmic rays from space",
+      "A car battery",
+      "An electric kettle",
+      "Sunlight from a lamp"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Car batteries do not emit ionising radiation.",
+      "2": "Electric kettles do not emit ionising radiation.",
+      "3": "Sunlight visible light is not ionising radiation. (Cosmic rays from the Sun are, but a desk lamp produces visible light only.)"
+    },
+    tags: ["background"],
+    specRefs: ["7.10"],
+    explanation: "Cosmic rays come from space and are a natural source. Other natural sources include radon gas, rocks, soil, and food.",
+    examinerNote: "Past paper markschemes (Q35, Q42) accept Sun/cosmic rays/rocks/soil/radon/food, but REJECT 'cosmic microwave background radiation (CMBR)' specifically."
+  },
+  {
+    id: "atomic_background_source_artificial",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which of these is a man-made source of background radiation?",
+    choices: [
+      "Medical equipment such as X-rays",
+      "Cosmic rays from space",
+      "Radon gas from rocks",
+      "Bananas"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Cosmic rays come from natural sources in space.",
+      "2": "Radon comes from natural rocks.",
+      "3": "Bananas contain potassium-40, which is a natural source."
+    },
+    tags: ["background"],
+    specRefs: ["7.10"],
+    explanation: "Medical equipment, weapons testing fallout, and nuclear disasters are man-made sources. The other three options are natural sources.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_name_background_source",
+    type: "short",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Name one source of background radiation.",
+    markPoints: [{
+      any: [
+        "cosmic rays",
+        "the Sun",
+        "Sun",
+        "rocks",
+        "soil",
+        "radon",
+        "radon gas",
+        "food",
+        "bananas",
+        "nuts",
+        "weapons testing",
+        "nuclear weapons testing",
+        "nuclear disasters",
+        "Chernobyl",
+        "Fukushima",
+        "medical equipment",
+        "X-rays",
+        "buildings",
+        "building materials",
+        "granite"
+      ]
+    }],
+    explanation: "Many valid sources: cosmic rays, rocks/soil, radon gas, food (e.g. bananas, nuts), nuclear weapons testing fallout, nuclear disasters (Chernobyl, Fukushima), medical equipment.",
+    examinerNote: "Past papers reject 'cosmic microwave background radiation (CMBR)' so don't credit that.",
+    tags: ["background"],
+    specRefs: ["7.10"]
+  },
+
+  // ===========================================================================
+  // 7.12 — Half-life
+  // ===========================================================================
+
+  {
+    id: "atomic_halflife_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "The half-life of a radioactive isotope is the time taken for:",
+    choices: [
+      "The activity of a sample to halve",
+      "All of the nuclei to decay",
+      "The radiation to travel half the distance",
+      "Half of one nucleus to decay"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "A radioactive sample never fully decays in any finite time. Half-life is when half is gone, not all.",
+      "2": "Distance isn't relevant to half-life — half-life is about time and decay rate.",
+      "3": "Half-life is about a population of nuclei, not a single one. (One nucleus either decays or doesn't.)"
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "Half-life = time for activity to halve. Equivalently, time for half of the nuclei to decay. The radioactive sample never fully disappears in any finite time, so 'all nuclei decay' is wrong.",
+    examinerNote: "Past paper markschemes consistently REJECT 'half the time' as a half-life answer."
+  },
+  {
+    id: "atomic_after_one_halflife",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "After one half-life, what fraction of the original nuclei remain?",
+    choices: ["1/2", "1/4", "1/3", "0"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "1/4 is what remains after TWO half-lives.",
+      "2": "1/3 doesn't fit the doubling-down pattern of half-life.",
+      "3": "Zero would mean all nuclei have decayed — that doesn't happen after just one half-life."
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "By definition, after one half-life half of the original nuclei have decayed; half remain.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_after_two_halflives",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "After two half-lives, what fraction of the original nuclei remain?",
+    choices: ["1/4", "1/2", "1/3", "1/8"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "1/2 is after one half-life. Two half-lives means halving twice: 1/2 × 1/2 = 1/4.",
+      "2": "1/3 doesn't fit the half-life pattern.",
+      "3": "1/8 is after THREE half-lives, not two."
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "Each half-life halves the count again. So after two: 1 → 1/2 → 1/4.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_after_three_halflives",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "After three half-lives, what fraction of the original activity remains?",
+    choices: ["1/8", "1/4", "1/16", "1/3"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "1/4 is after two half-lives.",
+      "2": "1/16 is after FOUR half-lives.",
+      "3": "1/3 doesn't fit the half-life pattern."
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "1 → 1/2 → 1/4 → 1/8.",
+    examinerNote: "Past paper Q12 asks this directly: '800 Bq, after 3 half-lives = 100 Bq', i.e. 1/8 remains."
+  },
+  {
+    id: "atomic_halflife_isotope_specific",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Different radioactive isotopes have:",
+    choices: [
+      "Different half-lives",
+      "The same half-life",
+      "No half-life",
+      "A half-life that depends on temperature"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "If all isotopes had the same half-life, dating ancient rocks (which uses different isotopes for different time scales) would not work.",
+      "2": "Every radioactive isotope has a defined half-life.",
+      "3": "Half-life does not depend on temperature, pressure, or chemical state — it is a fixed nuclear property."
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "Each isotope has its own characteristic half-life, ranging from fractions of a second to billions of years.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_halflife_temperature_independent",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "If you heat up a radioactive sample, its half-life:",
+    choices: [
+      "Stays the same",
+      "Gets shorter",
+      "Gets longer",
+      "Becomes zero"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Heating doesn't speed up decay. Decay is a nuclear process, unaffected by temperature.",
+      "2": "Cooling doesn't slow decay either. Half-life is fixed.",
+      "3": "Half-life is never zero for a real isotope."
+    },
+    tags: ["halflife"],
+    specRefs: ["7.12"],
+    explanation: "Half-life is a fixed property of each isotope; it doesn't depend on temperature, pressure, or chemical state. Radioactive decay happens in the nucleus, which is unaffected by these conditions.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.15 — Contamination vs irradiation
+  // ===========================================================================
+
+  {
+    id: "atomic_irradiation_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Irradiation means:",
+    choices: [
+      "Being exposed to ionising radiation",
+      "Radioactive material getting onto an object",
+      "Becoming radioactive after exposure",
+      "Eating radioactive food"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Radioactive material on/in an object is contamination, not irradiation.",
+      "2": "Irradiated objects do NOT become radioactive (this is why irradiated food is safe to eat).",
+      "3": "Eating radioactive food is contamination (the radioactive material is now inside the body)."
+    },
+    tags: ["contam_irrad"],
+    specRefs: ["7.15"],
+    explanation: "Irradiation = exposure to radiation. The radiation may damage cells, but the irradiated object itself does NOT become radioactive.",
+    examinerNote: "Past paper Q28 asks this exactly: 'idea that irradiation is when radiation is present.'"
+  },
+  {
+    id: "atomic_contamination_meaning",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Contamination means:",
+    choices: [
+      "Radioactive material getting onto or into a non-radioactive object",
+      "Being exposed to radiation from outside",
+      "A nucleus splitting in two",
+      "An electron being removed from an atom"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Exposure from outside is irradiation, not contamination.",
+      "2": "A nucleus splitting is fission, not contamination.",
+      "3": "Removing an electron is ionisation, not contamination."
+    },
+    tags: ["contam_irrad"],
+    specRefs: ["7.15"],
+    explanation: "Contamination = the actual radioactive substance ends up on/in the object. The object then itself becomes radioactive (a source).",
+    examinerNote: "Past paper Q28: 'idea that contamination is when a non-radioactive object comes into contact with a radioactive material'."
+  },
+  {
+    id: "atomic_irradiated_object_radioactive",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "An object that has been irradiated:",
+    choices: [
+      "Does NOT become radioactive itself",
+      "Becomes radioactive itself",
+      "Becomes hot",
+      "Stops working"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Irradiation does NOT make objects radioactive. This is why irradiated food is safe to eat — the food has been exposed but is not itself radioactive.",
+      "2": "Irradiation can cause heating in some cases, but the defining property is exposure to radiation, not temperature change.",
+      "3": "Irradiation itself doesn't stop objects working. (High doses can damage electronics, but at the level we're considering, it's safe.)"
+    },
+    tags: ["contam_irrad"],
+    specRefs: ["7.15"],
+    explanation: "Irradiation just exposes the object to radiation; the object doesn't take up any radioactive material. This is why food can be irradiated to kill bacteria and still be safe to eat.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_radon_inhaled_is",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "If radon gas is breathed in by a miner, this is an example of:",
+    choices: [
+      "Contamination",
+      "Irradiation only",
+      "Neither contamination nor irradiation",
+      "Fission"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Inhaling radon means radioactive material is now inside the body — that's contamination, not just irradiation.",
+      "2": "Inhaled radon is BOTH contaminating and irradiating — but the defining issue is the contamination.",
+      "3": "Fission is a nuclear reaction. Radon's danger is its radioactive emission, not fission."
+    },
+    tags: ["contam_irrad"],
+    specRefs: ["7.15"],
+    explanation: "Radon is a radioactive gas; inhaling it puts radioactive material inside the body — that is contamination. (Strictly, the miner is also irradiated by the radon while it's in their lungs.)",
+    examinerNote: "Past paper Q43 (radon scenario) and Q36 (granite worktop) both treat inhaled radon as contamination."
+  },
+  {
+    id: "atomic_sealed_source_is",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Standing near a sealed gamma source for a few seconds is an example of:",
+    choices: [
+      "Irradiation",
+      "Contamination",
+      "Both at the same time",
+      "Neither — sealed sources are completely safe"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Sealed means radioactive material stays inside the source. So no contamination — only irradiation from outside.",
+      "2": "There's no contamination because the source is sealed; the radioactive material doesn't get onto you.",
+      "3": "Sealed sources still emit radiation that reaches you. They are NOT completely safe at close range."
+    },
+    tags: ["contam_irrad"],
+    specRefs: ["7.15"],
+    explanation: "The source is sealed, so no radioactive material escapes onto you. But gamma radiation from the source reaches your body — that is irradiation.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.16a — Dangers (mutations, cell damage)
+  // ===========================================================================
+
+  {
+    id: "atomic_radiation_damages",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Ionising radiation can cause:",
+    choices: [
+      "Cancer and damage to cells/DNA",
+      "Indigestion and stomach ache",
+      "Loss of hearing only",
+      "No biological effects of any kind"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Indigestion is not a typical effect of ionising radiation.",
+      "2": "Hearing loss is not a typical effect either.",
+      "3": "Ionising radiation does have biological effects, even at low doses."
+    },
+    tags: ["bio_effects"],
+    specRefs: ["7.16"],
+    explanation: "Ionising radiation can damage cells and DNA, leading to mutations, cancer, or cell death.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_dna_mutation",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Ionising radiation can cause cancer because:",
+    choices: [
+      "It damages DNA, leading to mutations that can cause uncontrolled cell growth",
+      "It heats up cells until they burst",
+      "It removes oxygen from blood",
+      "It dissolves cell membranes"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Heating is not the main mechanism. The amount of heat from typical radiation doses is tiny.",
+      "2": "Radiation does not directly remove oxygen from blood.",
+      "3": "Radiation does not dissolve cell membranes in any normal sense."
+    },
+    tags: ["bio_effects"],
+    specRefs: ["7.16"],
+    explanation: "Radiation ionises atoms in DNA, breaking chemical bonds. If the resulting damage triggers uncontrolled cell division, that's cancer.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_most_dangerous_inside",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Which radiation is most dangerous when the source is INSIDE the body (e.g. inhaled or ingested)?",
+    choices: ["Alpha", "Beta", "Gamma"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Beta is moderately ionising; alpha causes more damage per unit distance.",
+      "2": "Gamma is the LEAST ionising. Inside the body, it deposits less energy per unit distance than alpha."
+    },
+    tags: ["bio_effects", "which_most_dangerous"],
+    specRefs: ["7.16"],
+    explanation: "Inside the body, alpha is most dangerous because it is the most ionising. It deposits all its energy in the surrounding tissue.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_most_dangerous_outside",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Which radiation is most dangerous when the source is OUTSIDE the body, several metres away?",
+    choices: ["Gamma", "Alpha", "Beta"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha is stopped by air or skin from outside — it cannot reach you.",
+      "2": "Beta is mostly absorbed by air over tens of metres — most won't reach you from far away."
+    },
+    tags: ["bio_effects", "which_most_dangerous"],
+    specRefs: ["7.16"],
+    explanation: "From outside and far away, only gamma can reach you. Alpha is stopped by air; beta is mostly absorbed by air over tens of metres.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_alpha_outside_body_safe",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why is a sealed alpha source not dangerous from outside the body?",
+    choices: [
+      "Alpha is stopped by skin or even by a few centimetres of air",
+      "Alpha is not ionising",
+      "Alpha has a very short half-life",
+      "Alpha cannot exist in air"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Alpha IS very ionising — that's exactly why it's so dangerous when it does reach cells. The reason it's safe outside is range/penetration.",
+      "2": "Alpha sources don't have especially short half-lives in general.",
+      "3": "Alpha exists in air just fine — it's just absorbed quickly."
+    },
+    tags: ["bio_effects", "which_most_dangerous"],
+    specRefs: ["7.16"],
+    explanation: "Alpha's range in air is just a few cm; even if it reaches the body, the dead skin layer absorbs it. The radiation never reaches living cells.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.16b — Waste disposal
+  // ===========================================================================
+
+  {
+    id: "atomic_waste_dangerous_why",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why is high-level nuclear waste dangerous?",
+    choices: [
+      "It gives off ionising radiation for a long time",
+      "It is electrically conductive",
+      "It catches fire easily",
+      "It produces toxic chemical fumes"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Conductivity isn't relevant. The danger is ionising radiation.",
+      "2": "Some hot waste exists, but heat isn't the main hazard. Ionising radiation is.",
+      "3": "Toxic chemical fumes aren't the primary danger of radioactive waste."
+    },
+    tags: ["waste_disposal"],
+    specRefs: ["7.16"],
+    explanation: "High-level waste contains radioactive isotopes with long half-lives, so it remains dangerous for thousands of years.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_waste_storage",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Where is high-level nuclear waste typically stored?",
+    choices: [
+      "In sealed containers buried deep underground or in deep water",
+      "In ordinary landfill sites",
+      "In normal recycling bins",
+      "In the air above power stations"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Ordinary landfill is not safe enough — contamination could leak into groundwater. Specialised deep-geological storage is needed.",
+      "2": "Recycling bins is obviously inappropriate.",
+      "3": "Storing waste in the air doesn't prevent exposure."
+    },
+    tags: ["waste_disposal"],
+    specRefs: ["7.16"],
+    explanation: "High-level waste must be isolated from people and groundwater for thousands of years. Deep geological burial and deep-water disposal are common solutions.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_waste_containers_rust",
+    type: "mcq",
+    difficultyRating: 2,
+    marks: 1,
+    prompt: "Why must nuclear waste containers be rust-proof?",
+    choices: [
+      "So radioactive material cannot leak out into soil or water",
+      "So they look attractive",
+      "So they are easy to lift",
+      "So the waste inside stays cold"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Looks aren't the issue — the concern is whether radioactive material can leak out into the environment.",
+      "2": "Containers don't need to be light. They need to be durable.",
+      "3": "Temperature inside the container isn't the issue — the issue is keeping the contents in."
+    },
+    tags: ["waste_disposal"],
+    specRefs: ["7.16"],
+    explanation: "If a container rusts, the radioactive contents could leak into the surrounding rock, soil, or water — causing widespread contamination.",
+    examinerNote: "Past paper Q26 includes 'idea that containers can't rust' as a markpoint."
+  },
+
+  // ===========================================================================
+  // 7.17 — Nuclear reactions as energy source
+  // ===========================================================================
+
+  {
+    id: "atomic_nuclear_power_station_uses",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "A nuclear power station generates energy from:",
+    choices: ["Fission", "Fusion", "Radioactive decay only", "Burning uranium"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Fusion would produce more energy but is not yet workable on Earth as a power source.",
+      "2": "Radioactive decay alone is too slow and weak for a power station.",
+      "3": "Uranium isn't burned chemically — it undergoes nuclear fission."
+    },
+    tags: ["fission_fusion", "energy_from_nuclear"],
+    specRefs: ["7.17"],
+    explanation: "Power stations use fission of uranium-235 (or plutonium-239). Fusion would produce vastly more energy but is not yet workable on Earth.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_sun_uses",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "The Sun generates its energy from:",
+    choices: ["Fusion", "Fission", "Burning hydrogen", "Radioactive decay"],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Fission requires heavy nuclei like U-235; the Sun is mostly hydrogen.",
+      "2": "Hydrogen isn't burned chemically in the Sun — its nuclei fuse.",
+      "3": "Radioactive decay is too small a process to power the Sun."
+    },
+    tags: ["fission_fusion", "fusion_in_sun"],
+    specRefs: ["7.17", "7.25"],
+    explanation: "The Sun fuses hydrogen nuclei into helium nuclei in its core, releasing huge amounts of energy.",
+    examinerNote: "Past paper Q5 asks this directly: 'D - nuclear fusion' is the keyed answer."
+  },
+
+  // ===========================================================================
+  // 7.22 — Shielding
+  // ===========================================================================
+
+  {
+    id: "atomic_reactor_shielding_material",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "What material is typically used as shielding around a nuclear reactor?",
+    choices: [
+      "Thick concrete and lead",
+      "Wood",
+      "Aluminium foil",
+      "Plastic sheets"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Wood is too thin and too low-density to absorb gamma.",
+      "2": "Aluminium foil is far too thin. (A few mm of aluminium stops beta but not gamma.)",
+      "3": "Plastic is too low-density. Gamma needs dense materials."
+    },
+    tags: ["shielding", "energy_from_nuclear"],
+    specRefs: ["7.22"],
+    explanation: "Thick concrete (often several metres) and/or lead are used because gamma is highly penetrating and only thick dense materials absorb it.",
+    examinerNote: "Past paper Q31 lists 'concrete / lead / (thick) steel' as accepted answers."
+  },
+  {
+    id: "atomic_why_shielding",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Why is shielding needed around a nuclear reactor?",
+    choices: [
+      "To absorb harmful ionising radiation so it doesn't reach workers",
+      "To keep the reactor warm",
+      "To stop the fuel from falling out",
+      "To make the building look more solid"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Reactors produce far more heat than is useful; the issue is keeping radiation OUT, not heat IN.",
+      "2": "Shielding doesn't physically hold the fuel.",
+      "3": "Shielding is functional, not decorative."
+    },
+    tags: ["shielding", "energy_from_nuclear"],
+    specRefs: ["7.22"],
+    explanation: "The reactor produces large amounts of ionising radiation (especially gamma) that would harm anyone exposed. Shielding absorbs the radiation.",
+    examinerNote: ""
+  },
+
+  // ===========================================================================
+  // 7.25 — Fusion in stars
+  // ===========================================================================
+
+  {
+    id: "atomic_where_fusion_happens",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Where does fusion happen naturally?",
+    choices: [
+      "Inside stars",
+      "Inside nuclear power stations on Earth",
+      "Inside batteries",
+      "In rocks under the ground"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "Power stations use fission, not fusion. Fusion reactors exist experimentally but are not used to generate electricity yet.",
+      "2": "Batteries use chemical reactions, not nuclear fusion.",
+      "3": "No fusion happens in rocks under normal conditions."
+    },
+    tags: ["fission_fusion", "fusion_in_sun"],
+    specRefs: ["7.25"],
+    explanation: "Fusion happens in the core of stars, including the Sun. Experimental fusion reactors on Earth (like JET, ITER) exist but are not yet workable for power generation.",
+    examinerNote: ""
+  },
+  {
+    id: "atomic_what_fuses_in_stars",
+    type: "mcq",
+    difficultyRating: 1,
+    marks: 1,
+    prompt: "Which element is mostly fused into another in the Sun's core?",
+    choices: [
+      "Hydrogen (into helium)",
+      "Helium (into hydrogen)",
+      "Oxygen (into carbon)",
+      "Iron (into uranium)"
+    ],
+    answerIndex: 0,
+    distractorRationales: {
+      "1": "It's the other way round: hydrogen fuses to make helium, not vice versa.",
+      "2": "Oxygen fusion happens in massive stars at later stages, but not in the Sun.",
+      "3": "Iron is the heaviest element formed by fusion — it can't fuse to make uranium."
+    },
+    tags: ["fission_fusion", "fusion_in_sun"],
+    specRefs: ["7.25"],
+    explanation: "The Sun fuses hydrogen nuclei into helium nuclei. (In more massive or older stars, helium can fuse into heavier elements like carbon.)",
+    examinerNote: ""
+  },
 ];
 
 // Per-chunk references:
@@ -12901,4 +14099,4 @@ window.PREIB_RAD_QUESTIONS = [
   window.PREIB_RAD_QUESTIONS_CHUNK7               = window.PREIB_RAD_QUESTIONS.slice(111, 115);
   window.PREIB_RAD_QUESTIONS_CHUNK8               = window.PREIB_RAD_QUESTIONS.slice(115, 132);
   window.PREIB_RAD_QUESTIONS_CHUNK9               = window.PREIB_RAD_QUESTIONS.slice(132, 134);
-  window.PREIB_RAD_QUESTIONS_CHUNK10              = window.PREIB_RAD_QUESTIONS.slice(134, 173);
+  window.PREIB_RAD_QUESTIONS_CHUNK10              = window.PREIB_RAD_QUESTIONS.slice(134, 218);

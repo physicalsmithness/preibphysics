@@ -96,7 +96,7 @@ body {
 /* ── Layout ─────────────────────────────────────────────────────────────── */
 .app {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 280px;
   gap: 24px;
   padding: 20px;
   max-width: 1280px;
@@ -104,7 +104,15 @@ body {
   align-items: start;
 }
 .col-main { min-width: 0; }
-.col-side { position: sticky; top: 90px; }
+.col-side {
+  position: sticky;
+  top: 90px;
+  /* Cap to viewport so the coverage panel never falls off the bottom of the
+     screen on a short laptop. Internal overflow is fine; the user already
+     sees the legend at the bottom on a fresh open. */
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+}
 
 /* Drawer button — hidden on desktop */
 .cov-drawer-btn { display: none; }
@@ -130,6 +138,29 @@ body {
 }
 .qcard-empty-h { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
 .qcard-empty-p { font-size: 13.5px; color: var(--muted); }
+
+/* Broken-question notice (when authoring is malformed and we can't render
+   a usable input). */
+.qbroken {
+  padding: 16px;
+  border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--line-2));
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--accent) 4%, var(--paper));
+}
+.qbroken-h {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.qbroken-b {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
 
 .qcard.showing-feedback.fb-full    { border-top: 3px solid var(--ok); }
 .qcard.showing-feedback.fb-partial { border-top: 3px solid var(--warn); }
@@ -372,25 +403,25 @@ body {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: 12px 12px 10px;
   box-shadow: var(--shadow-card);
 }
 
 .cov-hd {
   display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 .cov-eyebrow {
-  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.1em;
   font-weight: 700; color: var(--muted);
 }
 .cov-clear {
   background: transparent;
   border: 1px solid var(--line-2);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 4px 10px;
+  padding: 2px 7px;
   cursor: pointer;
   color: var(--ink-2);
   text-transform: uppercase;
@@ -402,10 +433,10 @@ body {
 
 .cov-filter-strip {
   font-family: ui-sans-serif, system-ui, sans-serif;
-  display: flex; gap: 8px; align-items: baseline;
-  font-size: 11.5px;
-  padding: 6px 10px;
-  margin-bottom: 14px;
+  display: flex; gap: 6px; align-items: baseline;
+  font-size: 10.5px;
+  padding: 4px 8px;
+  margin-bottom: 8px;
   background: color-mix(in oklab, var(--accent) 6%, var(--paper));
   border: 1px solid color-mix(in oklab, var(--accent) 18%, var(--line-2));
   border-radius: var(--radius-sm);
@@ -413,42 +444,43 @@ body {
 .cov-filter-eyebrow { color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
 .cov-filter-name { color: var(--ink); font-weight: 600; }
 
-.cov-group { margin-bottom: 16px; }
+.cov-group { margin-bottom: 8px; }
 .cov-group-hd {
   display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
+  margin-bottom: 3px;
+  padding-bottom: 2px;
   border-bottom: 1px dotted var(--line-2);
 }
 .cov-group-name {
   background: transparent; border: 0; padding: 0;
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em;
   font-weight: 700; color: var(--ink-2);
   cursor: pointer;
 }
 .cov-group-name:hover { color: var(--accent); }
 .cov-group-count {
-  font-size: 11px; color: var(--muted);
+  font-size: 9.5px; color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
 .cov-tiles {
-  display: flex; flex-wrap: wrap; gap: 4px;
+  display: flex; flex-wrap: wrap; gap: 2px;
 }
 .tile {
   position: relative;
   flex-grow: 1; flex-shrink: 1;
-  flex-basis: 80px;
-  min-width: 80px;
-  min-height: 56px;
-  padding: 6px 8px;
+  flex-basis: 50px;
+  min-width: 50px;
+  min-height: 26px;
+  padding: 3px 6px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--tile-fill, var(--untried));
   cursor: pointer;
   text-align: left;
-  display: flex; flex-direction: column; justify-content: space-between;
+  display: flex; align-items: center;
   transition: transform .15s, box-shadow .15s;
+  /* Tooltip carries the name + count + percentage when there isn't room. */
 }
 .tile:hover {
   transform: translateY(-1px);
@@ -459,45 +491,41 @@ body {
   outline-offset: 1px;
 }
 .tile-name {
-  font-size: 10.5px; line-height: 1.2;
+  font-size: 10px; line-height: 1.15;
   color: var(--tile-text, var(--ink));
   font-weight: 600;
-  /* Clamp to two lines */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  /* Single line, ellipsis if it doesn't fit. The full name lives in the
+     tile's title= tooltip, alongside the count and percentage. */
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
-.tile-num {
-  font-size: 10px;
-  color: var(--tile-text-soft, var(--ink-2));
-  font-variant-numeric: tabular-nums;
-  margin-top: 4px;
-}
-.tile-q { font-weight: 700; }
-.tile-pct { color: var(--tile-text-soft, var(--ink-2)); }
+/* Numbers / percentages no longer rendered on the tile face — they live in
+   the hover tooltip. */
+.tile-num { display: none; }
 
 .cov-legend {
-  margin-top: 16px;
-  padding-top: 12px;
+  margin-top: 8px;
+  padding-top: 6px;
   border-top: 1px solid var(--line);
-  font-size: 10.5px;
+  font-size: 9.5px;
   color: var(--muted);
 }
 .cov-legend-title {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-style: italic;
 }
 .cov-legend-bands {
-  display: flex; flex-wrap: wrap; gap: 8px;
+  display: flex; flex-wrap: wrap; gap: 6px;
 }
 .cov-legend-band {
-  display: inline-flex; align-items: center; gap: 4px;
+  display: inline-flex; align-items: center; gap: 3px;
   font-variant-numeric: tabular-nums;
 }
 .cov-legend-swatch {
   display: inline-block;
-  width: 14px; height: 10px;
+  width: 11px; height: 8px;
   border: 1px solid var(--line-2);
   border-radius: 2px;
 }
@@ -630,6 +658,44 @@ body {
     display: flex; align-items: center; justify-content: center;
   }
   .cov-drawer-close:hover { color: var(--ink); border-color: var(--accent); }
+  /* On mobile the drawer has plenty of room; restore tappable tile size. */
+  .col-side {
+    /* Override desktop's max-height/overflow so the drawer panel handles its own. */
+    max-height: none;
+    overflow: visible;
+  }
+  .coverage { padding: 38px 16px 16px; }
+  .tile {
+    flex-basis: 80px;
+    min-width: 80px;
+    min-height: 50px;
+    padding: 6px 8px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+  .tile-name {
+    font-size: 11px;
+    white-space: normal;
+    text-overflow: clip;
+    /* Restore two-line clamp on mobile where space allows */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tile-num {
+    display: block;
+    font-size: 10px;
+    color: var(--tile-text-soft, var(--ink-2));
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+  }
+  .cov-eyebrow { font-size: 11px; }
+  .cov-group-name { font-size: 10.5px; }
+  .cov-group-count { font-size: 10.5px; }
+  .cov-group { margin-bottom: 14px; }
+  .cov-tiles { gap: 4px; }
   .qcard { padding: 18px; }
   .qprompt { font-size: 17px; }
   .brand-title { font-size: 20px; }
