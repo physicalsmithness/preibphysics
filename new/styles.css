@@ -175,6 +175,11 @@ body {
 }
 .qmeta-tag {
   padding: 3px 8px;
+  /* Override the .qmeta-wide uppercase so subtag names render in their authored
+     case. This matters for "Nature of α, β, γ" — uppercasing turns the lowercase
+     Greek into Α, Β, Γ which visually clash with the Latin A and B. */
+  text-transform: none;
+  letter-spacing: 0;
   background: color-mix(in oklab, var(--accent) 7%, var(--paper));
   border: 1px solid color-mix(in oklab, var(--accent) 18%, var(--line-2));
   border-radius: 999px;
@@ -374,6 +379,51 @@ body {
 .fb-examiner .fb-h { color: var(--accent); margin-bottom: 6px; }
 .fb-examiner .fb-body { color: var(--ink-2); }
 
+/* v1.4.2: Adjust-mark UI for written answers. */
+.fb-adjust {
+  padding: 12px 14px;
+  background: color-mix(in oklab, var(--ink) 3%, var(--paper));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-2);
+}
+.fb-adjust .fb-h { margin-bottom: 4px; }
+.fb-adjust-help {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.fb-adjust-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fb-adjust-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-align: center;
+  transition: background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+}
+.fb-adjust-btn:hover {
+  border-color: var(--ink-2);
+  background: color-mix(in oklab, var(--ink) 4%, var(--paper));
+  color: var(--ink);
+}
+.fb-adjust-btn.is-current {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
 .fb-mp {
   list-style: none;
   margin: 0;
@@ -570,6 +620,19 @@ body {
 }
 .settings-link, .settings-version { font-size: 12px; color: var(--muted); }
 .settings-link a { color: var(--accent); }
+/* v1.1: long-answer toggle. v1.2: extended to per-type toggles. */
+.settings-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--ink-2); cursor: pointer;
+  user-select: none;
+}
+.settings-toggle input[type="checkbox"] {
+  width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent);
+}
+.settings-toggle-label { line-height: 1.4; }
+.settings-toggle-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
 .danger-btn {
   background: var(--paper);
   color: var(--bad);
@@ -709,4 +772,753 @@ body {
 /* Hide drawer-close button on desktop */
 @media (min-width: 901px) {
   .cov-drawer-close { display: none; }
+}
+
+/* ============================================================================
+   v1.3: Type-strip (per-type filter chips above the question card)
+   ============================================================================ */
+
+.type-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: color-mix(in oklab, var(--accent) 4%, var(--paper));
+  border-bottom: 1px solid var(--line-2);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.type-strip-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+.type-chip:hover { border-color: var(--ink-2); color: var(--ink); }
+.type-chip-label { letter-spacing: 0.02em; }
+.type-chip-count {
+  background: color-mix(in oklab, var(--accent) 8%, var(--paper));
+  border: 1px solid color-mix(in oklab, var(--accent) 16%, var(--line));
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.type-chip.is-on {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.type-chip.is-on .type-chip-count {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.22);
+  color: var(--paper);
+}
+.type-chip.is-off {
+  background: var(--paper);
+  color: var(--muted);
+  border-color: var(--line-2);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in oklab, var(--bad) 40%, transparent);
+  text-decoration-thickness: 1.5px;
+}
+.type-chip.is-off:hover { color: var(--ink-2); }
+
+/* Settings select for coverage window */
+.settings-select {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 5px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+/* ============================================================================
+   v1.3: Drill-down modal (click a coverage tile)
+   ============================================================================ */
+
+/* v1.4.1: non-blocking right-side slide-in panel. No backdrop dim. The rest
+   of the page stays interactive so you can click another tile and watch the
+   panel update. Close via the X button or Escape. */
+.drilldown-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 100;
+  pointer-events: none; /* let clicks pass through to underlying tiles */
+}
+.drilldown-overlay.open { display: block; }
+.drilldown-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 480px;
+  max-width: 100%;
+  background: var(--paper);
+  border-left: 1px solid var(--line-2);
+  padding: 22px 24px 32px 24px;
+  overflow-y: auto;
+  box-shadow: -8px 0 28px rgba(0,0,0,0.18);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  transform: translateX(100%);
+  transition: transform 0.18s ease-out;
+  pointer-events: auto; /* re-enable clicks inside the panel */
+}
+.drilldown-overlay.open .drilldown-panel {
+  transform: translateX(0);
+}
+@media (max-width: 600px) {
+  .drilldown-panel { width: 100%; padding: 18px 16px 24px 16px; }
+}
+/* The panel slides over the right edge of the page without reflowing the
+   layout below. On wide screens this leaves the question column unaffected.
+   On narrower viewports the panel may cover more, which is acceptable
+   because the user is reading stats anyway. */
+
+.dd-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-2);
+}
+.dd-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.dd-title {
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  margin: 4px 0 0 0;
+  font-weight: 700;
+  color: var(--ink);
+}
+.dd-close {
+  background: transparent;
+  border: 0;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--muted);
+  line-height: 1;
+  padding: 0;
+}
+.dd-close:hover { color: var(--ink); }
+
+.dd-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.dd-stat {
+  background: color-mix(in oklab, var(--accent) 4%, var(--paper));
+  border: 1px solid color-mix(in oklab, var(--accent) 14%, var(--line-2));
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.dd-stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.dd-stat-value {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+.dd-stat-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.dd-types, .dd-status-breakdown, .dd-recent {
+  margin-bottom: 18px;
+}
+.dd-types h3, .dd-status-breakdown h3, .dd-recent h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0 0 8px 0;
+  font-weight: 700;
+}
+.dd-types-row, .dd-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dd-type-item {
+  display: inline-flex;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  font-size: 12px;
+  background: var(--paper);
+  align-items: center;
+}
+.dd-type-label { color: var(--ink-2); font-weight: 600; }
+.dd-type-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dd-status-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.dd-status-full    { background: color-mix(in oklab, var(--ok) 18%, var(--paper));   color: var(--ok);   border: 1px solid color-mix(in oklab, var(--ok) 30%, var(--line)); }
+.dd-status-partial { background: color-mix(in oklab, var(--warn) 18%, var(--paper)); color: var(--warn); border: 1px solid color-mix(in oklab, var(--warn) 30%, var(--line)); }
+.dd-status-wrong   { background: color-mix(in oklab, var(--bad) 14%, var(--paper));  color: var(--bad);  border: 1px solid color-mix(in oklab, var(--bad) 30%, var(--line)); }
+
+.dd-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.dd-recent-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line-2);
+  font-size: 12px;
+}
+.dd-recent-item:last-child { border-bottom: 0; }
+.dd-recent-when { color: var(--muted); font-variant-numeric: tabular-nums; }
+.dd-recent-id { color: var(--ink-2); font-family: ui-monospace, "SF Mono", monospace; }
+.dd-recent-mark { font-weight: 700; font-variant-numeric: tabular-nums; }
+.dd-recent-full .dd-recent-mark    { color: var(--ok); }
+.dd-recent-partial .dd-recent-mark { color: var(--warn); }
+.dd-recent-none .dd-recent-mark    { color: var(--bad); }
+
+.dd-foot {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-2);
+  justify-content: flex-end;
+}
+.dd-foot .btn {
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.dd-foot .btn:hover { background: color-mix(in oklab, var(--ink) 6%, var(--paper)); }
+.dd-foot .btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.dd-foot .btn-primary:hover { background: #2a2a26; }
+
+@media (max-width: 540px) {
+  .dd-stats { grid-template-columns: 1fr; }
+}
+
+/* ============================================================================
+   v1.4 prototype: Atom mosaic (radiation_types only for now)
+   The mosaic sits inside an .tile.tile-atomised, replacing the count/percent
+   line. Each .atom-cell is a small coloured square; .atom-group clusters cells
+   visually (alpha / beta / gamma in radiation_types). Hover reveals the atom
+   name via the title attribute (mobile users can long-press).
+   ============================================================================ */
+
+.tile-atomised {
+  /* Atomised tiles drop the overall subtag colour and the visible name.
+     The atom cells carry the visual; the title attribute (hover) carries
+     the subtag name; the drill-down carries everything else. */
+  min-height: 56px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 3px;
+  background: var(--paper);
+  border-color: var(--line-2);
+}
+.tile-atomised:hover {
+  border-color: var(--ink-2);
+}
+.tile-atomised.tile-active {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+/* If a stray .tile-name slipped into an atomised tile, hide it. */
+.tile-atomised .tile-name { display: none; }
+.tile-atomised .tile-num { display: none; }
+.atom-mosaic-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+.atom-mosaic-head {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 1px;
+  flex: 0 0 auto;
+}
+.atom-mosaic-col-label {
+  opacity: 0.7;
+}
+.atom-mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 30px;
+}
+.atom-cell {
+  border-radius: 2px;
+  min-height: 8px;
+  background: var(--untried, #ece4d2);
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+.atom-cell:hover {
+  transform: scale(1.15);
+  border-color: var(--ink);
+  z-index: 1;
+}
+.atom-cell.is-untried { opacity: 0.55; }
+
+/* Mobile: atomised tiles get a touch more height so the mosaic doesn't squash. */
+@media (max-width: 900px) {
+  .tile-atomised {
+    min-height: 90px;
+  }
+  .atom-mosaic {
+    min-height: 56px;
+  }
+}
+
+/* v1.4.1: per-atom breakdown rows in the drill-down panel. */
+.dd-atoms { margin-bottom: 18px; }
+.dd-atoms h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0 0 8px 0;
+  font-weight: 700;
+}
+.dd-atom-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.dd-atom-row {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line-2);
+  font-size: 12px;
+}
+.dd-atom-row:last-child { border-bottom: 0; }
+.dd-atom-row.is-untried { color: var(--muted); }
+.dd-atom-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,0,0,0.10);
+  display: inline-block;
+}
+.dd-atom-name { color: var(--ink-2); }
+.dd-atom-stat {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   v1.5: New interaction types
+   ============================================================================ */
+
+/* ── Matching ──────────────────────────────────────────────────────────── */
+
+.match-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.match-col {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.match-item {
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.1s ease, box-shadow 0.1s ease;
+}
+.match-item:hover { border-color: var(--ink-2); }
+.match-item.is-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.match-item.is-paired {
+  color: #1a1a17;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .match-cols { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .match-item { padding: 9px 10px; font-size: 13px; }
+}
+
+/* ── Multi-select ──────────────────────────────────────────────────────── */
+
+.multiselect {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.ms-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--paper);
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+}
+.ms-row:hover { border-color: var(--ink-2); }
+.ms-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.ms-text { color: var(--ink); }
+
+/* ── Ordering ──────────────────────────────────────────────────────────── */
+
+.ordering {
+  list-style: none;
+  margin: 0 0 14px 0;
+  padding: 0;
+  counter-reset: ord;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ord-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--paper);
+}
+.ord-num {
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 12px;
+  color: var(--muted);
+  width: 18px;
+  text-align: center;
+}
+.ord-text { color: var(--ink); font-size: 14px; }
+.ord-controls { display: flex; gap: 4px; }
+.ord-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: var(--paper);
+  color: var(--ink-2);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  line-height: 1;
+}
+.ord-btn:hover:not([disabled]) { background: color-mix(in oklab, var(--ink) 5%, var(--paper)); color: var(--ink); }
+.ord-btn[disabled] { opacity: 0.35; cursor: default; }
+
+/* ── Categorise ────────────────────────────────────────────────────────── */
+
+.categorise { margin-bottom: 14px; }
+.cat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px dashed var(--line-2);
+  border-radius: 8px;
+  min-height: 50px;
+  background: color-mix(in oklab, var(--ink) 2%, var(--paper));
+}
+.cat-strip:empty::before {
+  content: "All items placed.";
+  color: var(--muted);
+  font-style: italic;
+  font-size: 13px;
+  align-self: center;
+}
+.cat-bins {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.cat-bin {
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--paper);
+  min-height: 90px;
+  cursor: pointer;
+}
+.cat-bin:hover { border-color: var(--accent); }
+.cat-bin-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.cat-bin-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cat-item {
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--paper);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  transition: border-color 0.1s ease, background 0.1s ease;
+}
+.cat-item:hover { border-color: var(--ink-2); }
+.cat-item.is-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.cat-item.is-placed {
+  background: color-mix(in oklab, var(--accent) 8%, var(--paper));
+  border-color: color-mix(in oklab, var(--accent) 25%, var(--line-2));
+}
+
+/* ── Fill-in-the-blank ─────────────────────────────────────────────────── */
+
+.fillblank {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: color-mix(in oklab, var(--ink) 2%, var(--paper));
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+}
+.fb-input {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 0;
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  min-width: 80px;
+  margin: 0 4px;
+  outline: none;
+}
+.fb-input:focus {
+  background: color-mix(in oklab, var(--accent) 6%, var(--paper));
+}
+
+/* ── Feedback for new types: per-pair / per-blank rows ─────────────────── */
+
+.fb-mp-pair { display: flex; gap: 4px; align-items: baseline; flex-wrap: wrap; }
+.fb-pair-left { font-weight: 600; }
+.fb-pair-arrow { color: var(--muted); }
+.fb-pair-correct, .fb-mp-correct { color: var(--muted); font-style: italic; }
+.fb-mp-mark { font-family: ui-monospace, "SF Mono", monospace; min-width: 14px; display: inline-block; }
+.fb-mp-neutral { background: color-mix(in oklab, var(--muted) 10%, var(--paper)); color: var(--ink-2); }
+.fb-ord {
+  list-style: decimal inside;
+  margin: 0;
+  padding: 0;
+}
+.fb-ord li {
+  font-size: 13.5px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Grid (matrix multi-select) ─────────────────────────────────────────── */
+
+.grid-wrap {
+  margin-bottom: 14px;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: var(--paper);
+}
+.grid-q {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.grid-q th, .grid-q td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-2);
+  border-right: 1px solid var(--line-2);
+  text-align: center;
+  vertical-align: middle;
+}
+.grid-q tr:last-child th,
+.grid-q tr:last-child td { border-bottom: 0; }
+.grid-q th:last-child, .grid-q td:last-child { border-right: 0; }
+.grid-corner {
+  background: color-mix(in oklab, var(--ink) 3%, var(--paper));
+}
+.grid-col {
+  background: color-mix(in oklab, var(--ink) 3%, var(--paper));
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.grid-row-label {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 2%, var(--paper));
+  white-space: nowrap;
+  min-width: 140px;
+}
+.grid-cell-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding: 4px;
+}
+.grid-cb {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+/* Feedback grid */
+.grid-feedback td {
+  font-size: 14px;
+  font-weight: 700;
+}
+.grid-fb-hit            { background: color-mix(in oklab, var(--ok) 18%, var(--paper));   color: var(--ok); }
+.grid-fb-miss           { background: color-mix(in oklab, var(--warn) 14%, var(--paper)); color: var(--warn); }
+.grid-fb-wrong          { background: color-mix(in oklab, var(--bad) 18%, var(--paper));  color: var(--bad); }
+.grid-fb-neutral-ticked { background: color-mix(in oklab, var(--accent) 8%, var(--paper)); color: var(--accent); }
+.grid-fb-neutral        { background: color-mix(in oklab, var(--muted) 6%, var(--paper)); color: var(--muted); }
+.grid-fb-empty          { background: var(--paper); color: var(--muted); }
+.grid-row-hit  { background: color-mix(in oklab, var(--ok) 12%, var(--paper)); }
+.grid-row-miss { background: color-mix(in oklab, var(--bad) 10%, var(--paper)); }
+
+.grid-fb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+.grid-fb-legend-bit {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .grid-q { font-size: 13px; }
+  .grid-q th, .grid-q td { padding: 6px 7px; }
+  .grid-row-label { min-width: 120px; }
 }

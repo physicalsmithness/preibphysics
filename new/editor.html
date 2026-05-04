@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf6ed">
+  <title>Question bank editor — Topic 7</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body class="ed-body">
+
+<header class="ed-header">
+  <div class="ed-brand">
+    <div class="ed-eyebrow">Pre-IB Physics · Editor</div>
+    <h1 class="ed-title">Question bank editor</h1>
+    <div class="ed-sub">Topic 7: Radioactivity · not for student deployment</div>
+  </div>
+  <div class="ed-actions">
+    <span id="ed-status" class="ed-status">No changes</span>
+    <button id="ed-revert-btn" class="ed-btn ed-btn-ghost" type="button" title="Discard all unsaved edits and reload from file">Revert all</button>
+    <button id="ed-download-btn" class="ed-btn ed-btn-primary" type="button" title="Download the modified topic7_radioactivity.js">Download updated file</button>
+  </div>
+</header>
+
+<div class="ed-app">
+
+  <aside class="ed-list-pane">
+    <div class="ed-filters">
+      <input type="search" id="ed-search" class="ed-input" placeholder="Search id or prompt…">
+      <div class="ed-filter-row">
+        <select id="ed-subtag" class="ed-select"><option value="">All subtags</option></select>
+        <select id="ed-type" class="ed-select">
+          <option value="">All types</option>
+          <option value="mcq">MCQ</option>
+          <option value="short">Short</option>
+          <option value="long">Long</option>
+          <option value="numeric">Numeric</option>
+        </select>
+      </div>
+      <div class="ed-filter-row">
+        <select id="ed-difficulty" class="ed-select">
+          <option value="">All difficulty</option>
+          <option value="1">1 (easiest)</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 (hardest)</option>
+        </select>
+        <select id="ed-status-filter" class="ed-select">
+          <option value="all" selected>Active + parked</option>
+          <option value="active">Active only</option>
+          <option value="parked">Parked only</option>
+        </select>
+      </div>
+      <div class="ed-filter-row">
+        <select id="ed-sort" class="ed-select">
+          <option value="position">Sort: file order</option>
+          <option value="id">Sort: id (A-Z)</option>
+          <option value="type">Sort: type</option>
+          <option value="difficulty">Sort: difficulty</option>
+          <option value="marks">Sort: marks</option>
+          <option value="subtag">Sort: subtag</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="ed-counts" id="ed-counts"></div>
+    <ul class="ed-list" id="ed-list"></ul>
+  </aside>
+
+  <main class="ed-detail-pane" id="ed-detail">
+    <div class="ed-detail-empty">Select a question on the left to edit.</div>
+  </main>
+
+</div>
+
+<!-- Question bank -->
+<script src="topic7_radioactivity.js"></script>
+<!-- Editor logic -->
+<script src="editor.js"></script>
+
+</body>
+</html>
