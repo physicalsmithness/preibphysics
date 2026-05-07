@@ -265,6 +265,35 @@ body {
   background: color-mix(in oklab, var(--accent) 4%, var(--paper));
   outline: none;
 }
+/* v1.5.13: number-key badge on each MCQ choice. Sized to be unmissable but
+   not overpowering. The matching keyboard digit (1-9) submits this choice. */
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.choice-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  background: color-mix(in oklab, var(--ink) 6%, var(--paper));
+  border: 1px solid var(--line-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1;
+}
+.choice:hover .choice-key, .choice:focus-visible .choice-key {
+  background: color-mix(in oklab, var(--accent) 14%, var(--paper));
+  border-color: color-mix(in oklab, var(--accent) 30%, var(--line-2));
+  color: var(--accent);
+}
+.choice-text { flex: 1; }
 
 .ans-text, .ans-num {
   width: 100%;

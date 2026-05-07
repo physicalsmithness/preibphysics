@@ -645,7 +645,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.11";
+  const APP_VERSION = "v1.5.13";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1129,11 +1129,26 @@
         container.appendChild(bullet);
         line = line.substring(2);
       }
-      // Split on $...$ math blocks
+      // Split on $...$ math blocks. v1.5.12: render with KaTeX when the
+      // library is loaded (via CDN in index.html); fall back to the code-style
+      // monospace span if it isn't available yet.
       const parts = line.split(/(\$[^$]+\$)/);
       parts.forEach(function (p) {
         if (p.length >= 2 && p.charAt(0) === "$" && p.charAt(p.length - 1) === "$") {
-          container.appendChild(el("code", { class: "prompt-math" }, p.substring(1, p.length - 1)));
+          const math = p.substring(1, p.length - 1);
+          if (typeof window.katex !== "undefined" && window.katex.render) {
+            const span = document.createElement("span");
+            span.className = "prompt-katex";
+            try {
+              window.katex.render(math, span, { throwOnError: false, displayMode: false });
+            } catch (err) {
+              span.textContent = math;
+              span.className = "prompt-math";
+            }
+            container.appendChild(span);
+          } else {
+            container.appendChild(el("code", { class: "prompt-math" }, math));
+          }
         } else {
           container.appendChild(document.createTextNode(p));
         }
@@ -1866,11 +1881,14 @@
       // shuffled order; we map back to the original index via origIdx so
       // answerIndex and distractorRationales (both keyed by original index)
       // still work. Authors can opt out per question with shuffleChoices: false.
+      // v1.5.13: each choice gets a small leading number badge (1, 2, 3, ...)
+      // and the digit keys 1-9 act as shortcuts (handled by a global keydown
+      // listener wired in init).
       const rawChoices = v.choices || [];
       const order = rawChoices.map(function (_, i) { return i; });
       if (v.shuffleChoices !== false) shuffleInPlace(order);
       const choices = el("div", { class: "qchoices" });
-      order.forEach(function (origIdx) {
+      order.forEach(function (origIdx, displayIdx) {
         const choice = rawChoices[origIdx];
         const btn = el("button", {
           class: "choice",
@@ -1879,7 +1897,10 @@
           onClick: (function (idx) {
             return function () { submitMCQ(idx); };
           })(origIdx)
-        }, choice);
+        }, [
+          el("span", { class: "choice-key", text: String(displayIdx + 1) }),
+          el("span", { class: "choice-text", text: choice })
+        ]);
         choices.appendChild(btn);
       });
       inputWrap.appendChild(choices);
@@ -3272,6 +3293,24 @@
       dbg("globalEnter.fireCheckBtn", { activeTag: tag });
       e.preventDefault();
       checkBtn.click();
+    });
+
+    // v1.5.13: digit-key shortcuts for MCQ. Pressing 1-9 selects the
+    // corresponding displayed choice (in post-shuffle display order).
+    document.addEventListener("keydown", function (e) {
+      if (e.repeat) return;
+      if (phase !== "answering") return;
+      if (!current || !current.view || current.view.type !== "mcq") return;
+      if (e.key < "1" || e.key > "9") return;
+      const ae = document.activeElement;
+      const tag = (ae && ae.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      const choices = document.querySelectorAll(".qcard .qchoices .choice");
+      const digit = parseInt(e.key, 10);
+      if (digit < 1 || digit > choices.length) return;
+      dbg("mcqDigit.fire", { digit: digit, of: choices.length });
+      e.preventDefault();
+      choices[digit - 1].click();
     });
 
     // Mobile coverage drawer toggle
