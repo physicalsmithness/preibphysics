@@ -645,7 +645,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.8";
+  const APP_VERSION = "v1.5.10";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1740,6 +1740,22 @@
     }
 
     const filterSub = store.activeFilter;
+
+    // v1.5.10: a question-level filter has only one item in its pool. After
+    // the user answers it, redelivering the same question is annoying — show
+    // a "you've done this one" message instead and tell them how to move on.
+    const lastAttempt = store.attempts.length > 0 ? store.attempts[store.attempts.length - 1] : null;
+    if (filterSub && filterSub.type === "question" && lastAttempt && lastAttempt.questionId === filterSub.id) {
+      phase = "answering";
+      current = null;
+      card.classList.add("empty");
+      card.appendChild(el("div", { class: "qcard-empty" }, [
+        el("div", { class: "qcard-empty-h", text: "You've answered this question." }),
+        el("div", { class: "qcard-empty-p", text: "Click another cell or tile in the coverage map to move on, or use \"Show all\" to broaden the pool." })
+      ]));
+      return;
+    }
+
     current = pickNextQuestion(filterSub);
     phase = "answering";
 
@@ -2310,7 +2326,7 @@
     // missed it (or when they were generous and it gave too many). We honour
     // it here, finally. Skipped for MCQ (no ambiguity) and numeric (also a
     // single-criterion auto-mark).
-    if ((v.type === "short" || v.type === "long") && v.allowAdjust !== false) {
+    if ((v.type === "short" || v.type === "long" || v.type === "fillblank") && v.allowAdjust !== false) {
       const possible = result.marksPossible;
       const adjBlock = el("div", { class: "fb-block fb-adjust" }, [
         el("div", { class: "fb-h", text: "Disagree with the mark? Set it yourself." }),
