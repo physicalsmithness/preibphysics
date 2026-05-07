@@ -32,6 +32,39 @@
   const QUESTIONS_VAR = TOPIC_CONFIG.questionsVar || "PREIB_RAD_QUESTIONS";
 
   /* ──────────────────────────────────────────────────────────────────────────
+     0b. Diagnostic logging (v1.5.8)
+     A circular buffer of recent lifecycle events. Each entry has a timestamp
+     so the architect can reconstruct the actual sequence when the user
+     reports a bug. Persisted to localStorage so refresh doesn't lose it.
+     The user can copy the log to clipboard via a Settings button.
+     ────────────────────────────────────────────────────────────────────────── */
+  const DEBUG_LOG_KEY = "smithics_debug_log";
+  const DEBUG_LOG_MAX = 500;
+  const DEBUG_LOG = (function () {
+    try {
+      const raw = localStorage.getItem(DEBUG_LOG_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  })();
+  function dbg(event, data) {
+    DEBUG_LOG.push({ t: Date.now(), event: event, data: data == null ? null : data });
+    while (DEBUG_LOG.length > DEBUG_LOG_MAX) DEBUG_LOG.shift();
+    // Defer the localStorage write so logging is cheap during hot paths.
+    if (!dbg._pending) {
+      dbg._pending = true;
+      setTimeout(function () {
+        try { localStorage.setItem(DEBUG_LOG_KEY, JSON.stringify(DEBUG_LOG)); } catch (e) {}
+        dbg._pending = false;
+      }, 200);
+    }
+  }
+  dbg("engine.boot", { questionsVar: QUESTIONS_VAR, ua: navigator.userAgent });
+
+  /* ──────────────────────────────────────────────────────────────────────────
      1. Topic vocabulary
      Source of truth: TOPIC_CONFIG.vocab when set; otherwise the Topic 7
      defaults baked in below (mirrors SCHEMA_v0_4.md §6).
@@ -612,7 +645,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.7";
+  const APP_VERSION = "v1.5.8";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1691,6 +1724,7 @@
 
   // -- Question card rendering --
   function renderQuestion() {
+    dbg("renderQuestion.start");
     const card = document.getElementById("qcard");
     card.className = "qcard";
     card.innerHTML = "";
@@ -1832,7 +1866,10 @@
       inputWrap.appendChild(submit);
       // Submit on Ctrl/Cmd+Enter for textareas; plain Enter inserts newline.
       ta.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submitText(); }
+        if (e.key === "Enter") {
+          dbg("input.keydown.long", { repeat: e.repeat, ctrl: e.ctrlKey, meta: e.metaKey });
+          if (e.ctrlKey || e.metaKey) { e.preventDefault(); submitText(); }
+        }
       });
       setTimeout(function () { ta.focus(); }, 30);
     } else if (type === "numeric") {
@@ -1854,7 +1891,11 @@
       });
       inputWrap.appendChild(submit);
       inp.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") { e.preventDefault(); submitText(); }
+        if (e.key === "Enter") {
+          dbg("input.keydown.numeric", { repeat: e.repeat, value: inp.value });
+          e.preventDefault();
+          submitText();
+        }
       });
       setTimeout(function () { inp.focus(); }, 30);
     } else if (type === "matching") {
@@ -1887,7 +1928,11 @@
       });
       inputWrap.appendChild(submit);
       inp.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") { e.preventDefault(); submitText(); }
+        if (e.key === "Enter") {
+          dbg("input.keydown.short", { repeat: e.repeat, value: inp.value });
+          e.preventDefault();
+          submitText();
+        }
       });
       setTimeout(function () { inp.focus(); }, 30);
     }
@@ -1896,17 +1941,19 @@
 
   // -- Submission handlers --
   function submitMCQ(chosenIndex) {
-    if (phase !== "answering") return;
+    dbg("submitMCQ", { phase: phase, chosenIndex: chosenIndex, qid: current && current.question && current.question.id });
+    if (phase !== "answering") { dbg("submitMCQ.guard.phase"); return; }
     const v = current.view;
     const result = markMCQ(v, chosenIndex);
     showFeedback(result, { rawResponse: null, chosenIndex: chosenIndex });
   }
 
   function submitText() {
-    if (phase !== "answering") return;
+    dbg("submitText", { phase: phase, qid: current && current.question && current.question.id, type: current && current.view && current.view.type });
+    if (phase !== "answering") { dbg("submitText.guard.phase"); return; }
     const v = current.view;
     const inp = document.getElementById("ans-input");
-    if (!inp) return;
+    if (!inp) { dbg("submitText.guard.noinput"); return; }
     const raw = inp.value;
     let result;
     if (v.type === "numeric") result = markNumeric(v, raw);
@@ -1959,6 +2006,7 @@
 
   // -- Feedback & attempt logging --
   function showFeedback(result, meta) {
+    dbg("showFeedback.start", { qid: current && current.question && current.question.id, status: result && result.status, awarded: result && result.marksAwarded, possible: result && result.marksPossible });
     phase = "feedback";
     const v = current.view;
     const card = document.getElementById("qcard");
@@ -2289,7 +2337,10 @@
     // Next button
     const nextBtn = el("button", {
       class: "btn btn-primary next-btn",
-      onClick: function () { renderQuestion(); renderCoverage(); updateProgressLine(); },
+      onClick: function (e) {
+        dbg("nextBtn.click", { trusted: !!(e && e.isTrusted) });
+        renderQuestion(); renderCoverage(); updateProgressLine();
+      },
       text: "Next question  →"
     });
     fb.appendChild(nextBtn);
@@ -2351,29 +2402,38 @@
     // keep a 300ms time grace as a final safety net.
     let listenerArmedAt = 0;
     function nextOnEnter(e) {
-      if (e.key !== "Enter") return;
-      if (e.repeat) return;
-      if (Date.now() - listenerArmedAt < 300) return;
+      if (e.key !== "Enter") {
+        return;
+      }
+      const delta = Date.now() - listenerArmedAt;
+      if (e.repeat) {
+        dbg("nextOnEnter.skipped.repeat", { delta: delta });
+        return;
+      }
+      if (delta < 300) {
+        dbg("nextOnEnter.skipped.grace", { delta: delta });
+        return;
+      }
+      dbg("nextOnEnter.fired", { delta: delta });
       e.preventDefault();
       document.removeEventListener("keydown", nextOnEnter);
       nextBtn.click();
     }
     function armOnNextKeyup() {
-      // Wait for any Enter currently down to come up, then arm the listener.
+      dbg("arm.start");
       function onUp(e) {
         if (e.key !== "Enter") return;
         document.removeEventListener("keyup", onUp);
         listenerArmedAt = Date.now();
+        dbg("arm.viaKeyup");
         document.addEventListener("keydown", nextOnEnter);
       }
       document.addEventListener("keyup", onUp);
-      // Fallback: if no Enter keyup ever fires (because submit was via mouse
-      // or button click), arm after 300ms anyway. We compete with the keyup
-      // path; whichever fires first wins, the loser is a no-op.
       setTimeout(function () {
         document.removeEventListener("keyup", onUp);
         if (listenerArmedAt === 0) {
           listenerArmedAt = Date.now();
+          dbg("arm.viaTimeout");
           document.addEventListener("keydown", nextOnEnter);
         }
       }, 300);
@@ -3046,6 +3106,66 @@
     else panel.appendChild(section);
   }
 
+  // v1.5.8: copy the diagnostic log to clipboard. Used to send the architect
+  // a trace of what happened when something behaves unexpectedly.
+  function injectDiagnosticLogSetting() {
+    const panel = document.querySelector(".settings-panel");
+    if (!panel) return;
+    const status = el("p", { class: "settings-link", text: "" });
+    const copyBtn = el("button", {
+      class: "ed-btn",
+      type: "button",
+      onClick: async function () {
+        const payload = {
+          when: new Date().toISOString(),
+          version: APP_VERSION,
+          ua: navigator.userAgent,
+          topic: TOPIC_CONFIG.topicLabel || QUESTIONS_VAR,
+          recentAttempts: (store.attempts || []).slice(-10),
+          deck: store.deck,
+          log: DEBUG_LOG.slice(-200)
+        };
+        const text = JSON.stringify(payload, null, 2);
+        try {
+          await navigator.clipboard.writeText(text);
+          status.textContent = "Copied. Paste into chat.";
+        } catch (err) {
+          // Fallback for browsers without clipboard API: drop a textarea
+          // the user can copy from manually.
+          const ta = el("textarea", {
+            style: "width:100%;height:200px;font-family:monospace;font-size:11px;",
+            readonly: "readonly"
+          });
+          ta.value = text;
+          status.innerHTML = "";
+          status.appendChild(ta);
+          ta.focus();
+          ta.select();
+        }
+      },
+      text: "Copy diagnostic log"
+    });
+    const clearBtn = el("button", {
+      class: "ed-btn ed-btn-ghost",
+      type: "button",
+      style: "margin-left:8px;",
+      onClick: function () {
+        DEBUG_LOG.length = 0;
+        try { localStorage.removeItem(DEBUG_LOG_KEY); } catch (e) {}
+        status.textContent = "Log cleared.";
+      },
+      text: "Clear log"
+    });
+    const section = el("div", { class: "settings-section" }, [
+      el("h3", null, "Diagnostics"),
+      el("p", null, "If something behaves unexpectedly, click Copy and paste the result into chat. Records the last few hundred lifecycle events."),
+      copyBtn,
+      clearBtn,
+      status
+    ]);
+    panel.appendChild(section);
+  }
+
   /* ──────────────────────────────────────────────────────────────────────────
      11. Coverage drawer for mobile
      ────────────────────────────────────────────────────────────────────────── */
@@ -3080,6 +3200,7 @@
     // v1.3: settings panel gets a coverage-window selector instead of the
     // type-toggles (which now live in the always-visible top strip).
     injectCoverageWindowSetting();
+    injectDiagnosticLogSetting();
 
     // v1.3: render the per-type chip strip into #type-strip in the main view.
     renderTypeStrip();
@@ -3115,6 +3236,7 @@
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       const checkBtn = document.querySelector(".qcard .submit-btn");
       if (!checkBtn) return;
+      dbg("globalEnter.fireCheckBtn", { activeTag: tag });
       e.preventDefault();
       checkBtn.click();
     });
