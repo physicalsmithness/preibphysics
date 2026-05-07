@@ -162,9 +162,23 @@ body {
   line-height: 1.5;
 }
 
-.qcard.showing-feedback.fb-full    { border-top: 3px solid var(--ok); }
-.qcard.showing-feedback.fb-partial { border-top: 3px solid var(--warn); }
-.qcard.showing-feedback.fb-wrong   { border-top: 3px solid var(--bad); }
+/* v1.5.4: stronger feedback colour signal. The thin top border was too
+   easy to miss; the user wanted "correct" to feel decisively green.
+   Now a thicker top border, a tinted card background, and a bigger score
+   label — together they make the status read at a glance without needing
+   to look at the score line text. */
+.qcard.showing-feedback.fb-full {
+  border-top: 6px solid var(--ok);
+  background: color-mix(in oklab, var(--ok) 7%, var(--paper));
+}
+.qcard.showing-feedback.fb-partial {
+  border-top: 6px solid var(--warn);
+  background: color-mix(in oklab, var(--warn) 6%, var(--paper));
+}
+.qcard.showing-feedback.fb-wrong {
+  border-top: 6px solid var(--bad);
+  background: color-mix(in oklab, var(--bad) 6%, var(--paper));
+}
 
 .qmeta {
   display: flex; flex-wrap: wrap; gap: 8px;
@@ -322,10 +336,13 @@ body {
   font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--muted); font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
 }
-.fb-full .fb-score-label { color: var(--ok); }
-.fb-partial .fb-score-label { color: var(--warn); }
-.fb-wrong .fb-score-label { color: var(--bad); }
+.fb-full .fb-score-label    { color: var(--ok);   background: color-mix(in oklab, var(--ok) 12%, var(--paper)); }
+.fb-partial .fb-score-label { color: var(--warn); background: color-mix(in oklab, var(--warn) 12%, var(--paper)); }
+.fb-wrong .fb-score-label   { color: var(--bad);  background: color-mix(in oklab, var(--bad) 12%, var(--paper)); }
 .fb-score-num {
   font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 18px; font-weight: 700;
@@ -539,6 +556,43 @@ body {
 .tile-active {
   outline: 2px solid var(--ink);
   outline-offset: 1px;
+}
+/* v1.5.5: subtler indicators for the other filter levels.
+   - tile-in-active-group: filter is at the parent-group level; this tile
+     belongs to that group, so it's part of the active scope but not the
+     specific target.
+   - tile-contains-active-q: filter is at the question level; this tile's
+     subtag includes that question. */
+.tile-in-active-group {
+  outline: 1px solid var(--ink-2);
+  outline-offset: 1px;
+}
+.tile-contains-active-q {
+  outline: 1px dashed var(--ink-2);
+  outline-offset: 1px;
+}
+/* When a filter is active, dim the tiles that are NOT in scope so the in-scope
+   tiles stand out without needing to over-style them. */
+.coverage:has(.cov-group-active) .cov-group:not(.cov-group-active) .tile,
+.coverage:has(.tile-active) .cov-group .tile:not(.tile-active):not(.tile-in-active-group):not(.tile-contains-active-q),
+.coverage:has(.tile-contains-active-q) .cov-group .tile:not(.tile-contains-active-q):not(.tile-active) {
+  opacity: 0.45;
+}
+/* Active group label gets a stronger treatment so the group level is visually
+   distinct from the per-tile level. */
+.cov-group-active .cov-group-name {
+  color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 8%, var(--paper));
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: -4px;
+}
+/* Active question cell inside an auto-mosaic: stronger outline so it stands
+   out from its many neighbours. */
+.atom-cell-auto.atom-cell-active {
+  outline: 2px solid var(--ink);
+  outline-offset: 0;
+  z-index: 3;
 }
 .tile-name {
   font-size: 10px; line-height: 1.15;
@@ -1137,6 +1191,44 @@ body {
 }
 .atom-cell.is-untried { opacity: 0.55; }
 
+/* v1.5.3 auto-atomised mosaic. Each active question in the subtag becomes
+   one fixed-size cell. flex-wrap means more questions = more rows = taller
+   tile, so the tile's visual size scales with the conceptual content. */
+.atom-mosaic-auto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  width: 100%;
+  flex: 1 1 auto;
+  align-content: flex-start;
+  padding: 2px;
+}
+.atom-cell-auto {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  border-radius: 2px;
+  background: var(--untried, #ece4d2);
+  border: 1px solid rgba(0,0,0,0.07);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.08s ease;
+}
+.atom-cell-auto:hover {
+  transform: scale(1.4);
+  border-color: var(--ink);
+  z-index: 1;
+}
+.atom-cell-auto.is-untried { opacity: 0.55; }
+
+@media (max-width: 900px) {
+  .atom-cell-auto {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+  }
+}
+
 /* Mobile: atomised tiles get a touch more height so the mosaic doesn't squash. */
 @media (max-width: 900px) {
   .tile-atomised {
@@ -1285,6 +1377,18 @@ body {
   border: 1px solid var(--line-2);
   border-radius: 8px;
   background: var(--paper);
+  position: relative;
+  z-index: 0;
+}
+.ord-row.ord-row-flashed {
+  animation: ord-flash 0.9s ease-out;
+  z-index: 2;
+}
+/* Neutral cool-blue highlight rather than the red accent (which reads as
+   "wrong" in this app's palette). Just a "look here, this changed" wash. */
+@keyframes ord-flash {
+  0%   { background: #d4e4f2; border-color: #6991b8; }
+  100% { background: var(--paper); border-color: var(--line-2); }
 }
 .ord-num {
   font-family: ui-monospace, "SF Mono", monospace;
@@ -1378,6 +1482,36 @@ body {
 .cat-item.is-placed {
   background: color-mix(in oklab, var(--accent) 8%, var(--paper));
   border-color: color-mix(in oklab, var(--accent) 25%, var(--line-2));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cat-item.is-placed .cat-item-text { flex: 1; }
+.cat-item-remove {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+}
+.cat-item-remove:hover {
+  background: color-mix(in oklab, var(--bad) 14%, var(--paper));
+  color: var(--bad);
+}
+/* v1.5.7: drag-and-drop visual states */
+.cat-item[draggable="true"] { cursor: grab; }
+.cat-item[draggable="true"]:active { cursor: grabbing; }
+.cat-item.cat-item-dragging { opacity: 0.4; }
+.cat-strip.cat-drop-hover,
+.cat-bin.cat-drop-hover {
+  background: color-mix(in oklab, var(--accent) 10%, var(--paper));
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
 }
 
 /* ── Fill-in-the-blank ─────────────────────────────────────────────────── */

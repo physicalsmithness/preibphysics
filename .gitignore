@@ -1,0 +1,19 @@
+# Reference material (past papers, mark schemes, copyrighted PDFs).
+# Kept locally so the architecture chat in Cowork can read them when needed,
+# but never pushed to the public repo. Pattern matches any folder named
+# `reference/` anywhere in the tree, so you can put a per-topic one under
+# `new/reference/` or a single shared one at the root, your choice.
+reference/
+
+# Internal architecture and authoring docs. They live alongside the code so
+# Cowork and author chats can read them, but they shouldn't be in the
+# deployed repo. Author briefs, schema specs, decision logs, and proposed
+# vocabularies are all internal-only.
+AUTHOR_BRIEF_*.md
+SCHEMA_*.md
+*_decisions.md
+*_proposal.md
+
+# OS junk that sometimes turns up.
+.DS_Store
+Thumbs.db

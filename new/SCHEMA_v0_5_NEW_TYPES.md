@@ -27,9 +27,9 @@
 
 **UI.** Two columns. Left items in canonical order. Right items shuffled (plus any `rightExtras`). Tap a left item to select it, tap a right item to pair. Tap an existing pair to break it. Pairs are colour-coded so the matching is visible. Submit when all left items are paired (or with a "submit anyway" fallback).
 
-**Marker.** For each `pairs[i]`, the user has paired left `i` with some canonical right index `j`. Mark is +1 if `i === j`. Total awarded = correct pairs, capped at `marks`. Default `marks = pairs.length`.
+**Marker.** For each `pairs[i]`, the student has paired left `i` with some right tile (which may be a canonical pair tile or a `rightExtras` distractor). The student earns +1 if the **text** of the chosen right tile equals `pairs[i].right` exactly. Compared by value rather than canonical index, so non-injective matchings work: two pairs that legitimately share the same right text (e.g. "Planet → a star" and "Comet → a star") both score when the student pairs either left with any tile bearing that text. Total awarded is capped at `marks`. Default `marks = pairs.length`.
 
-**Schema notes.** `pairs[i].right` is the canonical right partner for `pairs[i].left`. Distractor right items live in `rightExtras` and have no canonical left. `shuffleRight` defaults to `true`; set `false` if the question wants a fixed display order.
+**Schema notes.** `pairs[i].right` is the correct right value for `pairs[i].left`. Distractor right items live in `rightExtras`. `shuffleRight` defaults to `true`; set `false` if the question needs a fixed display order. **Authoring tip:** if multiple pairs share the same right value, the engine renders one tile per pair entry (one "a star" tile per pair pointing to it). To make a non-injective matching genuinely discriminating against a "everything matches the same thing" wrong belief, add an extra "a star" tile via `rightExtras` so a student who wrongly thinks ALL items match "a star" can place all of them there and be wrong about most of them. Without that extra, the student is forced to spread their answers and accidentally gets some right.
 
 ---
 

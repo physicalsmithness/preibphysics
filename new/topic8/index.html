@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf6ed">
+  <title>Pre-IB Physics Practice — Topic 8</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-eyebrow">Pre-IB Physics · Practice</div>
+    <h1 class="brand-title">Topic 8</h1>
+    <div class="brand-sub">Edexcel International GCSE Single Award · question-by-question drill</div>
+  </div>
+  <div class="header-actions">
+    <button id="settings-btn" class="icon-btn" aria-label="Settings">⚙ Settings</button>
+  </div>
+</header>
+
+<!-- v1.3: surface per-type filters here so they're always visible. -->
+<div id="type-strip" class="type-strip"></div>
+
+<div class="app">
+  <main class="col-main">
+    <div id="progress-line" class="progress-line"></div>
+    <button id="cov-drawer-btn" class="cov-drawer-btn" type="button">▦ Coverage map</button>
+    <section id="qcard" class="qcard"></section>
+  </main>
+
+  <aside id="cov-drawer" class="col-side">
+    <div class="cov-drawer-panel">
+      <button id="cov-drawer-close" class="cov-drawer-close" type="button" aria-label="Close coverage map">×</button>
+      <section id="coverage" class="coverage"></section>
+    </div>
+  </aside>
+</div>
+
+<!-- Settings panel -->
+<div id="settings-overlay" class="settings-overlay">
+  <div class="settings-panel" role="dialog" aria-label="Settings">
+    <div class="settings-hd">
+      <div class="settings-title">Settings</div>
+      <button id="settings-close" class="settings-close-btn" aria-label="Close">×</button>
+    </div>
+
+    <div class="settings-section">
+      <h3>Reset progress</h3>
+      <p>This deletes every attempt logged on this device. There is no undo.</p>
+      <button id="reset-progress" class="danger-btn" type="button">Reset all progress</button>
+    </div>
+
+    <div class="settings-section">
+      <h3>Feedback</h3>
+      <p>Spotted something wrong, or got an idea? Tell your teacher: tag the question id (it's logged in the page) so they can find it.</p>
+      <p class="settings-link"><a href="mailto:?subject=Pre-IB%20Physics%20Practice%20feedback">Email feedback</a></p>
+    </div>
+
+    <div class="settings-section">
+      <h3>About</h3>
+      <p>This is a revision tool for the Edexcel International GCSE Single Award (4SS0) physics specification, Topic 8. Your progress lives in this browser only — clearing the browser data resets it.</p>
+    </div>
+
+    <div class="settings-footer">
+      <span class="settings-version">v <span id="settings-version">v1</span></span>
+      &nbsp;·&nbsp;
+      <span>Smithics</span>
+    </div>
+  </div>
+</div>
+
+<!-- Subtag drill-down modal -->
+<div id="drilldown-overlay" class="drilldown-overlay" aria-hidden="true">
+  <div class="drilldown-panel" role="dialog" aria-label="Subtag stats">
+    <div id="drilldown-content"></div>
+  </div>
+</div>
+
+<!-- Topic 8 config: defines window.TOPIC_CONFIG with vocab, storage key, etc.
+     MUST load before engine.js. -->
+<script src="topic8_config.js"></script>
+
+<!-- Topic 8 question bank: defines window.PREIB_TOPIC8_QUESTIONS. -->
+<script src="topic8_questions.js"></script>
+
+<!-- Shared engine, lives in the parent folder. -->
+<script src="../engine.js"></script>
+
+</body>
+</html>

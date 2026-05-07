@@ -19,14 +19,25 @@
   "use strict";
 
   /* ──────────────────────────────────────────────────────────────────────────
-     1. Topic 7 vocabulary
-     Source of truth: SCHEMA_v0_4.md §6. The questions file does not ship the
-     vocabulary, so we hardcode it here. Five parent groups, twenty subtags,
-     plus two cross-cutting tags (definition, extended_writing) which are NOT
-     coverage-map subtags — they are analytics labels only.
+     0. Topic configuration (v1.5.2 multi-topic support)
+     Each per-topic deployment provides a window.TOPIC_CONFIG before engine.js
+     loads. The engine reads vocab, atoms, storageKey, and questionsVar from it.
+     If TOPIC_CONFIG is not set (the existing Topic 7 deployment in `new/`),
+     the engine falls back to the Topic 7 defaults baked in below. So nothing
+     breaks for the existing single-topic deployment.
      ────────────────────────────────────────────────────────────────────────── */
 
-  const VOCAB = {
+  const TOPIC_CONFIG = (typeof window.TOPIC_CONFIG === "object" && window.TOPIC_CONFIG !== null)
+    ? window.TOPIC_CONFIG : {};
+  const QUESTIONS_VAR = TOPIC_CONFIG.questionsVar || "PREIB_RAD_QUESTIONS";
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     1. Topic vocabulary
+     Source of truth: TOPIC_CONFIG.vocab when set; otherwise the Topic 7
+     defaults baked in below (mirrors SCHEMA_v0_4.md §6).
+     ────────────────────────────────────────────────────────────────────────── */
+
+  const VOCAB = TOPIC_CONFIG.vocab || {
     parentGroups: [
       {
         id: "basics",
@@ -107,9 +118,10 @@
      coloured block, each cell coloured by the most-recent attempts on
      questions that declared that atom.
      Subtags not in ATOMS render the original single-block tile.
+     v1.5.2: also configurable via TOPIC_CONFIG.atoms.
      ────────────────────────────────────────────────────────────────────────── */
 
-  const ATOMS = {
+  const ATOMS = TOPIC_CONFIG.atoms || {
     radiation_types: [
       // Composition: what the radiation is made of
       { id: "alpha_composition", name: "α composition (2p + 2n / He nucleus)", group: "alpha", attr: "composition" },
@@ -141,8 +153,18 @@
     return m;
   })();
 
-  function subtagIsAtomised(subtag) {
+  function subtagHasDesignedAtoms(subtag) {
     return Array.isArray(ATOMS[subtag]) && ATOMS[subtag].length > 0;
+  }
+  // v1.5.3: every subtag with active questions is treated as atomised. If a
+  // designed atom registry exists (e.g. radiation_types), the mosaic uses
+  // that bespoke layout. Otherwise it auto-atomises: each question in the
+  // subtag becomes one cell. This addresses the user's "size of the group
+  // must reflect the concepts underneath" feedback for topics that don't
+  // yet have a designed registry (Topic 8 etc).
+  function subtagIsAtomised(subtag) {
+    if (subtagHasDesignedAtoms(subtag)) return true;
+    return (SUBTAG_COUNTS[subtag] || 0) > 0;
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
@@ -347,14 +369,32 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   function markMatching(q, pairings) {
-    // pairings is { leftIdx: canonicalRightIdx } where leftIdx and the canonical
-    // rightIdx both index into q.pairs. A correct pair is leftIdx === rightIdx.
+    // pairings is { leftIdx: chosenRightIdx } where leftIdx indexes into
+    // q.pairs and chosenRightIdx indexes into the displayed right column
+    // (which contains pairs[*].right values plus rightExtras).
+    //
+    // v1.5.3: marker now compares by right TEXT value, not by canonical index.
+    // This means non-injective matchings work correctly: if two pairs share
+    // the same right text (e.g. "Planet → a star" and "Comet → a star"),
+    // pairing either left with any "a star" tile scores. Without this fix,
+    // identical-right pairings could only score one of the matches no matter
+    // what the student picked.
     const pairs = Array.isArray(q.pairs) ? q.pairs : [];
+    const extras = Array.isArray(q.rightExtras) ? q.rightExtras : [];
     const possible = q.marks || pairs.length || 1;
+
+    function rightTextAt(idx) {
+      if (idx == null) return null;
+      if (idx < pairs.length) return pairs[idx].right;
+      const ei = idx - pairs.length;
+      return (ei >= 0 && ei < extras.length) ? extras[ei] : null;
+    }
+
     let awarded = 0;
     if (pairings && typeof pairings === "object") {
-      pairs.forEach(function (_, i) {
-        if (pairings[i] === i) awarded++;
+      pairs.forEach(function (pair, i) {
+        const userText = rightTextAt(pairings[i]);
+        if (userText != null && userText === pair.right) awarded++;
       });
     }
     if (awarded > possible) awarded = possible;
@@ -571,8 +611,8 @@
      Per IMPLEMENTATION_BRIEF_v1.md §3.6.
      ────────────────────────────────────────────────────────────────────────── */
 
-  const STORAGE_KEY = "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.1";
+  const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
+  const APP_VERSION = "v1.5.7";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -598,6 +638,13 @@
   // The drilldown UI lets the user pick.
   const COVERAGE_WINDOW_OPTIONS = [2, 5, 10, 100]; // 100 stands in for "all"
 
+  // v1.5.5: filter is now {type, id}. Migrate older string filters.
+  function migrateFilter(raw) {
+    if (typeof raw === "string" && raw) return { type: "subtag", id: raw };
+    if (raw && typeof raw === "object" && raw.type && raw.id) return raw;
+    return null;
+  }
+
   function loadStore() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -620,11 +667,14 @@
       if (COVERAGE_WINDOW_OPTIONS.indexOf(coverageWindow) === -1) coverageWindow = 2;
       return {
         attempts: Array.isArray(parsed.attempts) ? parsed.attempts : [],
-        activeFilter: typeof parsed.activeFilter === "string" ? parsed.activeFilter : null,
+        activeFilter: migrateFilter(parsed.activeFilter),
         lastSeen: parsed.lastSeen || null,
         version: parsed.version || APP_VERSION,
         excludedTypes: excludedTypes,
-        coverageWindow: coverageWindow
+        coverageWindow: coverageWindow,
+        // v1.5.7: shuffle-deck state. Both nullable; lazy-built on first pick.
+        deck: (parsed.deck && Array.isArray(parsed.deck.ids)) ? parsed.deck : null,
+        questionState: (parsed.questionState && typeof parsed.questionState === "object") ? parsed.questionState : {}
       };
     } catch (e) {
       console.warn("Storage corrupt, resetting:", e);
@@ -640,7 +690,10 @@
       version: APP_VERSION,
       // Long-answer hidden by default; everything else visible.
       excludedTypes: ["long"],
-      coverageWindow: 2
+      coverageWindow: 2,
+      // v1.5.7: shuffle-deck state. Lazy-built on first pickNextQuestion.
+      deck: null,
+      questionState: {}
     };
   }
 
@@ -657,7 +710,29 @@
 
   function recordAttempt(rec) {
     store.attempts.push(rec);
+    updateSkipForQuestion(rec.questionId);
     persist();
+  }
+
+  // v1.5.7: streak is computed fresh from attempt history (so adjustMark
+  // automatically reflects in the streak). skipRemaining is stored.
+  function computeStreakForQuestion(qid) {
+    let streak = 0;
+    for (let i = store.attempts.length - 1; i >= 0; i--) {
+      const a = store.attempts[i];
+      if (a.questionId !== qid) continue;
+      if (a.status === "full") streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  function updateSkipForQuestion(qid) {
+    if (!store.questionState) store.questionState = {};
+    if (!store.questionState[qid]) store.questionState[qid] = { skipRemaining: 0 };
+    const streak = computeStreakForQuestion(qid);
+    // 2 in a row → skip 1 pass; 3 → skip 2; 4 → skip 3; etc.
+    store.questionState[qid].skipRemaining = (streak >= 2) ? (streak - 1) : 0;
   }
 
   function clearProgress() {
@@ -669,7 +744,7 @@
      5. Question bank: load and index
      ────────────────────────────────────────────────────────────────────────── */
 
-  const ALL_QUESTIONS = Array.isArray(window.PREIB_RAD_QUESTIONS) ? window.PREIB_RAD_QUESTIONS : [];
+  const ALL_QUESTIONS = Array.isArray(window[QUESTIONS_VAR]) ? window[QUESTIONS_VAR] : [];
 
   // Per-subtag question count, used to size coverage tiles.
   // Counts only ACTIVE questions: parked excluded, and types in
@@ -704,15 +779,32 @@
   // store.excludedTypes. Conservative rule for type filtering: filter by base
   // type only; if a "short" base happens to have a "long" instance, that's
   // rare enough to ignore for now. The editor will own this properly later.
-  function poolForFilter(subtag) {
-    // Always drop parked questions. The author marks a question parked with
-    // an attached parkedFor note explaining why; the engine must respect it.
+  // v1.5.5: filter is now an object {type: "group"|"subtag"|"question", id: ...}
+  // or null for "show all". poolForFilter handles all three. A legacy string
+  // value (a bare subtag id) is treated as {type:"subtag", id:string}.
+  function poolForFilter(filterSpec) {
     let pool = ALL_QUESTIONS.filter(function (q) { return q.parked !== true; });
-    if (subtag) {
-      pool = pool.filter(function (q) {
-        return Array.isArray(q.tags) && q.tags.indexOf(subtag) !== -1;
-      });
+
+    const f = (typeof filterSpec === "string") ? { type: "subtag", id: filterSpec } : filterSpec;
+    if (f && f.type && f.id) {
+      if (f.type === "group") {
+        // Multi-subtag OR filter: any question whose tags include any subtag
+        // belonging to this group.
+        const grp = VOCAB.parentGroups.find(function (g) { return g.id === f.id; });
+        const subtagIds = grp ? grp.subtags.map(function (st) { return st.id; }) : [];
+        pool = pool.filter(function (q) {
+          if (!Array.isArray(q.tags)) return false;
+          return q.tags.some(function (t) { return subtagIds.indexOf(t) !== -1; });
+        });
+      } else if (f.type === "subtag") {
+        pool = pool.filter(function (q) {
+          return Array.isArray(q.tags) && q.tags.indexOf(f.id) !== -1;
+        });
+      } else if (f.type === "question") {
+        pool = pool.filter(function (q) { return q.id === f.id; });
+      }
     }
+
     const excluded = Array.isArray(store.excludedTypes) ? store.excludedTypes : [];
     if (excluded.length) {
       pool = pool.filter(function (q) { return excluded.indexOf(q.type) === -1; });
@@ -739,21 +831,76 @@
 
   // Avoid showing the same question (any instance) twice in a row if pool > 1.
   let lastQuestionId = null;
+  // v1.5.7: shuffle-deck question selection with streak-based exclusion.
+  // The pool is dealt out as a shuffled deck; cursor advances per pick.
+  // When the deck exhausts, a new pass begins: skipRemaining decrements for
+  // every question, then the next deck is built from those whose
+  // skipRemaining is now 0. Questions with skipRemaining > 0 sit out this
+  // pass. Streak grows only on full-marks attempts; wrong/partial resets it.
+  // Filter or type-exclusion change rebuilds the deck (decrement applies),
+  // so toggling filters effectively advances the pass counter.
+
+  function poolSignature(pool) {
+    return pool.map(function (q) { return q.id; }).sort().join("|");
+  }
+
+  function buildDeck(pool) {
+    if (!store.questionState) store.questionState = {};
+    const qstate = store.questionState;
+
+    // Decrement skipRemaining for every question that has any (this is
+    // "starting a new pass"). Only decrement, don't grow.
+    Object.keys(qstate).forEach(function (qid) {
+      if (qstate[qid].skipRemaining > 0) qstate[qid].skipRemaining--;
+    });
+
+    const ids = [];
+    pool.forEach(function (q) {
+      if (!qstate[q.id]) qstate[q.id] = { skipRemaining: 0 };
+      if (qstate[q.id].skipRemaining > 0) {
+        // Sit out this pass.
+      } else {
+        ids.push(q.id);
+      }
+    });
+
+    shuffleInPlace(ids);
+
+    const newSig = poolSignature(pool);
+    const newPass = (store.deck && store.deck.signature === newSig)
+      ? (store.deck.pass || 1) + 1
+      : 1;
+
+    return { ids: ids, cursor: 0, signature: newSig, pass: newPass };
+  }
+
   function pickNextQuestion(filter) {
     const pool = poolForFilter(filter);
     if (pool.length === 0) return null;
-    if (pool.length === 1) {
-      const q = pool[0];
-      lastQuestionId = q.id;
-      return pickInstance(q);
+    const sig = poolSignature(pool);
+
+    // Build or rebuild the deck if the pool changed or the deck is exhausted.
+    if (!store.deck || store.deck.signature !== sig || store.deck.cursor >= store.deck.ids.length) {
+      store.deck = buildDeck(pool);
+      // Fallback: every question is currently on cooldown → force-include all
+      // so the student isn't left with nothing to do.
+      if (store.deck.ids.length === 0) {
+        store.deck.ids = pool.map(function (q) { return q.id; });
+        shuffleInPlace(store.deck.ids);
+      }
+      persist();
     }
-    let q;
-    let tries = 0;
-    do {
-      q = pool[Math.floor(Math.random() * pool.length)];
-      tries++;
-    } while (q.id === lastQuestionId && tries < 8);
-    lastQuestionId = q.id;
+
+    const qid = store.deck.ids[store.deck.cursor];
+    store.deck.cursor++;
+    persist();
+
+    const q = pool.find(function (qq) { return qq.id === qid; });
+    if (!q) {
+      // Question vanished from pool between deck-build and now (parking?).
+      // Recurse to find a valid one. Capped recursion via deck length.
+      return pickNextQuestion(filter);
+    }
     return pickInstance(q);
   }
 
@@ -852,12 +999,28 @@
   // v1.4 prototype: same idea as coverageForSubtag but at the atom level.
   // Filters store.attempts for ones whose .atoms array contains atomId.
   function coverageForAtom(atomId) {
+    return coverageFromMatches(function (a) {
+      return Array.isArray(a.atoms) && a.atoms.indexOf(atomId) !== -1;
+    });
+  }
+
+  // v1.5.3: same shape as coverageForAtom but matches by questionId. Used for
+  // auto-atomised subtags where each question stands as its own atom-cell.
+  function coverageForQuestion(qId) {
+    return coverageFromMatches(function (a) {
+      return a.questionId === qId;
+    });
+  }
+
+  // Shared coverage-band computation. Walks store.attempts newest-first, picks
+  // up to coverageWindow matches via predicate, returns { attemptCount, avg,
+  // fill, text, textSoft } the same way as coverageForSubtag.
+  function coverageFromMatches(predicate) {
     const matched = [];
     const win = (typeof store.coverageWindow === "number" && store.coverageWindow > 0) ? store.coverageWindow : 2;
     for (let i = store.attempts.length - 1; i >= 0; i--) {
       const a = store.attempts[i];
-      if (!Array.isArray(a.atoms)) continue;
-      if (a.atoms.indexOf(atomId) !== -1) {
+      if (predicate(a)) {
         matched.push(a);
         if (matched.length === win) break;
       }
@@ -998,7 +1161,9 @@
     for (let e = 0; e < extras.length; e++) rightOrder.push(pairs.length + e);
     if (v.shuffleRight !== false) shuffleInPlace(rightOrder);
 
-    const state = { selectedLeft: null, pairings: {} };
+    // v1.5.6: track selection on both sides so pairing works in either order
+    // (left-then-right or right-then-left).
+    const state = { selectedLeft: null, selectedRight: null, pairings: {} };
 
     const matchEl = el("div", { class: "match" });
     const cols = el("div", { class: "match-cols" });
@@ -1021,6 +1186,9 @@
       if (state.selectedLeft != null) {
         leftItems[state.selectedLeft].classList.add("is-selected");
       }
+      if (state.selectedRight != null && rightItems[state.selectedRight]) {
+        rightItems[state.selectedRight].classList.add("is-selected");
+      }
       let colourIdx = 0;
       Object.keys(state.pairings).forEach(function (k) {
         const li = parseInt(k, 10);
@@ -1036,20 +1204,40 @@
       });
     }
 
+    function clearRightForLeft(leftIdx) {
+      // No-op helper for symmetry: removing the entry by leftIdx already does it.
+      delete state.pairings[leftIdx];
+    }
+    function clearAllUsesOfRight(canIdx) {
+      Object.keys(state.pairings).forEach(function (k) {
+        if (state.pairings[k] === canIdx) delete state.pairings[k];
+      });
+    }
+
     pairs.forEach(function (p, i) {
       const item = el("li", {
         class: "match-item match-left-item",
         "data-idx": String(i),
         onClick: function () {
-          // Tap on a paired left clears its pairing.
+          // 1. If this left is already paired, unpair it and clear selection.
           if (state.pairings[i] != null) {
-            delete state.pairings[i];
+            clearRightForLeft(i);
             state.selectedLeft = null;
-          } else if (state.selectedLeft === i) {
-            state.selectedLeft = null;
-          } else {
-            state.selectedLeft = i;
+            state.selectedRight = null;
+            refresh();
+            return;
           }
+          // 2. If a right is currently selected, complete the pair.
+          if (state.selectedRight != null) {
+            clearAllUsesOfRight(state.selectedRight);
+            state.pairings[i] = state.selectedRight;
+            state.selectedLeft = null;
+            state.selectedRight = null;
+            refresh();
+            return;
+          }
+          // 3. Otherwise toggle this left's selection.
+          state.selectedLeft = (state.selectedLeft === i) ? null : i;
           refresh();
         }
       }, p.left);
@@ -1063,19 +1251,28 @@
         class: "match-item match-right-item",
         "data-canonical": String(canIdx),
         onClick: function () {
+          // 1. If this right is already paired with some left, unpair.
+          const pairedLeft = Object.keys(state.pairings).find(function (k) {
+            return state.pairings[k] === canIdx;
+          });
+          if (pairedLeft != null) {
+            delete state.pairings[pairedLeft];
+            state.selectedLeft = null;
+            state.selectedRight = null;
+            refresh();
+            return;
+          }
+          // 2. If a left is currently selected, complete the pair.
           if (state.selectedLeft != null) {
-            // Pair with selected left; break any prior use of this right.
-            Object.keys(state.pairings).forEach(function (k) {
-              if (state.pairings[k] === canIdx) delete state.pairings[k];
-            });
+            clearAllUsesOfRight(canIdx);
             state.pairings[state.selectedLeft] = canIdx;
             state.selectedLeft = null;
-          } else {
-            // No left selected: tap on a paired right unbinds it.
-            Object.keys(state.pairings).forEach(function (k) {
-              if (state.pairings[k] === canIdx) delete state.pairings[k];
-            });
+            state.selectedRight = null;
+            refresh();
+            return;
           }
+          // 3. Otherwise toggle this right's selection.
+          state.selectedRight = (state.selectedRight === canIdx) ? null : canIdx;
           refresh();
         }
       }, text);
@@ -1141,8 +1338,18 @@
     const list = el("ol", { class: "ordering" });
     const rows = [];
 
-    function refresh() {
-      // Clear and rebuild row contents in current order.
+    function refresh(movedOriginalIdx) {
+      // v1.5.4: animate position changes so the user sees what moved. The
+      // arrows are far from the text on wide rows, so without animation the
+      // change is easy to miss. Uses FLIP: capture old positions, mutate
+      // the DOM, capture new positions, apply an inverse transform, then
+      // transition that transform back to zero so the row visibly slides.
+      const oldTops = {};
+      rows.forEach(function (row) {
+        const oid = row.getAttribute("data-original-idx");
+        if (oid != null) oldTops[oid] = row.getBoundingClientRect().top;
+      });
+
       list.innerHTML = "";
       rows.length = 0;
       currentOrder.forEach(function (originalIdx, position) {
@@ -1155,7 +1362,7 @@
             const tmp = currentOrder[position - 1];
             currentOrder[position - 1] = currentOrder[position];
             currentOrder[position] = tmp;
-            refresh();
+            refresh(originalIdx);
           },
           text: "▲"
         });
@@ -1169,18 +1376,44 @@
             const tmp = currentOrder[position + 1];
             currentOrder[position + 1] = currentOrder[position];
             currentOrder[position] = tmp;
-            refresh();
+            refresh(originalIdx);
           },
           text: "▼"
         });
         downBtn.disabled = (position === currentOrder.length - 1);
-        const row = el("li", { class: "ord-row" }, [
+        const row = el("li", {
+          class: "ord-row",
+          "data-original-idx": String(originalIdx)
+        }, [
           el("span", { class: "ord-num", text: String(position + 1) }),
           el("span", { class: "ord-text", text: items[originalIdx] }),
           el("span", { class: "ord-controls" }, [upBtn, downBtn])
         ]);
         list.appendChild(row);
         rows.push(row);
+      });
+
+      // FLIP step: animate any row whose top has changed since the last
+      // refresh. Skip on the very first render (oldTops is empty).
+      rows.forEach(function (row) {
+        const oid = row.getAttribute("data-original-idx");
+        const oldTop = oldTops[oid];
+        if (oldTop == null) return;
+        const newTop = row.getBoundingClientRect().top;
+        const dy = oldTop - newTop;
+        if (Math.abs(dy) < 1) return;
+        row.style.transform = "translateY(" + dy + "px)";
+        row.style.transition = "none";
+        // Force a reflow so the browser registers the starting transform.
+        void row.offsetHeight;
+        row.style.transition = "transform 0.35s ease-out";
+        row.style.transform = "";
+        // Highlight the row the user just moved (vs the ones that shifted
+        // around it) with a brief cool-blue wash. Comes from CSS.
+        if (oid === String(movedOriginalIdx)) {
+          row.classList.add("ord-row-flashed");
+          setTimeout(function () { row.classList.remove("ord-row-flashed"); }, 900);
+        }
       });
     }
     refresh();
@@ -1208,6 +1441,39 @@
     const itemEls = {};
     const binEls = {};
 
+    // v1.5.7: HTML5 drag-and-drop for desktop alongside the existing tap-to-
+    // select interaction (which still works for touch). On drag of an item,
+    // store its index in dataTransfer; bins and the strip both accept drops.
+    function attachDragSource(el, itemIdx) {
+      el.setAttribute("draggable", "true");
+      el.addEventListener("dragstart", function (e) {
+        e.dataTransfer.setData("text/plain", String(itemIdx));
+        e.dataTransfer.effectAllowed = "move";
+        el.classList.add("cat-item-dragging");
+      });
+      el.addEventListener("dragend", function () {
+        el.classList.remove("cat-item-dragging");
+      });
+    }
+    function attachDropTarget(target, onDropItem) {
+      target.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        target.classList.add("cat-drop-hover");
+      });
+      target.addEventListener("dragleave", function () {
+        target.classList.remove("cat-drop-hover");
+      });
+      target.addEventListener("drop", function (e) {
+        e.preventDefault();
+        target.classList.remove("cat-drop-hover");
+        const raw = e.dataTransfer.getData("text/plain");
+        const itemIdx = parseInt(raw, 10);
+        if (isNaN(itemIdx)) return;
+        onDropItem(itemIdx);
+      });
+    }
+
     function refresh() {
       // Strip shows unplaced items.
       strip.innerHTML = "";
@@ -1223,6 +1489,7 @@
           },
           text: item.text
         });
+        attachDragSource(it, i);
         itemEls[i] = it;
         strip.appendChild(it);
       });
@@ -1235,35 +1502,68 @@
         const placedList = el("div", { class: "cat-bin-items" });
         items.forEach(function (item, i) {
           if (state.placements[i] !== binId) return;
-          const it = el("button", {
+          // v1.5.6: placed item is a div (not a button) with an explicit ×
+          // button to remove. Clicking the body of the placed item does
+          // nothing (specifically: doesn't bubble up to the bin's place
+          // handler, and doesn't remove). The × button removes.
+          const removeBtn = el("button", {
+            class: "cat-item-remove",
             type: "button",
-            class: "cat-item is-placed",
-            "data-idx": String(i),
-            onClick: function () {
+            title: "Remove from bin",
+            "aria-label": "Remove from bin",
+            onClick: function (e) {
+              e.stopPropagation();
               delete state.placements[i];
               refresh();
             },
-            text: item.text
+            text: "×"
           });
-          placedList.appendChild(it);
+          const placedItem = el("div", {
+            class: "cat-item is-placed",
+            "data-idx": String(i),
+            onClick: function (e) {
+              // Swallow the click so it doesn't reach the bin and trigger a
+              // re-place of whatever is currently selected.
+              e.stopPropagation();
+            }
+          }, [
+            el("span", { class: "cat-item-text", text: item.text }),
+            removeBtn
+          ]);
+          attachDragSource(placedItem, i);
+          placedList.appendChild(placedItem);
         });
         binWrap.appendChild(placedList);
       });
     }
 
     wrap.appendChild(strip);
+    // The strip is also a drop target — drop a placed item back onto the
+    // strip to remove it from its bin.
+    attachDropTarget(strip, function (itemIdx) {
+      delete state.placements[itemIdx];
+      state.selectedItem = null;
+      refresh();
+    });
     const binsWrap = el("div", { class: "cat-bins" });
     bins.forEach(function (binId) {
       const binWrap = el("div", {
         class: "cat-bin",
         "data-bin": binId,
         onClick: function () {
+          // Bin clicks place the currently-selected item. Clicks on a placed
+          // item don't reach here (the placed item's handler stops them).
           if (state.selectedItem != null) {
             state.placements[state.selectedItem] = binId;
             state.selectedItem = null;
             refresh();
           }
         }
+      });
+      attachDropTarget(binWrap, function (itemIdx) {
+        state.placements[itemIdx] = binId;
+        state.selectedItem = null;
+        refresh();
       });
       binEls[binId] = binWrap;
       binsWrap.appendChild(binWrap);
@@ -1626,6 +1926,10 @@
     if (f >= 0.999) attempt.status = "full";
     else if (f <= 0.001) attempt.status = "none";
     else attempt.status = "partial";
+    // v1.5.7: re-derive skip state for this question from the now-updated
+    // attempts. If the user upgraded a partial to full, the streak grows;
+    // if they downgraded, it resets.
+    if (attempt.questionId) updateSkipForQuestion(attempt.questionId);
     persist();
 
     // Update the visible score line + status colour without a full re-render.
@@ -2037,19 +2341,44 @@
     //   2. A 200ms grace window after the listener attaches. If anything
     //      sneaks through in that window (focus shifting to a button while
     //      Enter is still down, browser quirks), it's ignored.
+    // v1.5.3: belt and braces. The 200ms grace turned out to be too short
+    // on at least one observed case, plus relying on auto-repeat detection
+    // alone misses scenarios where the same physical Enter generates a fresh
+    // keydown (focus shifting between elements mid-flight, certain browser
+    // quirks). Now we (a) require an explicit Enter keyup before the listener
+    // arms, so any Enter still being held when showFeedback ran is fully
+    // released before the listener acts; (b) keep the e.repeat guard; (c)
+    // keep a 300ms time grace as a final safety net.
     let listenerArmedAt = 0;
     function nextOnEnter(e) {
       if (e.key !== "Enter") return;
       if (e.repeat) return;
-      if (Date.now() - listenerArmedAt < 200) return;
+      if (Date.now() - listenerArmedAt < 300) return;
       e.preventDefault();
       document.removeEventListener("keydown", nextOnEnter);
       nextBtn.click();
     }
-    setTimeout(function () {
-      listenerArmedAt = Date.now();
-      document.addEventListener("keydown", nextOnEnter);
-    }, 0);
+    function armOnNextKeyup() {
+      // Wait for any Enter currently down to come up, then arm the listener.
+      function onUp(e) {
+        if (e.key !== "Enter") return;
+        document.removeEventListener("keyup", onUp);
+        listenerArmedAt = Date.now();
+        document.addEventListener("keydown", nextOnEnter);
+      }
+      document.addEventListener("keyup", onUp);
+      // Fallback: if no Enter keyup ever fires (because submit was via mouse
+      // or button click), arm after 300ms anyway. We compete with the keyup
+      // path; whichever fires first wins, the loser is a no-op.
+      setTimeout(function () {
+        document.removeEventListener("keyup", onUp);
+        if (listenerArmedAt === 0) {
+          listenerArmedAt = Date.now();
+          document.addEventListener("keydown", nextOnEnter);
+        }
+      }, 300);
+    }
+    armOnNextKeyup();
 
     // Bump the coverage map
     renderCoverage();
@@ -2080,10 +2409,10 @@
     root.appendChild(hd);
 
     if (store.activeFilter) {
-      const stinfo = SUBTAG_INDEX[store.activeFilter];
+      const lab = activeFilterLabel();
       const filterStrip = el("div", { class: "cov-filter-strip" }, [
-        el("span", { class: "cov-filter-eyebrow", text: "Filter:" }),
-        el("span", { class: "cov-filter-name", text: stinfo ? stinfo.name : store.activeFilter })
+        el("span", { class: "cov-filter-eyebrow", text: lab ? (lab.kind + ":") : "Filter:" }),
+        el("span", { class: "cov-filter-name", text: lab ? lab.text : "" })
       ]);
       root.appendChild(filterStrip);
     }
@@ -2093,24 +2422,20 @@
       const groupTotal = group.subtags.reduce(function (s, st) { return s + (SUBTAG_COUNTS[st.id] || 0); }, 0);
       if (groupTotal === 0) return;
 
-      const groupEl = el("div", { class: "cov-group" });
+      const af = store.activeFilter;
+      const isGroupActive = af && af.type === "group" && af.id === group.id;
+      const groupEl = el("div", { class: "cov-group" + (isGroupActive ? " cov-group-active" : "") });
       const groupHd = el("div", { class: "cov-group-hd" }, [
         el("button", {
           class: "cov-group-name",
           type: "button",
           title: "Filter to all of " + group.name,
           onClick: function () {
-            // Filter to a "group" by picking its first subtag is wrong;
-            // brief asks for "all subtags in that group". We don't have a
-            // cross-subtag OR filter in v1 (engine only stores a single
-            // active filter). Approximation: filter to the group's most-
-            // populous subtag and trust the user understood the click as
-            // "narrow the row". Honest alternative is to disable the group
-            // header; but we keep the header as a quick "show all" reset
-            // for that group.  v1.5 should add a multi-tag filter.
-            // For v1, clicking the group-header simply clears the filter
-            // (showing everything across all groups).
-            setFilter(null);
+            // v1.5.5: real group-level filter. The pool now includes any
+            // question whose tags reference any subtag in this group.
+            // If we're already filtered to this group, clicking again clears.
+            if (isGroupActive) setFilter(null);
+            else setFilter({ type: "group", id: group.id });
           },
           text: group.name
         }),
@@ -2123,11 +2448,25 @@
       group.subtags.forEach(function (st) {
         const count = SUBTAG_COUNTS[st.id] || 0;
         if (count === 0) return;
-        const isActive = (store.activeFilter === st.id);
+        // v1.5.5: a tile is "active" when the current filter is exactly this
+        // subtag, OR when the filter is at a higher/lower level that includes
+        // this subtag (group filter on its parent, question filter on a Q
+        // tagged with this subtag). Different visual treatment per level.
+        const af = store.activeFilter;
+        const isExactSubtag = af && af.type === "subtag" && af.id === st.id;
+        const isInActiveGroup = af && af.type === "group" && groupIdForSubtag(st.id) === af.id;
+        const containsActiveQ = af && af.type === "question" && filterIncludesSubtag(st.id);
+        const isActive = isExactSubtag;
         const atomised = subtagIsAtomised(st.id);
         // Atomised tiles need a bit more visual room so the atom mosaic reads.
         // Boost their flex-grow proportionally to atom count.
-        const growBoost = atomised ? Math.max(count, ATOMS[st.id].length * 1.2) : count;
+        // Sizing: designed atom registries get their atom count as a floor;
+        // auto-atomised subtags use the question count (each question = 1 cell).
+        const growBoost = atomised
+          ? (subtagHasDesignedAtoms(st.id)
+              ? Math.max(count, ATOMS[st.id].length * 1.2)
+              : count)
+          : count;
 
         // Atomised tiles: no overall coverage colour, no visible name on the
         // tile face. The atom cells carry the colour; the subtag name lives
@@ -2159,12 +2498,23 @@
           ];
         }
         const tile = el("button", {
-          class: "tile" + (isActive ? " tile-active" : "") + (atomised ? " tile-atomised" : ""),
+          class: "tile"
+                 + (isActive ? " tile-active" : "")
+                 + (isInActiveGroup ? " tile-in-active-group" : "")
+                 + (containsActiveQ ? " tile-contains-active-q" : "")
+                 + (atomised ? " tile-atomised" : ""),
           type: "button",
           title: titleText,
           "data-id": st.id,
           style: tileStyle,
-          onClick: function () { openDrilldown(st.id); }
+          // v1.5.5: tile click sets the subtag filter and opens the drilldown.
+          // The drilldown's filter button still toggles the filter on/off as
+          // before. Click an atom cell inside the tile to drill further to a
+          // single question (handled in renderAutoAtomMosaic).
+          onClick: function () {
+            setFilter({ type: "subtag", id: st.id });
+            openDrilldown(st.id);
+          }
         }, children);
         tiles.appendChild(tile);
       });
@@ -2194,8 +2544,11 @@
     root.appendChild(legend);
   }
 
-  function setFilter(subtag) {
-    store.activeFilter = subtag;
+  function setFilter(filterSpec) {
+    // v1.5.5: filterSpec can be null (clear), a string (legacy = subtag), or
+    // {type: "group"|"subtag"|"question", id: string}.
+    if (typeof filterSpec === "string") filterSpec = { type: "subtag", id: filterSpec };
+    store.activeFilter = filterSpec || null;
     persist();
     // On mobile, close the coverage drawer once a filter is set/cleared so
     // the student goes straight back to the question.
@@ -2204,6 +2557,48 @@
     renderQuestion();
     renderCoverage();
     updateProgressLine();
+  }
+
+  // Helper: which group does a subtag belong to?
+  function groupIdForSubtag(subtagId) {
+    const info = SUBTAG_INDEX[subtagId];
+    return info ? info.parentId : null;
+  }
+
+  // Helper: does the active filter "include" this subtag (for highlighting)?
+  function filterIncludesSubtag(subtagId) {
+    const af = store.activeFilter;
+    if (!af) return false;
+    if (af.type === "subtag") return af.id === subtagId;
+    if (af.type === "group") return groupIdForSubtag(subtagId) === af.id;
+    if (af.type === "question") {
+      // Find the question and check its subtags.
+      const q = ALL_QUESTIONS.find(function (qq) { return qq.id === af.id; });
+      if (!q || !Array.isArray(q.tags)) return false;
+      return q.tags.indexOf(subtagId) !== -1;
+    }
+    return false;
+  }
+
+  // Helper: human-readable label for the current filter, for the coverage strip.
+  function activeFilterLabel() {
+    const af = store.activeFilter;
+    if (!af) return null;
+    if (af.type === "group") {
+      const grp = VOCAB.parentGroups.find(function (g) { return g.id === af.id; });
+      return { kind: "Group", text: grp ? grp.name : af.id };
+    }
+    if (af.type === "subtag") {
+      return { kind: "Subtag", text: SUBTAG_INDEX[af.id] ? SUBTAG_INDEX[af.id].name : af.id };
+    }
+    if (af.type === "question") {
+      const q = ALL_QUESTIONS.find(function (qq) { return qq.id === af.id; });
+      const promptPreview = q && q.prompt
+        ? (String(q.prompt).length > 60 ? String(q.prompt).slice(0, 57) + "…" : String(q.prompt))
+        : af.id;
+      return { kind: "Question", text: promptPreview };
+    }
+    return null;
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
@@ -2243,6 +2638,17 @@
   // We don't add row labels (composition/charge/etc) because some of those
   // names would hint at answers; users see them on hover and in drill-down.
   function renderAtomMosaic(subtagId) {
+    // Two paths: a designed atom registry (radiation_types) gets the bespoke
+    // grouped mosaic with α/β/γ column markers; a subtag with no designed
+    // registry gets an auto-mosaic where each question in the subtag becomes
+    // one cell.
+    if (subtagHasDesignedAtoms(subtagId)) {
+      return renderDesignedAtomMosaic(subtagId);
+    }
+    return renderAutoAtomMosaic(subtagId);
+  }
+
+  function renderDesignedAtomMosaic(subtagId) {
     const atomList = ATOMS[subtagId];
     if (!atomList) return el("span");
 
@@ -2276,6 +2682,50 @@
       mosaic.appendChild(cell);
     });
     wrap.appendChild(mosaic);
+    return wrap;
+  }
+
+  // v1.5.3: auto-atomised mosaic. Each active question in the subtag becomes
+  // one cell. Coverage is per-question, using attempts whose questionId
+  // matches. Cells are fixed-size and flex-wrap so cell count drives both
+  // width and height — bigger subtags fill more visual space.
+  function renderAutoAtomMosaic(subtagId) {
+    const wrap = el("span", { class: "atom-mosaic-auto" });
+    const af = store.activeFilter;
+    ALL_QUESTIONS.forEach(function (q) {
+      if (q.parked === true) return;
+      if (!Array.isArray(q.tags) || q.tags.indexOf(subtagId) === -1) return;
+      const cov = coverageForQuestion(q.id);
+      // Title shows the question id and a truncated prompt so hover reveals
+      // which specific question this cell tracks. Don't dump the full prompt
+      // because that may give away an answer.
+      const promptPreview = q.prompt
+        ? (String(q.prompt).length > 90 ? String(q.prompt).slice(0, 87) + "…" : String(q.prompt))
+        : "";
+      const titleParts = [q.id];
+      if (promptPreview) titleParts.push(promptPreview);
+      if (cov.attemptCount === 0) titleParts.push("untried");
+      else titleParts.push(cov.attemptCount + " recent · avg " + Math.round(cov.avg * 100) + "%");
+      const isThisQActive = af && af.type === "question" && af.id === q.id;
+      const cell = el("span", {
+        class: "atom-cell atom-cell-auto"
+               + (cov.attemptCount === 0 ? " is-untried" : "")
+               + (isThisQActive ? " atom-cell-active" : ""),
+        title: titleParts.join(" · "),
+        style: "background:" + cov.fill + ";",
+        "data-question": q.id,
+        // v1.5.5: clicking a cell narrows the practice pool to that single
+        // question. Useful when you've spotted the one you got wrong and want
+        // to retry it. stopPropagation so the click doesn't bubble up to the
+        // tile (which would set a subtag-level filter and override this).
+        onClick: function (e) {
+          e.stopPropagation();
+          if (isThisQActive) setFilter(null);
+          else setFilter({ type: "question", id: q.id });
+        }
+      });
+      wrap.appendChild(cell);
+    });
     return wrap;
   }
 
@@ -2426,12 +2876,13 @@
     }
 
     // Footer actions
-    const isCurrent = (store.activeFilter === subtagId);
+    const af = store.activeFilter;
+    const isCurrent = !!(af && af.type === "subtag" && af.id === subtagId);
     const filterBtn = el("button", {
       class: "btn btn-primary dd-filter-btn",
       type: "button",
       onClick: function () {
-        setFilter(isCurrent ? null : subtagId);
+        setFilter(isCurrent ? null : { type: "subtag", id: subtagId });
         closeDrilldown();
       },
       text: isCurrent ? "Stop filtering, show all subtags" : "Filter practice to this subtag"
@@ -2470,9 +2921,20 @@
     const touchedSubtags = new Set();
     store.attempts.forEach(function (a) { (a.subtags || []).forEach(function (s) { touchedSubtags.add(s); }); });
     const totalSubtags = Object.keys(SUBTAG_INDEX).filter(function (id) { return SUBTAG_COUNTS[id] > 0; }).length;
+    // v1.5.7: include deck/pass status if a deck exists for the current pool.
+    let deckBit = "";
+    if (store.deck && Array.isArray(store.deck.ids)) {
+      const total = store.deck.ids.length;
+      const done = Math.min(store.deck.cursor, total);
+      const passN = store.deck.pass || 1;
+      if (total > 0) {
+        deckBit = " · pass <b>" + passN + "</b>: <b>" + done + "/" + total + "</b>";
+      }
+    }
     line.innerHTML = "<b>" + n + "</b> attempt" + (n === 1 ? "" : "s")
       + " · last 10: <b>" + avg10 + "%</b>"
-      + " · subtags touched: <b>" + touchedSubtags.size + "/" + totalSubtags + "</b>";
+      + " · subtags touched: <b>" + touchedSubtags.size + "/" + totalSubtags + "</b>"
+      + deckBit;
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
@@ -2602,7 +3064,7 @@
       const card = document.getElementById("qcard");
       if (card) {
         card.innerHTML = "<div class='qcard-empty'><div class='qcard-empty-h'>No questions loaded.</div>"
-          + "<div class='qcard-empty-p'>Make sure topic7_radioactivity.js is included before engine.js.</div></div>";
+          + "<div class='qcard-empty-p'>Make sure your question file (which defines window." + QUESTIONS_VAR + ") is included before engine.js.</div></div>";
       }
       return;
     }
@@ -2634,6 +3096,27 @@
         if (ddOverlay && ddOverlay.classList.contains("open")) closeDrilldown();
         else if (document.getElementById("settings-overlay").classList.contains("open")) closeSettings();
       }
+    });
+
+    // v1.5.3: global Enter-submit for non-text question types (matching,
+    // ordering, categorise, grid). Text-based types (short, long, numeric,
+    // fillblank) have their own input-level Enter handlers that take
+    // precedence because they fire first and call e.preventDefault. This
+    // listener only acts when:
+    //   - we're in the answering phase (not feedback);
+    //   - the focused element isn't a text input or textarea;
+    //   - a Check-answer button is currently in the DOM to click.
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      if (e.repeat) return;
+      if (phase !== "answering") return;
+      const ae = document.activeElement;
+      const tag = (ae && ae.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      const checkBtn = document.querySelector(".qcard .submit-btn");
+      if (!checkBtn) return;
+      e.preventDefault();
+      checkBtn.click();
     });
 
     // Mobile coverage drawer toggle

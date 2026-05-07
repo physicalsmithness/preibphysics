@@ -18,13 +18,34 @@ This is **not** a tweak. Treat it as a rewrite, anchored to the syllabus rather 
 
 ## 2. Read these before starting
 
-In order:
+### Primary sources (anchor everything to these)
 
-1. The Edexcel International GCSE Single Award (4SS0) specification PDF, Topic 7 section. The bank must not exceed the 4SS0 scope. (4PH1-only material is out of scope. The full physics spec PDF can be consulted to confirm what is and isn't 4SS0.)
-2. The teacher's syllabus notes CSV (Topic 7 rows). These are the authoritative source of phrasing for marking, and the canonical statement of what the teacher considers "in" or "out" of scope.
-3. `SCHEMA_v0_5_NEW_TYPES.md` in this folder. Defines the six new question types: matching, multiselect, ordering, categorise, fillblank, grid.
-4. `SCHEMA_v0_4.md` (in the older project docs). Defines the v0.4 base contract: question shape, subtopic vocabulary, instances mechanism, normalisation pre-pass for written answers, parking convention.
-5. The current `topic7_radioactivity.js` to see what you're replacing. Look at it for past-paper-informed phrasing and for parking notes that flag "this is too hard / off-spec / replaced by chunk10". Don't treat it as an outline; treat it as an artefact to mine for usable material.
+These are the three sources of truth. The bank must be defensible against all three.
+
+1. **The Edexcel International GCSE Single Award (4SS0) specification PDF, Topic 7 section.** Defines the scope. The bank must not exceed it. 4PH1-only material is out; the full physics spec PDF can be consulted to confirm boundaries.
+2. **The past papers and their mark schemes** for 4SS0 (and pertinent 4PH1 papers, where the question is in 4SS0 scope). Past papers calibrate difficulty, phrasing conventions, and what examiners actually ask. They carry as much weight as the spec for shaping individual questions; they show the spec in action.
+3. **The teacher's syllabus notes CSV** (Topic 7 rows). The teacher's notes are derived largely from past mark schemes, plus additional content the spec implies could be asked. They're the authoritative phrasing source for marking and the canonical statement of what's "in" or "out" of scope.
+
+If a question can be derived from any one of these, it has a place. If a question goes beyond all three, it's out of scope. If you find a tension between the three (e.g. a past paper tests something the syllabus notes don't mention), flag it in the decisions log; default to the spec.
+
+### Reference docs
+
+4. `SCHEMA_v0_5_NEW_TYPES.md` in this folder. Defines the six question types: matching, multiselect, ordering, categorise, fillblank, grid.
+5. `SCHEMA_v0_4.md` (in the older project docs). The v0.4 base contract: question shape, subtopic vocabulary, instances mechanism, normalisation pre-pass for written answers, parking convention.
+6. The current `topic7_radioactivity.js` to see what you're replacing. Look at it for past-paper-informed phrasing and as a starting point for the audit.
+
+   **The teacher has done a partial parking pass via the editor.** Some questions carry `parked: true`; many haven't been touched yet. Don't assume an unparked question has been blessed; it may simply not have been reviewed. Some questions have also been deleted outright in earlier editor sessions and don't appear in the current file at all; you have what's in the file, that's the input.
+
+   Where a `parkedFor: "..."` note exists, it sometimes captures the reason (off-syllabus, too hard, replaced by atomic mcqs, etc) and sometimes doesn't or is terse. Treat parkedFor notes as a hint, not a verdict. When the note is informative, use it; when it isn't, audit the question fresh.
+
+   In rough terms two flavours of parking are in play:
+
+   - **Parked for content** (off-syllabus, factually wrong, unfixably ambiguous, irrelevant to 4SS0). The teacher doesn't want this question in the bank in any form. Don't convert it. Either delete from the new file entirely, or keep it parked with a clear parkedFor if it might come back later (e.g. for a future 4PH1 commission).
+   - **Parked for format** (the underlying question is fine but the format is wrong, e.g. it's a long-answer that should be a matching or grid; a multi-mark short that should be multi-select). These are conversion candidates. Read the question, identify what it actually tests, pick the right v0.5 type, write a fresh version, unparked.
+
+   You will often have to infer which flavour applies. The parkedFor note may help; the spec scope and the question's content always do.
+
+   Don't treat the existing file as an outline. Treat it as one input among several. The spec, the past papers, and the syllabus notes are the primary inputs.
 
 You do **not** need to read the engine code, the editor code, or the schema design doc for v0.6 (autocomplete-from-vocabulary). Those are not your job.
 
@@ -43,6 +64,8 @@ Roughly 60–100 base questions, each with 2–4 instances where genuine variety
 - Distractor rationales on every MCQ wrong-choice. No exceptions.
 - Every question carries a `specRefs` array referencing the 4SS0 spec point(s) it tests. Off-syllabus questions get parked or deleted.
 - Mark allocations must match the spec's normal allocation for that idea (typically 1 mark per markable point; not inflated).
+
+**Authoring principle: atomise.** Prefer many small, focused questions to few large, multi-part ones. A 4-mark question testing four ideas is almost always better expressed as a 4-row matching, a 4-row grid, or a multi-select with four correct items. Beyond making marking deterministic, atomising lets the coverage map and atom mosaic give the student finer-grained feedback about what they actually know and don't know. When a question can be split into independent pieces, split it.
 
 **Soft targets:**
 
@@ -85,7 +108,15 @@ If you find yourself reaching for `type: "short"` with a markPoints array longer
 
 Process Topic 7 in five passes, one per parent group. Within each pass:
 
-1. **Audit pass.** List every existing question in this group (including parked ones). For each, note: spec point, what it tests, current type, current marks, and the disposition (keep / convert / park / delete). Output this as a markdown table at the start of the chunk's work.
+1. **Audit pass.** List every existing question in this group (including parked ones). For each, note: id, spec point, what it tests, current type, current marks, parking status (`parked: true` or not), the parkedFor reason if any, and the disposition.
+
+   Disposition is one of:
+   - **keep**: question is fine as-is, type is appropriate, content is sound. Carry forward unchanged.
+   - **convert**: content is sound but the type is wrong. Pick the right v0.5 type and rewrite. (This is what most parked-for-format questions become.)
+   - **park**: keep the question in the file but parked. Use this if it might come back later (4PH1 stretch, future tutorials) but isn't right for the v2 bank. Set or carry through `parked: true` and a clear `parkedFor`.
+   - **delete**: drop entirely from the new file. Use this if the content is genuinely wrong, off-syllabus with no future, or redundant with a better version of the same idea.
+
+   Output this audit as a markdown table at the start of the chunk's work.
 2. **Coverage check.** Compare the syllabus notes for this group against the audit. Where is the bank thin? Where is it bloated? Note each gap or surplus.
 3. **Write.** Produce the new question objects for this group, including any new questions to fill gaps. Convert kept-but-converted questions to their new type. Park anything genuinely off-syllabus with a `parked: true` and `parkedFor: "off-syllabus, beyond 4SS0"` note. Delete (don't include) anything that's redundant or clearly broken.
 4. **Sanity.** Read the chunk's questions back. Are there obvious duplicates? Are any spec points still uncovered?
