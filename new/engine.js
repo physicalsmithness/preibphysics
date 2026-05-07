@@ -645,7 +645,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.10";
+  const APP_VERSION = "v1.5.11";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1331,21 +1331,27 @@
 
   function renderMultiselectInput(v, inputWrap) {
     const choices = Array.isArray(v.choices) ? v.choices : [];
+    // v1.5.11: shuffle the displayed order so correct answers don't sit in a
+    // learnable position. Map back to original index on submit. Opt out per
+    // question with shuffleChoices: false.
+    const order = choices.map(function (_, i) { return i; });
+    if (v.shuffleChoices !== false) shuffleInPlace(order);
     const list = el("div", { class: "multiselect" });
-    const inputs = [];
-    choices.forEach(function (text, i) {
+    const inputs = []; // each: { cb, origIdx }
+    order.forEach(function (origIdx) {
+      const text = choices[origIdx];
       const cb = el("input", {
         type: "checkbox",
         class: "ms-cb",
-        id: "ms-cb-" + i,
-        "data-idx": String(i)
+        id: "ms-cb-" + origIdx,
+        "data-orig-idx": String(origIdx)
       });
-      const row = el("label", { class: "ms-row", for: "ms-cb-" + i }, [
+      const row = el("label", { class: "ms-row", for: "ms-cb-" + origIdx }, [
         cb,
         el("span", { class: "ms-text", text: text })
       ]);
       list.appendChild(row);
-      inputs.push(cb);
+      inputs.push({ cb: cb, origIdx: origIdx });
     });
     inputWrap.appendChild(list);
 
@@ -1354,7 +1360,7 @@
       type: "button",
       onClick: function () {
         const checked = [];
-        inputs.forEach(function (cb, i) { if (cb.checked) checked.push(i); });
+        inputs.forEach(function (entry) { if (entry.cb.checked) checked.push(entry.origIdx); });
         const result = markMultiselect(v, checked);
         showFeedback(result, { rawResponse: null, chosenIndex: null, chosenIndices: checked });
       },
@@ -1855,13 +1861,24 @@
     }
 
     if (type === "mcq") {
+      // v1.5.11: shuffle MCQ choices on each delivery so the correct answer
+      // doesn't sit in a learnable position. The user clicks a tile in the
+      // shuffled order; we map back to the original index via origIdx so
+      // answerIndex and distractorRationales (both keyed by original index)
+      // still work. Authors can opt out per question with shuffleChoices: false.
+      const rawChoices = v.choices || [];
+      const order = rawChoices.map(function (_, i) { return i; });
+      if (v.shuffleChoices !== false) shuffleInPlace(order);
       const choices = el("div", { class: "qchoices" });
-      (v.choices || []).forEach(function (choice, i) {
+      order.forEach(function (origIdx) {
+        const choice = rawChoices[origIdx];
         const btn = el("button", {
           class: "choice",
           type: "button",
-          "data-i": i,
-          onClick: function () { submitMCQ(i); }
+          "data-orig-i": String(origIdx),
+          onClick: (function (idx) {
+            return function () { submitMCQ(idx); };
+          })(origIdx)
         }, choice);
         choices.appendChild(btn);
       });
