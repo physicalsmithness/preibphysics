@@ -138,10 +138,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "object_orbiting_planet",
-    "tags": ["objects_inventory"],
+    "tags": ["objects_inventory", "orbit_properties"],
     "specRefs": ["8.4"],
     "difficultyRating": 1,
     "type": "mcq",
+    "atoms": ["moon_orbits"],
     "prompt": "Which of these objects orbits a planet?",
     "choices": ["comet", "dwarf star", "galaxy", "moon"],
     "answerIndex": 3,
@@ -715,10 +716,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "shape_of_planet_orbit",
-    "tags": ["orbit_shapes"],
+    "tags": ["orbit_shapes", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 1,
     "type": "mcq",
+    "atoms": ["planet_shape"],
     "prompt": "Which of these best describes the shape of a planet's orbit around the Sun?",
     "choices": [
       "highly elliptical",
@@ -754,10 +756,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "where_star_sits_comet_orbit",
-    "tags": ["orbit_shapes"],
+    "tags": ["orbit_shapes", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["comet_shape"],
     "prompt": "A comet has a highly elliptical orbit around a star. Where is the star located in the orbit?",
     "choices": [
       "at the centre of the ellipse",
@@ -799,9 +802,10 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "comet_speed_changes",
-    "tags": ["orbit_speeds", "orbit_shapes"],
+    "tags": ["orbit_speeds", "orbit_shapes", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
+    "atoms": ["comet_speed"],
     "type": "mcq",
     "prompt": "Which statement best describes the speed of a comet during its orbit around a star?",
     "choices": [
@@ -823,10 +827,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "planet_speed_constant",
-    "tags": ["orbit_speeds", "orbit_shapes"],
+    "tags": ["orbit_speeds", "orbit_shapes", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 1,
     "type": "mcq",
+    "atoms": ["planet_speed"],
     "prompt": "A planet has a roughly circular orbit around the Sun. What can you say about its orbital speed?",
     "choices": [
       "It is roughly constant throughout the orbit.",
@@ -1009,8 +1014,9 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "moon_orbit_period",
-    "tags": ["orbit_periods"],
+    "tags": ["orbit_periods", "orbit_properties"],
     "specRefs": ["8.5"],
+    "atoms": ["moon_period"],
     "difficultyRating": 1,
     "type": "mcq",
     "prompt": "Approximately how long does the Moon take to make one full orbit around the Earth?",
@@ -1033,9 +1039,10 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "moon_orbit_on_solar_system_diagram",
-    "tags": ["orbit_periods", "objects_inventory", "gravity_causes_orbits"],
+    "tags": ["orbit_periods", "objects_inventory", "gravity_causes_orbits", "orbit_properties"],
     "specRefs": ["8.4", "8.5"],
     "difficultyRating": 2,
+    "atoms": ["moon_orbits"],
     "type": "mcq",
     "prompt": "The diagram shows the Earth in its orbit around the Sun. Which is the correct way to add the Moon's orbit to this diagram?",
     "diagram": {
@@ -1066,10 +1073,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "moons_have_shorter_period_than_planets",
-    "tags": ["orbit_periods"],
+    "tags": ["orbit_periods", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["moon_period", "planet_period"],
     "prompt": "Compared with the time a planet takes to orbit the Sun, how long does a moon typically take to orbit its planet?",
     "choices": [
       "much shorter",
@@ -1467,6 +1475,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.8", "8.9"],
     "difficultyRating": 2,
     "type": "fillblank",
+    "atoms": ["main_sequence_temperature", "red_giant_temperature"],
     "prompt": "The Sun is currently a yellow main sequence star. When it becomes a red giant, its surface temperature {}.",
     "blanks": [
       { "expected": ["decreases", "falls", "drops"] }
@@ -1482,6 +1491,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.8", "8.9"],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["red_giant_temperature", "red_giant_colour"],
     "prompt": "When the Sun becomes a red giant, its surface colour will change from yellow to red. What does this tell you about its surface temperature?",
     "choices": [
       "The surface temperature must have decreased.",
@@ -1921,6 +1931,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9", "7.25"],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["main_sequence_fuel"],
     "prompt": "Why does the Sun eventually leave the main sequence?",
     "choices": [
       "It runs out of hydrogen in its core.",

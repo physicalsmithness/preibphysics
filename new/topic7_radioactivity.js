@@ -665,6 +665,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 3,
     "type": "multiselect",
+    "atoms": ["halflife_random_decay"],
     "prompt": "If decay is random, how can the half-life of an isotope still be a fixed quantity? Tick all the statements that correctly explain this.",
     "choices": [
       "A real sample contains a huge number of nuclei, so the average behaviour is reliable.",
@@ -1374,6 +1375,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 1,
     "type": "fillblank",
+    "atoms": ["halflife_definition"],
     "prompt": "Complete the definition:\nThe half-life of a radioactive isotope is the time taken for the number of unstable {} in a sample to {} (or, equivalently, for the activity of the sample to {}).",
     "blanks": [
       {
@@ -1409,6 +1411,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_definition"],
     "prompt": "The half-life of a radioactive isotope is the time taken for:",
     "choices": [
       "The activity of a sample to halve",
@@ -1435,6 +1438,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_independent_temp"],
     "prompt": "If you heat up a radioactive sample, its half-life:",
     "choices": [
       "Stays the same",
@@ -1461,6 +1465,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 1,
     "type": "mcq",
+    "atoms": ["halflife_isotope_specific", "halflife_independent_temp"],
     "prompt": "Choose the most accurate statement about half-lives.",
     "choices": [
       "Different isotopes have different half-lives, but a given isotope always has the same half-life.",
@@ -1487,6 +1492,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "matching",
+    "atoms": ["halflife_after_n_halflives"],
     "prompt": "Each row shows an isotope and its half-life. Match it to what happens to a sample's activity over the course of one year.",
     "pairs": [
       {
@@ -1516,6 +1522,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "fillblank",
+    "atoms": ["halflife_isotope_specific"],
     "prompt": "Two isotopes of the same element behave identically in chemical reactions. Complete the explanation:\nChemical behaviour depends on an atom's {}. Isotopes of an element have the same number of {} (because they have the same number of {}), so they react in the same way.",
     "blanks": [
       {
@@ -1550,6 +1557,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 3,
     "type": "matching",
+    "atoms": ["halflife_independent_chemical_state"],
     "prompt": "Match each property of an atom to the part of the atom that determines it.",
     "pairs": [
       {
@@ -1619,6 +1627,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_independent_temp", "halflife_independent_chemical_state"],
     "prompt": "Which of the following statements about the half-life of a radioactive isotope is correct?",
     "choices": [
       "The half-life is fixed; it cannot be changed by chemical or physical conditions.",
@@ -1856,6 +1865,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_random_decay"],
     "prompt": "Which of the following best describes radioactive decay?",
     "choices": [
       "Predictable for both individual nuclei and large samples",
@@ -2127,6 +2137,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 3,
     "type": "mcq",
+    "atoms": ["halflife_random_decay", "halflife_definition"],
     "prompt": "What does it mean to say that the half-life of carbon-14 is 5700 years?",
     "choices": [
       "Every individual carbon-14 nucleus will decay after exactly 5700 years",
@@ -4080,6 +4091,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_after_n_halflives"],
     "prompt": "Choose the most accurate statement about nuclear waste.",
     "choices": [
       "Some nuclear waste decays quickly, but other waste remains dangerous for thousands of years",
@@ -4134,6 +4146,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
+    "atoms": ["halflife_isotope_specific"],
     "prompt": "Choose the most accurate statement about nuclear waste storage.",
     "choices": [
       "The storage method depends on the half-lives of the isotopes in the waste",
@@ -4962,6 +4975,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "marks": 1,
+    "atoms": ["halflife_long_means_low_activity"],
     "prompt": "Why is a radioactive substance with a long half-life generally regarded as 'dangerous for a long time'?",
     "choices": [
       "the substance keeps emitting ionising radiation for a long time, because most of it decays only slowly",
@@ -4991,6 +5005,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "marks": 2,
+    "atoms": ["halflife_after_n_halflives"],
     "prompt": "Match each kind of nuclear waste to the storage approach typically used.",
     "pairs": [
       {

@@ -172,6 +172,58 @@
       { id: "alpha_ionising", name: "α ionising power (most)",    group: "alpha", attr: "ionising" },
       { id: "beta_ionising",  name: "β ionising power (medium)",  group: "beta",  attr: "ionising" },
       { id: "gamma_ionising", name: "γ ionising power (least)",   group: "gamma", attr: "ionising" }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // halflife — 8 atoms (added 2026-05-08, Topic 7 atom-registry pass #1).
+    //   groups: what_it_is, what_doesnt_affect_it, quantitative_behaviour
+    //   attrs:  definition, characteristic, statistics, external_factors,
+    //           decay_curve, activity_relation
+    //
+    // Asymmetric matrix: 3 atoms in external_factors (the three
+    // independence facts that share a principle), 1 atom each in the other
+    // attrs. The mosaic renders this fine even though it isn't regular.
+    //
+    // Principle cluster: halflife_independent_temp, halflife_independent_pressure,
+    // halflife_independent_chemical_state share the verbatim principle
+    // "Nuclear processes happen in the nucleus..."
+    // ──────────────────────────────────────────────────────────────────────
+    halflife: [
+      // What half-life is
+      { id: "halflife_definition",
+        name: "Half-life — definition",
+        group: "what_it_is", attr: "definition",
+        principle: "" },
+      { id: "halflife_isotope_specific",
+        name: "Half-life — isotope-specific",
+        group: "what_it_is", attr: "characteristic",
+        principle: "Each isotope's nucleus has a unique structural stability, so each has its own fixed decay probability per second." },
+      { id: "halflife_random_decay",
+        name: "Half-life — random decay, statistical average",
+        group: "what_it_is", attr: "statistics",
+        principle: "Each unstable nucleus has the same fixed per-second probability of decaying. Statistical averaging over very large populations turns a probabilistic process into a fixed half-life." },
+      // What doesn't affect it
+      { id: "halflife_independent_temp",
+        name: "Half-life — independent of temperature",
+        group: "what_doesnt_affect_it", attr: "external_factors",
+        principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
+      { id: "halflife_independent_pressure",
+        name: "Half-life — independent of pressure",
+        group: "what_doesnt_affect_it", attr: "external_factors",
+        principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
+      { id: "halflife_independent_chemical_state",
+        name: "Half-life — independent of chemical state",
+        group: "what_doesnt_affect_it", attr: "external_factors",
+        principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
+      // Quantitative behaviour
+      { id: "halflife_after_n_halflives",
+        name: "Half-life — fraction remaining after n half-lives",
+        group: "quantitative_behaviour", attr: "decay_curve",
+        principle: "Each half-life halves the remaining unstable nuclei; n halvings gives (1/2)ⁿ." },
+      { id: "halflife_long_means_low_activity",
+        name: "Half-life — longer half-life ⇒ lower activity",
+        group: "quantitative_behaviour", attr: "activity_relation",
+        principle: "Activity is decays per second. Longer half-life means each nucleus has a smaller per-second decay probability, so fewer decays per second from the same population." }
     ]
   };
 
