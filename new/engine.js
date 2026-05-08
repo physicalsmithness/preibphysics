@@ -99,7 +99,11 @@
         subtags: [
           { id: "uses_alpha", name: "Uses of alpha" },
           { id: "uses_beta",  name: "Uses of beta" },
-          { id: "uses_gamma", name: "Uses of gamma" }
+          { id: "uses_gamma", name: "Uses of gamma" },
+          // 2026-05-08: umbrella subtag hosting the choosing_isotopes_for_uses
+          // atom registry (10 applications × 3 attrs). Same name as the
+          // registry; mirrors orbit_properties / radiation_types pattern.
+          { id: "choosing_isotopes_for_uses", name: "Choose isotope for use" }
         ]
       },
       {
@@ -109,7 +113,11 @@
           { id: "bio_effects",          name: "Biological effects" },
           { id: "which_most_dangerous", name: "Most dangerous when" },
           { id: "contam_irrad",         name: "Contamination vs irradiation" },
-          { id: "waste_disposal",       name: "Waste & precautions" }
+          { id: "waste_disposal",       name: "Waste & precautions" },
+          // 2026-05-08: umbrella subtag hosting the radiation_safety_principles
+          // atom registry (18 atoms across bio_effects, dose_factors,
+          // danger_profile, time_profile).
+          { id: "radiation_safety_principles", name: "Safety principles" }
         ]
       },
       {
@@ -119,7 +127,10 @@
           { id: "energy_from_nuclear", name: "Nuclear energy" },
           { id: "fission",             name: "Fission" },
           { id: "fusion",              name: "Fusion" },
-          { id: "shielding",           name: "Reactor shielding" }
+          { id: "shielding",           name: "Reactor shielding" },
+          // 2026-05-08: umbrella subtag hosting the nuclear_processes atom
+          // registry (16 atoms across fission, fusion, decay).
+          { id: "nuclear_processes",   name: "Nuclear processes" }
         ]
       }
     ],
@@ -175,55 +186,247 @@
     ],
 
     // ──────────────────────────────────────────────────────────────────────
-    // halflife — 8 atoms (added 2026-05-08, Topic 7 atom-registry pass #1).
-    //   groups: what_it_is, what_doesnt_affect_it, quantitative_behaviour
-    //   attrs:  definition, characteristic, statistics, external_factors,
-    //           decay_curve, activity_relation
-    //
-    // Asymmetric matrix: 3 atoms in external_factors (the three
-    // independence facts that share a principle), 1 atom each in the other
-    // attrs. The mosaic renders this fine even though it isn't regular.
-    //
-    // Principle cluster: halflife_independent_temp, halflife_independent_pressure,
-    // halflife_independent_chemical_state share the verbatim principle
-    // "Nuclear processes happen in the nucleus..."
+    // halflife — 8 atoms (Topic 7 registry #1).
+    // Asymmetric: 3 atoms in external_factors share a verbatim principle.
     // ──────────────────────────────────────────────────────────────────────
     halflife: [
-      // What half-life is
       { id: "halflife_definition",
-        name: "Half-life — definition",
+        name: "Half-life: time for activity / number of unstable nuclei to halve",
         group: "what_it_is", attr: "definition",
         principle: "" },
       { id: "halflife_isotope_specific",
-        name: "Half-life — isotope-specific",
+        name: "Each isotope has its own characteristic half-life",
         group: "what_it_is", attr: "characteristic",
         principle: "Each isotope's nucleus has a unique structural stability, so each has its own fixed decay probability per second." },
       { id: "halflife_random_decay",
-        name: "Half-life — random decay, statistical average",
+        name: "Decays are random; half-life is a statistical average over huge numbers of nuclei",
         group: "what_it_is", attr: "statistics",
         principle: "Each unstable nucleus has the same fixed per-second probability of decaying. Statistical averaging over very large populations turns a probabilistic process into a fixed half-life." },
-      // What doesn't affect it
       { id: "halflife_independent_temp",
-        name: "Half-life — independent of temperature",
+        name: "Half-life unaffected by temperature",
         group: "what_doesnt_affect_it", attr: "external_factors",
         principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
       { id: "halflife_independent_pressure",
-        name: "Half-life — independent of pressure",
+        name: "Half-life unaffected by pressure",
         group: "what_doesnt_affect_it", attr: "external_factors",
         principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
       { id: "halflife_independent_chemical_state",
-        name: "Half-life — independent of chemical state",
+        name: "Half-life unaffected by chemical state / compound",
         group: "what_doesnt_affect_it", attr: "external_factors",
         principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
-      // Quantitative behaviour
       { id: "halflife_after_n_halflives",
-        name: "Half-life — fraction remaining after n half-lives",
+        name: "After n half-lives, fraction of original unstable nuclei remaining = (1/2)ⁿ",
         group: "quantitative_behaviour", attr: "decay_curve",
         principle: "Each half-life halves the remaining unstable nuclei; n halvings gives (1/2)ⁿ." },
       { id: "halflife_long_means_low_activity",
-        name: "Half-life — longer half-life ⇒ lower activity",
+        name: "For the same number of nuclei, longer half-life ⇒ lower activity",
         group: "quantitative_behaviour", attr: "activity_relation",
         principle: "Activity is decays per second. Longer half-life means each nucleus has a smaller per-second decay probability, so fewer decays per second from the same population." }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // choosing_isotopes_for_uses — 30 atoms (Topic 7 registry #2).
+    // 10 applications × 3 attrs (radiation, key_property, halflife_class).
+    // Principle clusters A & B (4 atoms) on long-running applications;
+    // C (2 atoms) on tracer escapes body; D (2 atoms, near-shared) on
+    // partial absorption for thickness gauges.
+    // ──────────────────────────────────────────────────────────────────────
+    choosing_isotopes_for_uses: [
+      // Smoke alarm (alpha)
+      { id: "smoke_alarm_uses_alpha", name: "Smoke alarm uses alpha", group: "smoke_alarm", attr: "radiation",
+        principle: "The application needs a radiation that ionises the air gap inside the alarm strongly but cannot escape the casing to harm the user. Alpha is the most ionising and the shortest-range, so it satisfies both." },
+      { id: "smoke_alarm_property_short_range_ionising", name: "Why alpha for smoke alarm: highly ionising AND short range", group: "smoke_alarm", attr: "key_property",
+        principle: "The alarm needs the radiation to ionise the air gap (so smoke can disrupt the resulting current) AND not escape the casing (so the user is not exposed). Alpha's high ionising power and short range together meet both." },
+      { id: "smoke_alarm_halflife_long", name: "Smoke alarm needs long half-life (years)", group: "smoke_alarm", attr: "halflife_class",
+        principle: "An installed device must keep working for many years, so the source's activity must remain roughly constant over that time. That requires a half-life much longer than the device's lifetime." },
+      // Static eliminator (alpha)
+      { id: "static_eliminator_uses_alpha", name: "Static eliminator uses alpha", group: "static_eliminator", attr: "radiation",
+        principle: "The application needs a radiation that ionises air strongly in a small region near the moving material. Alpha's high ionising power over a short range delivers that." },
+      { id: "static_eliminator_property_ionises_air", name: "Why alpha for static eliminator: ionises nearby air to neutralise charge", group: "static_eliminator", attr: "key_property",
+        principle: "Static charge on the material is neutralised by oppositely-charged ions in the surrounding air. Producing those ions requires highly ionising radiation, applied locally." },
+      { id: "static_eliminator_halflife_long", name: "Static eliminator needs long half-life (years)", group: "static_eliminator", attr: "halflife_class",
+        principle: "An installed device must keep working for many years, so the source's activity must remain roughly constant over that time. That requires a half-life much longer than the device's lifetime." },
+      // Spacecraft power / RTG (alpha)
+      { id: "spacecraft_power_uses_alpha", name: "Spacecraft power source uses alpha", group: "spacecraft_power", attr: "radiation",
+        principle: "The application needs the radiation's energy deposited locally inside a thermoelectric block, with no penetrating radiation escaping to harm the rest of the spacecraft. Alpha's short range and high energy-per-particle deliver concentrated heat without leakage." },
+      { id: "spacecraft_power_property_local_heating", name: "Why alpha for spacecraft power: dense, local energy deposition (heat)", group: "spacecraft_power", attr: "key_property",
+        principle: "The thermoelectric generator converts heat from radioactive decay into electricity. Heat is energy-per-time deposited locally; alpha's high energy and short range produce concentrated local heating in a small block." },
+      { id: "spacecraft_power_halflife_very_long", name: "Spacecraft power needs very long half-life (decades)", group: "spacecraft_power", attr: "halflife_class",
+        principle: "Space missions run for decades; the heat output (and so the electrical output) must stay roughly constant for the mission's lifetime. Plutonium-238, with a half-life of 87 years, is the typical choice." },
+      // Paper / aluminium foil thickness gauge (beta)
+      { id: "paper_foil_gauge_uses_beta", name: "Paper/foil thickness gauge uses beta", group: "paper_foil_gauge", attr: "radiation",
+        principle: "A thickness gauge requires the radiation's count rate at the detector to vary with the thickness of the material being measured. For paper or thin foil, only beta is partially absorbed; alpha is fully absorbed, gamma is barely absorbed at all." },
+      { id: "paper_foil_gauge_property_partial_absorption", name: "Why beta for paper/foil: partial absorption gives thickness-dependent count rate", group: "paper_foil_gauge", attr: "key_property",
+        principle: "A thickness gauge works by detecting the fraction of radiation that passes through the material. That fraction must depend on thickness, which means the absorption must be partial — neither complete (alpha, no signal) nor negligible (gamma, no variation)." },
+      { id: "paper_foil_gauge_halflife_long", name: "Paper/foil thickness gauge needs long half-life (years)", group: "paper_foil_gauge", attr: "halflife_class",
+        principle: "An industrial gauge runs continuously for years; the count rate at constant thickness must not drift due to source decay. That requires a half-life much longer than the gauge's working lifetime, so calibration stays stable." },
+      // Thick steel thickness gauge (gamma)
+      { id: "steel_gauge_uses_gamma", name: "Thick steel thickness gauge uses gamma", group: "steel_gauge", attr: "radiation",
+        principle: "A thickness gauge requires the radiation's count rate at the detector to vary with the thickness of the material. For thick steel, only gamma is partially absorbed; alpha and beta are both fully absorbed." },
+      { id: "steel_gauge_property_partial_absorption", name: "Why gamma for thick steel: partial absorption gives thickness-dependent count rate", group: "steel_gauge", attr: "key_property",
+        principle: "A thickness gauge works by detecting the fraction of radiation that passes through the material. That fraction must depend on thickness, which means the absorption must be partial — neither complete (alpha and beta, no signal) nor negligible." },
+      { id: "steel_gauge_halflife_long", name: "Thick steel thickness gauge needs long half-life (years)", group: "steel_gauge", attr: "halflife_class",
+        principle: "An industrial gauge runs continuously for years; the count rate at constant thickness must not drift due to source decay. That requires a half-life much longer than the gauge's working lifetime, so calibration stays stable." },
+      // Medical tracer, injected (gamma)
+      { id: "injected_tracer_uses_gamma", name: "Injected medical tracer uses gamma", group: "injected_tracer", attr: "radiation",
+        principle: "A tracer's emitted radiation must escape the body to be detected by an external camera. Gamma is highly penetrating; alpha would be absorbed within micrometres of the source, beta within centimetres." },
+      { id: "injected_tracer_property_escapes_body", name: "Why gamma for injected tracer: escapes the body to reach external camera", group: "injected_tracer", attr: "key_property",
+        principle: "Imaging requires the radiation to leave the body and reach a detector outside it. Tissue is up to tens of cm thick; only gamma penetrates that reliably." },
+      { id: "injected_tracer_halflife_short", name: "Injected tracer needs short half-life (hours)", group: "injected_tracer", attr: "halflife_class",
+        principle: "The tracer must last long enough to circulate, reach the target tissue, and be imaged, but decay away soon afterwards so the patient does not carry a radioactive source for long. Typically a few hours (technetium-99m: 6 hours)." },
+      // Medical tracer, inhaled lung (gamma)
+      { id: "inhaled_lung_tracer_uses_gamma", name: "Inhaled lung tracer uses gamma", group: "inhaled_lung_tracer", attr: "radiation",
+        principle: "A tracer's emitted radiation must escape the body to be detected by an external camera. Gamma is highly penetrating; alpha would be absorbed within micrometres of the source, beta within centimetres." },
+      { id: "inhaled_lung_tracer_property_escapes_body", name: "Why gamma for inhaled lung tracer: escapes lungs to reach external camera", group: "inhaled_lung_tracer", attr: "key_property",
+        principle: "Imaging requires the radiation to leave the body and reach a detector outside it. Tissue is up to tens of cm thick; only gamma penetrates that reliably." },
+      { id: "inhaled_lung_tracer_halflife_very_short", name: "Inhaled lung tracer needs very short half-life (seconds)", group: "inhaled_lung_tracer", attr: "halflife_class",
+        principle: "An inhaled tracer reaches the lungs immediately on breathing in and is imaged on the spot. There is no circulation delay, so the half-life can be much shorter than for an injected tracer; very short is preferred so the patient stops being radioactive within minutes. Krypton-81m: 13 seconds." },
+      // Sterilisation (gamma)
+      { id: "sterilisation_uses_gamma", name: "Sterilisation uses gamma", group: "sterilisation", attr: "radiation",
+        principle: "Equipment is sterilised inside its sealed packaging; the radiation must penetrate cardboard or plastic to reach the contents. Only gamma is penetrating enough; alpha and beta would be stopped by the packaging." },
+      { id: "sterilisation_property_penetrates_packaging", name: "Why gamma for sterilisation: penetrates packaging, kills bacteria inside", group: "sterilisation", attr: "key_property",
+        principle: "Sterilisation requires the radiation to reach the contents of sealed packaging without the packaging being opened. Penetration through cardboard or plastic packaging is the discriminating property; only gamma has it." },
+      { id: "sterilisation_halflife_long", name: "Sterilisation source needs long half-life (years)", group: "sterilisation", attr: "halflife_class",
+        principle: "An industrial sterilisation plant runs for years on the same source; the activity must stay roughly constant. Cobalt-60, with a half-life of about 5 years, is the typical choice." },
+      // Implanted radiotherapy / brachytherapy (beta)
+      { id: "implant_uses_beta", name: "Implanted radiotherapy uses beta", group: "implant", attr: "radiation",
+        principle: "An implanted source must deliver dose to the tumour but spare distant healthy tissue. Beta has a moderate range — long enough to reach all the cells of a tumour, short enough that the dose drops off before reaching distant healthy tissue. Alpha would only ionise the immediate surroundings; gamma would carry far past the tumour." },
+      { id: "implant_property_local_dose", name: "Why beta for implant: deposits energy locally in and near tumour", group: "implant", attr: "key_property",
+        principle: "Implanted radiotherapy requires the dose-vs-distance profile of the radiation to match the size of the tumour: enough range to reach all the cancer cells, but not so much that distant healthy tissue is significantly irradiated." },
+      { id: "implant_halflife_medium", name: "Implanted radiotherapy needs medium half-life (weeks to months)", group: "implant", attr: "halflife_class",
+        principle: "The implant is left in place; its activity must drop to safe levels on a clinically reasonable timescale. Medium half-life (weeks to months) delivers a useful tumoricidal dose then becomes effectively inert. Iridium-192, half-life 74 days, is a typical choice." },
+      // Pipe leak tracer (gamma)
+      { id: "pipe_leak_tracer_uses_gamma", name: "Pipe leak tracer uses gamma", group: "pipe_leak_tracer", attr: "radiation",
+        principle: "The radiation must travel through soil and pipe wall to reach a detector at ground level. Only gamma is penetrating enough; alpha would not even leave the water, beta would not reach the surface from a buried pipe." },
+      { id: "pipe_leak_tracer_property_reaches_surface", name: "Why gamma for pipe leak tracer: reaches surface through soil", group: "pipe_leak_tracer", attr: "key_property",
+        principle: "Detection requires the radiation to leave the buried pipe, pass through the surrounding soil and emerge at the surface where a Geiger counter is held. That depth (often a metre or more of soil) requires gamma's high penetrating power." },
+      { id: "pipe_leak_tracer_halflife_short", name: "Pipe leak tracer needs short half-life (hours to days)", group: "pipe_leak_tracer", attr: "halflife_class",
+        principle: "The tracer enters a public water supply; the half-life must be short enough that radioactivity in the supply decays away rapidly after the leak is found. Sodium-24 (15 hours) is typical." }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // nuclear_processes — 16 atoms (Topic 7 registry #3).
+    // 3 groups (fission 7, fusion 6, decay 2). Cross-registry principle
+    // share with halflife (decay_random ↔ halflife_random_decay).
+    // ──────────────────────────────────────────────────────────────────────
+    nuclear_processes: [
+      { id: "fission_definition", name: "Fission: a heavy nucleus splits into two smaller nuclei (plus neutrons)", group: "fission", attr: "definition", principle: "" },
+      { id: "fission_requires_neutron", name: "Fission is started by a nucleus absorbing a (slow) neutron", group: "fission", attr: "input", principle: "" },
+      { id: "fission_fuel_uranium_235", name: "U-235 is the typical fission fuel", group: "fission", attr: "fuel", principle: "" },
+      { id: "fission_releases_more_neutrons", name: "Fission releases 2-3 more neutrons (which can trigger further fissions)", group: "fission", attr: "output",
+        principle: "Each fission event produces more of the particle that triggers it (the slow neutron). This same property is what allows a chain reaction in a reactor or weapon, but the chain reaction itself is off-spec for 4SS0." },
+      { id: "fission_two_daughters", name: "Fission produces two daughter nuclei (typically of unequal size)", group: "fission", attr: "output", principle: "" },
+      { id: "fission_daughters_radioactive", name: "Fission daughter nuclei are typically radioactive", group: "fission", attr: "output",
+        principle: "Fission daughters inherit a neutron-rich composition from the heavy parent. Stable isotopes of the lighter elements have lower neutron-to-proton ratios, so the daughters are neutron-heavy and decay (typically by beta-emission) towards stability." },
+      { id: "fission_energy_released", name: "Fission releases energy, mainly as heat / kinetic energy", group: "fission", attr: "energy",
+        principle: "Mass is converted to energy in the nuclear rearrangement. The mass-energy equivalence (E = mc²) is the underlying reason; the same principle drives both fission and fusion energy release." },
+      { id: "fusion_definition", name: "Fusion: two small nuclei combine into a larger one", group: "fusion", attr: "definition", principle: "" },
+      { id: "fusion_fuel_hydrogen", name: "Hydrogen is the typical fusion fuel (fusing into helium)", group: "fusion", attr: "fuel", principle: "" },
+      { id: "fusion_requires_high_temp", name: "Fusion requires very high temperature and pressure", group: "fusion", attr: "conditions",
+        principle: "Both nuclei are positively charged and repel each other electrostatically. Overcoming this repulsion close enough for the strong nuclear force to take over requires extreme kinetic energies, achieved by temperatures of millions of degrees." },
+      { id: "fusion_in_stars", name: "Fusion happens naturally in the cores of stars (including the Sun)", group: "fusion", attr: "where",
+        principle: "Stellar gravity compresses hydrogen until the temperature and pressure at the core are sufficient for fusion. This is currently the only sustained fusion humans observe." },
+      { id: "fusion_not_yet_commercial", name: "Fusion is not yet a working commercial energy source on Earth", group: "fusion", attr: "tech_status",
+        principle: "Achieving and confining a plasma at fusion conditions is an unsolved engineering problem; existing experimental reactors put in more energy than they extract. The physics is understood; the technology isn't." },
+      { id: "fusion_energy_released", name: "Fusion releases energy", group: "fusion", attr: "energy",
+        principle: "Mass is converted to energy in the nuclear rearrangement. The mass-energy equivalence (E = mc²) is the underlying reason; the same principle drives both fission and fusion energy release." },
+      { id: "fusion_no_radioactive_waste", name: "Fusion produces little to no long-lived radioactive waste (unlike fission)", group: "fusion", attr: "waste", principle: "" },
+      { id: "decay_from_nucleus", name: "Alpha, beta and gamma all originate in the nucleus", group: "decay", attr: "source",
+        principle: "Alpha and gamma are nuclear emissions by definition. Beta is also a nuclear emission: the electron is created when a neutron changes into a proton inside the nucleus, not flung out from an electron shell." },
+      { id: "decay_random", name: "Individual decays are random; the half-life is statistical", group: "decay", attr: "character",
+        principle: "Each unstable nucleus has the same fixed per-second probability of decaying. Statistical averaging over very large populations turns a probabilistic process into a fixed half-life." }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // radiation_safety_principles — 18 atoms (Topic 7 registry #4).
+    // 4 groups: bio_effects (5), dose_factors (5), danger_profile (6),
+    // time_profile (1). The danger_profile sub-group is a 3×2 matrix
+    // (radiation × context).
+    // ──────────────────────────────────────────────────────────────────────
+    radiation_safety_principles: [
+      { id: "harm_via_ionisation_dna", name: "Harm mechanism: ionisation breaks bonds, including DNA", group: "bio_effects", attr: "mechanism",
+        principle: "Ionising radiation strips electrons from atoms in tissue. Stripped atoms re-bond differently or fail to bond at all, breaking the molecules they were part of. DNA is the molecule whose specific bonds matter most for the cell's behaviour." },
+      { id: "harm_kills_or_mutates_cells", name: "DNA damage can kill cells or leave mutations (which may become cancer)", group: "bio_effects", attr: "outcome",
+        principle: "A cell with severely damaged DNA either fails to function and dies, or repairs the damage, or survives with a mutation. The mutation may have no effect, or may cause the cell to multiply abnormally — cancer." },
+      { id: "short_term_effects", name: "Short-term effects of high dose: radiation sickness, burns, hair loss", group: "bio_effects", attr: "effect_timescale", principle: "" },
+      { id: "long_term_effects", name: "Long-term effects: cancer, inherited mutations", group: "bio_effects", attr: "effect_timescale", principle: "" },
+      { id: "dividing_cells_more_sensitive", name: "Rapidly-dividing cells (hair, gut lining, bone marrow) are most sensitive", group: "bio_effects", attr: "sensitivity",
+        principle: "Cell division requires intact DNA to copy. Cells that divide frequently are caught mid-cycle most often, so DNA damage stops them being replaced. Tissues that depend on continuous replacement (hair, gut lining, blood-cell production from marrow) show the loss first." },
+      { id: "dose_depends_on_time", name: "Dose increases with time of exposure", group: "dose_factors", attr: "factor",
+        principle: "Dose is total energy absorbed; time exposed is proportional to total decays that can reach the tissue. Halving the time roughly halves the dose." },
+      { id: "dose_depends_on_distance", name: "Dose decreases with distance from source", group: "dose_factors", attr: "factor",
+        principle: "Radiation spreads in all directions from a point source; the fraction reaching a fixed area falls with distance. For penetrating radiation in vacuum the relationship is the inverse-square law; for alpha and beta in air, absorption cuts the dose to essentially zero within metres." },
+      { id: "dose_depends_on_shielding", name: "Dose decreases with shielding between source and person", group: "dose_factors", attr: "factor",
+        principle: "Shielding absorbs the radiation before it reaches tissue. The thickness and material needed depend on which radiation type — paper for alpha, aluminium for beta, lead/concrete for gamma." },
+      { id: "dose_depends_on_activity", name: "Dose increases with source activity", group: "dose_factors", attr: "factor",
+        principle: "Activity is decays per second; more decays produce more particles per second to reach tissue. Doubling activity roughly doubles dose." },
+      { id: "dose_depends_on_radiation_type", name: "Dose varies by radiation type (different ionising power, different range)", group: "dose_factors", attr: "factor",
+        principle: "Per same activity, different radiations deposit different amounts of energy in tissue. Alpha is highly ionising and short-range, depositing all its energy locally; gamma is weakly ionising and long-range, depositing only a fraction. So 'same activity' does not mean 'same dose'." },
+      { id: "external_alpha_low_risk", name: "External α: low risk (absorbed in cm of air; doesn't reach living tissue at distance)", group: "danger_profile", attr: "external",
+        principle: "Alpha is absorbed by a few centimetres of air, so essentially none reaches a person at arm's length. Alpha's high ionising power makes it dangerous when it does reach tissue, but for an external sealed source at any reasonable distance, it doesn't." },
+      { id: "external_beta_intermediate", name: "External β: intermediate risk (absorbed by ~1 m of air; partially reaches tissue at short range)", group: "danger_profile", attr: "external",
+        principle: "Beta is absorbed by about a metre of air or a few mm of aluminium. At close range some reaches the skin; at greater distances or with thin shielding most is absorbed." },
+      { id: "external_gamma_high_risk", name: "External γ: high risk (highly penetrating; reaches tissue from several metres)", group: "danger_profile", attr: "external",
+        principle: "Gamma penetrates air, clothing, and skin essentially unattenuated. It is the only radiation that reaches the body in significant amounts from a few metres away with the source unshielded." },
+      { id: "internal_alpha_high_risk", name: "Internal α: high risk (highly ionising; deposits all energy in nearby tissue)", group: "danger_profile", attr: "internal",
+        principle: "Once alpha is inside the body (inhaled, ingested, or in a wound) it ionises tissue intensely over its short range. There is no skin barrier and no air absorption to mitigate the dose; all the alpha's energy is deposited in cells immediately around the source." },
+      { id: "internal_beta_intermediate", name: "Internal β: intermediate risk (some energy deposited locally, some escapes the body)", group: "danger_profile", attr: "internal",
+        principle: "Beta inside the body has moderate range; some of its energy is deposited in nearby tissue, some escapes the body with the particle. Less concentrated damage than alpha, but more reach." },
+      { id: "internal_gamma_low_risk", name: "Internal γ: low (relative) risk (passes through tissue, depositing only a fraction)", group: "danger_profile", attr: "internal",
+        principle: "Gamma's low ionising power and high penetration means most of it passes through the body without depositing energy. The fraction that is absorbed is spread over a large volume of tissue, so the dose-per-cell is low. Still harmful — but less so than alpha or beta at the same activity inside." },
+      { id: "long_halflife_long_danger", name: "Long half-life ⇒ source remains hazardous for a long time", group: "time_profile", attr: "persistence",
+        principle: "Half-life is the time for activity to halve. Long half-life means activity stays high for many years; the source therefore keeps emitting ionising radiation for years and remains a hazard." }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // contam_irrad — 6 atoms (Topic 7 registry #5).
+    // Symmetric 2×3 (process × aspect): irradiation × {definition, consequence,
+    // persistence}; contamination × {definition, persistence, type}.
+    // ──────────────────────────────────────────────────────────────────────
+    contam_irrad: [
+      { id: "irradiation_definition", name: "Irradiation: exposure to ionising radiation from an external source", group: "irradiation", attr: "definition", principle: "" },
+      { id: "irradiation_no_material_transfer", name: "Irradiation does NOT transfer radioactive material; the irradiated object does not become radioactive", group: "irradiation", attr: "consequence",
+        principle: "Ionising radiation is energy (or fast particles), not the radioactive substance itself. Energy passes through the object; no atoms of the source remain on or in it." },
+      { id: "irradiation_stops_when_away", name: "Irradiation stops when the person leaves the source's reach", group: "irradiation", attr: "persistence",
+        principle: "Irradiation requires the radiation to be reaching the person. With no source nearby, no radiation arrives, so the irradiation ends." },
+      { id: "contamination_definition", name: "Contamination: radioactive material on or in a non-radioactive object", group: "contamination", attr: "definition", principle: "" },
+      { id: "contamination_persists_with_object", name: "Contamination persists: the radioactive material stays with the contaminated object/person", group: "contamination", attr: "persistence",
+        principle: "Contamination is a physical transfer of radioactive atoms. Wherever the contaminated object goes, those atoms go too, and they continue to emit radiation until they decay or are removed." },
+      { id: "contamination_internal_or_external", name: "Contamination can be on the body (skin) or inside it (inhaled/swallowed/in a wound)", group: "contamination", attr: "type",
+        principle: "Contamination is a physical transfer; the destination depends on how the transfer happened. Skin contact deposits material on the body; inhalation or ingestion places it inside, where it irradiates internal tissue with no skin barrier." }
+    ],
+
+    // ──────────────────────────────────────────────────────────────────────
+    // atomic_struct — 16 atoms (Topic 7 registry #6).
+    // 4 groups (particle_properties 5, atom_structure 5, isotopes 4, units 2).
+    // CROSS-REGISTRY shared principle: isotopes_chemically_identical shares
+    // the verbatim principle string with the three halflife independence atoms
+    // — the largest cross-registry cluster (4 atoms, "nuclear processes are
+    // decoupled from atomic-orbital processes"). Canonical test case for
+    // v0.7+ principle-hierarchy tooling.
+    // ──────────────────────────────────────────────────────────────────────
+    atomic_struct: [
+      { id: "proton_charge_pos1", name: "Proton charge: +1 (relative)", group: "particle_properties", attr: "charge", principle: "" },
+      { id: "neutron_charge_zero", name: "Neutron charge: 0", group: "particle_properties", attr: "charge", principle: "" },
+      { id: "electron_charge_neg1", name: "Electron charge: −1 (relative)", group: "particle_properties", attr: "charge", principle: "" },
+      { id: "proton_neutron_similar_mass", name: "Proton and neutron have similar mass (relative mass ≈ 1)", group: "particle_properties", attr: "mass", principle: "" },
+      { id: "electron_negligible_mass", name: "Electron mass is negligible compared to proton/neutron (~1/2000)", group: "particle_properties", attr: "mass", principle: "" },
+      { id: "nucleus_contains_protons_neutrons", name: "Nucleus contains protons and neutrons", group: "atom_structure", attr: "location", principle: "" },
+      { id: "electrons_in_shells", name: "Electrons orbit the nucleus in shells", group: "atom_structure", attr: "location", principle: "" },
+      { id: "atom_mostly_empty_space", name: "Atom is mostly empty space (nucleus is tiny relative to atom)", group: "atom_structure", attr: "scale",
+        principle: "The nucleus is about 10⁻¹⁵ m across; the atom is about 10⁻¹⁰ m across. The nucleus occupies less than a trillionth of the atom's volume." },
+      { id: "mass_concentrated_in_nucleus", name: "Most of an atom's mass is in the nucleus", group: "atom_structure", attr: "mass_distribution",
+        principle: "The nucleus contains the heavy particles (protons and neutrons), while electrons in the shells contribute almost no mass." },
+      { id: "atom_neutral_equal_p_and_e", name: "An atom has equal numbers of protons and electrons (overall charge zero)", group: "atom_structure", attr: "neutrality",
+        principle: "The proton and electron charges are equal in magnitude and opposite in sign. With equal numbers of each, the total charge cancels exactly." },
+      { id: "isotope_definition", name: "Isotopes of an element have the same number of protons but different numbers of neutrons", group: "isotopes", attr: "definition", principle: "" },
+      { id: "isotopes_chemically_identical", name: "Isotopes of an element behave identically in chemical reactions", group: "isotopes", attr: "chemistry",
+        principle: "Nuclear processes happen in the nucleus; thermal, mechanical, and chemical effects are atomic-orbital-level — different domains, no interaction." },
+      { id: "chemistry_determined_by_electrons", name: "Chemical behaviour is determined by an atom's electrons", group: "isotopes", attr: "mechanism",
+        principle: "Chemical bonding involves the rearrangement of valence electrons between atoms. Two atoms with the same electron configuration must therefore react the same way, regardless of nuclear differences." },
+      { id: "nuclide_notation_AZX", name: "Nuclide notation: ᴬZX where A = mass number (p+n) and Z = atomic number (p)", group: "isotopes", attr: "notation", principle: "" },
+      { id: "bq_unit_of_activity", name: "Becquerel (Bq) is the unit of activity of a radioactive source", group: "units", attr: "unit", principle: "" },
+      { id: "bq_one_decay_per_second", name: "1 Bq = 1 nuclear decay per second", group: "units", attr: "definition", principle: "" }
     ]
   };
 
@@ -697,7 +900,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.18";
+  const APP_VERSION = "v1.5.19";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
