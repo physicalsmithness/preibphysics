@@ -1,18 +1,38 @@
 // ============================================================================
-// Topic 7 Radioactivity question bank — v2 INTERIM (chunks 1-4 of 5)
-// Generated 2026-05-07
-// 
-// Status: chunks 1a, 1b, 1c, 2, 3, 4 complete.
-// Pending: chunk 5 (fission, fusion, energy_from_nuclear, shielding).
-// 
-// 166 base questions
-// Type mix: mcq 91, short 40, matching 8, fillblank 8, categorise 7, grid 6, multiselect 5, ordering 1
-// Active: 166, Parked: 0
-// Total marks: 331
-// 
-// Schema: v0.5 (six new types: matching, multiselect, ordering, categorise, fillblank, grid).
-// Engine normaliser handles British spelling, plurals, hyphens vs spaces, contractions.
-// Author convention: "beta" not "beta-minus" throughout (4SS0 students don't see β+).
+// Topic 7 Radioactivity question bank — v2 FINAL (revision 3)
+// Generated 2026-05-08
+//
+// Schema: v0.5 (nine types in use: mcq, short, matching, multiselect, grid,
+//                 fillblank, categorise, ordering, numeric)
+//
+// What changed from revision 2:
+//   - background_subtraction_short → mcq (reasoning, not single-phrase recall)
+//   - background_subtraction_calc_short → numeric (it's a calculation)
+//   - use_of_alpha_short / use_of_beta_short / use_of_gamma_short:
+//       synonym lists fattened to catch fall-throughs from substring matching.
+//       Lists now include verb forms ("measuring thickness", "kill bacteria"),
+//       colloquialisms (tin foil, kitchen foil, germs), and common paraphrases.
+//   - paper_thickness_gauge questions: prompts say "paper or thin aluminium foil"
+//   - medical_tracer questions: prompts say "injected", with note about inhaled
+//   - external_alpha_low_risk_mcq / alpha_safe_in_smoke_alarm_multiselect:
+//       dropped the "alpha can't penetrate skin" claim (loose physics; the
+//       syllabus treats touching as dangerous), replaced with cleaner reasons
+//   - beta_implant_multiselect: added "alpha is too short-range" as a reason
+//   - new question: thin_foil_vs_thick_steel_mcq
+//   - new question: inhaled_lung_tracer_mcq
+//
+// Authoring rule, locked in:
+//   - 'short' type ONLY when the answer is a single word, number, or short
+//     phrase the engine can mark deterministically.
+//   - For 'state one X' shorts, synonym lists are generous: any wording the
+//     student might use for the application (substring-matched).
+//   - 'numeric' for calculations.
+//   - allowAdjust:false on shorts where exact spelling matters
+//     (fission_word_short, fusion_word_short).
+//   - Distractor rationales on every mcq wrong-choice.
+//
+// Stats:
+//   197 questions, 357 marks, 22 subtags covered.
 // ============================================================================
 
 window.PREIB_RAD_QUESTIONS = [
@@ -83,53 +103,6 @@ window.PREIB_RAD_QUESTIONS = [
       "3": "Newton is the unit of force."
     },
     "explanation": "Activity (the rate at which nuclei in a sample decay) is measured in becquerels. 1 Bq = 1 decay per second."
-  },
-  {
-    "id": "count_rate_to_bq_short",
-    "tags": [
-      "units"
-    ],
-    "specRefs": [
-      "7.1"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "A Geiger counter records 240 counts from a radioactive source in 60 seconds. Estimate the activity of the source in Bq.",
-    "marks": 1,
-    "markPoints": [
-      {
-        "any": [
-          "4 Bq",
-          "4 becquerel",
-          "4 becquerels",
-          "activity = 4",
-          "activity is 4",
-          "4 decays per second",
-          "(activity =) 4"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Activity = counts ÷ time = 240 ÷ 60 = 4 decays per second = 4 Bq.",
-    "examinerNote": "This estimate ignores any background radiation and the fact that the detector won't catch every decay. For Pre-IB scope it's enough to divide counts by time.",
-    "instances": [
-      {
-        "prompt": "A radioactive source produces 600 decays in 2 minutes. Calculate its activity in Bq.",
-        "explanation": "600 decays in 120 seconds, so activity = 600 ÷ 120 = 5 Bq.",
-        "markPoints": [
-          {
-            "any": [
-              "5 Bq",
-              "5 becquerel",
-              "5 becquerels",
-              "activity = 5",
-              "5 decays per second",
-              "(activity =) 5"
-            ]
-          }
-        ]
-      }
-    ]
   },
   {
     "id": "subatomic_charges_matching",
@@ -304,42 +277,6 @@ window.PREIB_RAD_QUESTIONS = [
     },
     "explanation": "Adding a negative electron to a neutral atom gives the atom a net negative charge. The number of protons (which determines what element it is) does not change.",
     "examinerNote": "Examiners reject answers that change the proton number, because that would change the element, not just the charge."
-  },
-  {
-    "id": "atom_is_neutral_short",
-    "tags": [
-      "atomic_struct"
-    ],
-    "specRefs": [
-      "7.2"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "An atom is electrically neutral overall. Explain how this is possible, given that it contains positively charged protons and negatively charged electrons.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "(equal) number of protons and electrons",
-          "the same number of protons as electrons",
-          "as many protons as electrons",
-          "number of protons equals number of electrons",
-          "protons and electrons are present in equal numbers"
-        ]
-      },
-      {
-        "any": [
-          "the positive and negative charges cancel",
-          "the charges balance",
-          "the charges add to zero",
-          "the +1 and −1 charges cancel out",
-          "equal positive and negative charge",
-          "total charge is zero"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "A neutral atom has the same number of protons and electrons. Each proton's +1 charge is cancelled by an electron's −1 charge, so the total charge is zero. (Neutrons don't change the picture because they carry no charge.)"
   },
   {
     "id": "isotope_definition_fillblank",
@@ -595,44 +532,6 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "marks": 5,
     "explanation": "What identifies an element is the proton number (the lower digit). If two nuclides share that lower digit, they're the same element and therefore isotopes of each other. Same mass number but different proton numbers means they're different elements that just happen to have the same total nucleon count."
-  },
-  {
-    "id": "neutron_difference_short",
-    "tags": [
-      "nuclide_notation"
-    ],
-    "specRefs": [
-      "7.3"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Gallium-67 and gallium-68 are both isotopes of gallium. State, with reasons, how the structure of the gallium-68 nucleus differs from the gallium-67 nucleus.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "gallium-68 has a different number of neutrons",
-          "gallium-68 has more neutrons",
-          "gallium-68 has 1 more neutron",
-          "gallium-68 has one more neutron",
-          "different number of neutrons in the nucleus",
-          "they differ in their neutron count"
-        ]
-      },
-      {
-        "any": [
-          "difference is 1 neutron",
-          "1 more neutron",
-          "one more neutron",
-          "the difference is 1",
-          "differs by 1 neutron",
-          "gallium-68 has 1 extra neutron"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Both isotopes have 31 protons (since they are both gallium). Gallium-67 has 67 − 31 = 36 neutrons; gallium-68 has 68 − 31 = 37 neutrons. So gallium-68 has 1 more neutron than gallium-67.",
-    "examinerNote": "The 4SS0 June 2019 mark scheme rejects 'gallium-68 has fewer neutrons' (since it has more, not fewer)."
   },
   {
     "id": "what_ionising_means_fillblank",
@@ -1436,47 +1335,8 @@ window.PREIB_RAD_QUESTIONS = [
     "examinerNote": "Past papers cite radon, cosmic rays, rocks, food and medical X-rays most often. Answers like 'sound' or 'electricity' are rejected — they are not radiation."
   },
   {
-    "id": "radon_short",
-    "tags": [
-      "background"
-    ],
-    "specRefs": [
-      "7.10"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Radon gas is the largest single source of natural background radiation for most people in the UK. Explain (i) where radon comes from and (ii) why it tends to build up to higher levels indoors than outdoors.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "radon comes from radioactive decay of uranium in rocks and soil",
-          "radon is produced by decay of uranium / thorium in the ground",
-          "radon is produced by the decay of natural uranium in rocks",
-          "radon is a radioactive gas produced when uranium in rocks decays"
-        ]
-      },
-      {
-        "any": [
-          "radon is a gas, so it can escape from the ground into the air",
-          "radon escapes from the ground as a gas",
-          "radon emerges from rocks/soil into the air"
-        ]
-      },
-      {
-        "any": [
-          "indoors, radon builds up because it is not dispersed by the wind",
-          "in enclosed spaces, radon levels rise because it cannot escape easily",
-          "indoors there is less air movement, so radon accumulates",
-          "indoors radon collects because the building traps it"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Radon is a radioactive gas produced when uranium in rocks (especially granite) decays naturally. Because it is a gas, it can seep up out of the ground. Outdoors, the wind disperses it. Indoors, especially in cellars or poorly-ventilated rooms, it can build up and become a significant source of background radiation."
-  },
-  {
-    "id": "background_subtraction_short",
+    "id": "background_subtraction_mcq",
+    "type": "mcq",
     "tags": [
       "background",
       "practical_penetration"
@@ -1486,24 +1346,22 @@ window.PREIB_RAD_QUESTIONS = [
       "7.10"
     ],
     "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Before measuring the count rate from a radioactive source, a student measures the count rate at the detector with no source nearby. Give a reason why this measurement is needed.",
     "marks": 1,
-    "markPoints": [
-      {
-        "any": [
-          "to measure the background (count rate)",
-          "to find the background count rate",
-          "to allow for background radiation",
-          "to subtract the background from the source readings",
-          "so the background can be subtracted",
-          "so the readings from the source can be corrected for background"
-        ]
-      }
+    "prompt": "Before measuring the count rate from a radioactive source, a student measures the count rate at the detector with no source nearby. Why is this measurement needed?",
+    "choices": [
+      "to measure the background count rate, so it can be subtracted from later readings",
+      "to check that the detector is working correctly",
+      "to make the experiment a fair test",
+      "because radiation is dangerous, so the lab must be checked first"
     ],
-    "allowAdjust": true,
-    "explanation": "The detector picks up some counts from background radiation even with no source present. To get the count rate caused by the source alone, you measure the background first and then subtract it from the readings taken with the source.",
-    "examinerNote": "Past-paper mark schemes accept 'subtract the background', 'allow for background', 'correct for background'. Vague answers like 'fair test' or 'check the detector works' are rejected."
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Examiners reject 'check the detector works' for this question. The actual reason is to find the background, not to test the equipment.",
+      "2": "'Fair test' on its own is a vague phrase that examiners reject for this question. You need to say what's being kept fair (the background contribution) and how (by subtraction).",
+      "3": "Background radiation is everywhere all the time; it doesn't need to be checked beforehand for safety. The reason is about subtracting it from the reading."
+    },
+    "explanation": "Background radiation is always present, so the count rate from the source alone is the source-plus-background reading minus the background reading. Without measuring the background first, the source's count rate cannot be calculated.",
+    "examinerNote": "Past-paper mark schemes for this question accept 'subtract / allow for / correct for the background'. They explicitly reject 'fair test' and 'check the detector works'."
   },
   {
     "id": "halflife_definition_fillblank",
@@ -2372,7 +2230,8 @@ window.PREIB_RAD_QUESTIONS = [
     "examinerNote": "Past-paper Q15 mark schemes accept variations on this order, but always require: fix geometry, measure background, then make readings with each absorber, then subtract background."
   },
   {
-    "id": "background_subtraction_calc_short",
+    "id": "background_subtraction_calc_numeric",
+    "type": "numeric",
     "tags": [
       "practical_penetration",
       "background"
@@ -2382,41 +2241,12 @@ window.PREIB_RAD_QUESTIONS = [
       "7.10"
     ],
     "difficultyRating": 2,
-    "type": "short",
-    "prompt": "A student records the count rate from a Geiger-Müller tube with no source nearby as 25 counts per minute. They then place a radioactive source near the tube and record 175 counts per minute. State the corrected count rate from the source alone.",
     "marks": 1,
-    "markPoints": [
-      {
-        "any": [
-          "150 counts per minute",
-          "150 cpm",
-          "150 per minute",
-          "150 / min",
-          "(corrected count rate =) 150",
-          "150"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Corrected count rate = total − background = 175 − 25 = 150 counts per minute.",
-    "instances": [
-      {
-        "prompt": "A student measures a background count rate of 18 counts per minute. They then place a source near the GM tube and record 320 counts per minute. State the corrected count rate from the source alone.",
-        "explanation": "Corrected count rate = 320 − 18 = 302 counts per minute.",
-        "markPoints": [
-          {
-            "any": [
-              "302 counts per minute",
-              "302 cpm",
-              "302 per minute",
-              "302 / min",
-              "(corrected count rate =) 302",
-              "302"
-            ]
-          }
-        ]
-      }
-    ]
+    "prompt": "A student records the count rate from a Geiger-Müller tube with no source nearby as 25 counts per minute. They then place a radioactive source near the tube and record 175 counts per minute. State the corrected count rate from the source alone, in counts per minute.",
+    "answer": 150,
+    "unitHint": "counts per minute",
+    "explanation": "Subtract the background count rate from the source-plus-background count rate: 175 − 25 = 150 counts per minute.",
+    "examinerNote": "Unit is specified in the prompt so a bare numeric answer is sufficient. The engine's numeric-type marker handles the comparison."
   },
   {
     "id": "is_it_radioactive_mcq",
@@ -2698,83 +2528,6 @@ window.PREIB_RAD_QUESTIONS = [
     "examinerNote": "The 'irradiated fruit' bin (Neither) is the trickiest. Students often want to call it 'irradiation'. But irradiation requires an ongoing source — once the source is gone, there is no continued exposure and the food carries no radioactive material."
   },
   {
-    "id": "irradiated_fruit_short",
-    "tags": [
-      "contam_irrad"
-    ],
-    "specRefs": [
-      "7.15"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Fruit can be irradiated with gamma rays at a sterilisation plant before being sold in supermarkets. Give two reasons why this fruit is safe to eat afterwards.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "the fruit has not been made radioactive",
-          "the fruit is not radioactive itself",
-          "irradiation does not make the fruit radioactive",
-          "no radioactive material has been transferred to the fruit",
-          "fruit has not been contaminated"
-        ]
-      },
-      {
-        "any": [
-          "bacteria on the fruit have been killed by the radiation",
-          "the radiation kills bacteria/microorganisms on the fruit",
-          "the fruit is sterilised by the radiation",
-          "harmful microbes are destroyed",
-          "any bacteria that would cause spoilage or illness are killed"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Irradiation kills bacteria (which is why it's done) but does not transfer any radioactive material to the fruit. The gamma rays pass through, do their job on the bacteria, and leave the fruit non-radioactive.",
-    "examinerNote": "Past-paper Q34 mark scheme accepts: 'fruit has no bacteria / bacteria on fruit have been killed; fruit has not been contaminated; fruit has not been made radioactive; radioactive source has not been in contact with the fruit'."
-  },
-  {
-    "id": "why_contam_harder_short",
-    "tags": [
-      "contam_irrad"
-    ],
-    "specRefs": [
-      "7.15"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why contamination by a radioactive substance is generally harder to deal with than irradiation.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "irradiation stops when you move away from the source",
-          "you can stop being irradiated by leaving the area",
-          "irradiation only lasts as long as you are near the source",
-          "irradiation can be stopped by moving away or shielding"
-        ]
-      },
-      {
-        "any": [
-          "contamination follows you because the radioactive material is on or in you",
-          "contamination keeps emitting radiation wherever you go",
-          "the radioactive material stays with you until removed",
-          "the contaminated object continues to emit radiation"
-        ]
-      },
-      {
-        "any": [
-          "contamination can only be removed by washing or by waiting for natural decay",
-          "internal contamination cannot easily be removed and may have to wait for the substance to decay",
-          "you may have to wait for the substance to decay",
-          "external contamination may be washed off but internal contamination is harder to deal with"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Irradiation is something you can walk away from. Contamination is something you carry. Once radioactive material is on your skin (or worse, inside your body), the only ways to remove the dose are to wash it off (if external), or to wait for the substance to decay. Internal contamination from inhaled or ingested isotopes can therefore deliver a dose for hours, days, or years."
-  },
-  {
     "id": "contam_vs_irrad_general_mcq",
     "tags": [
       "contam_irrad"
@@ -2876,58 +2629,6 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "Contamination is about radioactive material reaching skin or being inhaled, so contamination precautions are barriers (gloves, coat, fume hood). Irradiation depends on time, distance, and shielding — so irradiation precautions reduce the dose received by limiting one of those three factors."
   },
   {
-    "id": "contam_irrad_scenario_short",
-    "tags": [
-      "contam_irrad"
-    ],
-    "specRefs": [
-      "7.15"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "A laboratory technician handles a small sample of blood that has been taken from a patient who was injected with a gamma-emitting tracer. State whether the technician faces irradiation, contamination, or both, and justify each part of your answer.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "both irradiation and contamination",
-          "both",
-          "the technician is at risk from both",
-          "irradiation and contamination"
-        ]
-      },
-      {
-        "any": [
-          "irradiation: gamma from the tracer in the blood reaches the technician",
-          "irradiation because the gamma escapes the blood sample and reaches the technician",
-          "irradiation: the tracer emits gamma radiation that reaches the technician",
-          "they are irradiated because radiation from the blood reaches them"
-        ]
-      },
-      {
-        "any": [
-          "contamination: the blood contains radioactive tracer that could touch the technician",
-          "contamination because direct contact with the blood would transfer radioactive material",
-          "contamination because the blood is the radioactive substance and could end up on skin",
-          "contamination if the blood gets onto the technician"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Whenever someone or something has a radioactive substance on or in them, the people nearby face both kinds of hazard at once: irradiation from the radiation that escapes the substance, AND contamination from any direct contact with the substance itself.",
-    "examinerNote": "Past-paper-style 'identify the risks and justify' question. Expects three things: a clear identification of 'both', then one sentence explaining the irradiation hazard, and one sentence explaining the contamination hazard.",
-    "instances": [
-      {
-        "prompt": "A nurse must take a tissue sample from a patient who has swallowed a radioactive tracer. State whether the nurse is at risk from contamination, irradiation, or both, and justify each part of your answer.",
-        "explanation": "The nurse faces both: irradiated because the tracer in the patient's body emits radiation that reaches the nurse; contaminated because the tissue sample contains the radioactive substance and could come into direct contact with the nurse's skin or be transferred onto equipment."
-      },
-      {
-        "prompt": "A worker drops a small bottle of liquid containing a radioactive isotope on the floor of a laboratory. State the two distinct risks they now face, and identify each as contamination or irradiation.",
-        "explanation": "Contamination from the spilled liquid getting onto skin, clothing, or other surfaces in the lab; and irradiation from the radiation emitted by the puddle of liquid, which reaches the worker even without direct contact."
-      }
-    ]
-  },
-  {
     "id": "use_of_alpha_short",
     "tags": [
       "uses_alpha"
@@ -2945,15 +2646,29 @@ window.PREIB_RAD_QUESTIONS = [
           "smoke alarm",
           "smoke detector",
           "fire alarm",
+          "fire detector",
+          "smoke detection",
           "static eliminator",
-          "removing static charge",
-          "charge neutraliser",
+          "remove static",
+          "removing static",
+          "neutralise static",
+          "neutralising static",
+          "discharge static",
+          "static electricity",
+          "anti-static",
+          "antistatic",
           "powering spacecraft",
-          "spacecraft power source",
+          "spacecraft power",
           "space probe power",
-          "radioisotope thermoelectric generator",
+          "powering space probes",
+          "powering satellites",
           "RTG",
-          "radiotherapy"
+          "radioisotope thermoelectric generator",
+          "radioisotope generator",
+          "radiotherapy",
+          "treating cancer",
+          "treat cancer",
+          "cancer treatment"
         ]
       }
     ],
@@ -3040,82 +2755,6 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "A smoke alarm is meant to last many years, so it needs a source whose activity stays roughly constant over that time. Americium-241 (used in most smoke alarms) has a half-life of about 432 years, so its activity barely changes over the lifetime of the alarm."
   },
   {
-    "id": "alpha_safe_in_smoke_alarm_short",
-    "tags": [
-      "uses_alpha",
-      "which_most_dangerous"
-    ],
-    "specRefs": [
-      "7.14",
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Alpha is the most ionising of the three radiations and the most dangerous if it reaches living tissue. Explain why an alpha source in a household smoke alarm is nonetheless considered safe.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "alpha has very short range",
-          "alpha is absorbed within a few cm of air",
-          "alpha doesn't travel far from the source",
-          "alpha is the least penetrating radiation"
-        ]
-      },
-      {
-        "any": [
-          "the source is sealed in the alarm",
-          "the radioactive material is contained within the alarm casing",
-          "the source is enclosed and cannot be touched directly",
-          "the alpha cannot escape from the alarm"
-        ]
-      },
-      {
-        "any": [
-          "alpha cannot penetrate skin",
-          "skin would absorb any alpha that escaped",
-          "even if the source were touched, alpha would be absorbed by skin",
-          "alpha is stopped by skin/clothing"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Two layers of safety: (1) the alpha itself cannot travel far, so very little reaches the casing of the alarm — and any that does is absorbed by the casing. (2) Even if the source were exposed and held in the hand, alpha cannot penetrate skin. Alpha is dangerous only when it gets inside the body (e.g. by inhalation), and a sealed alarm prevents that."
-  },
-  {
-    "id": "smoke_alarm_mechanism_short",
-    "tags": [
-      "uses_alpha"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Briefly explain how an alpha source enables a smoke alarm to detect smoke.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "alpha ionises the air (between two electrodes)",
-          "alpha radiation ionises air molecules in the alarm",
-          "alpha creates ions in the air inside the alarm",
-          "alpha causes the air to conduct a small current"
-        ]
-      },
-      {
-        "any": [
-          "smoke disrupts the ionisation, reducing the current",
-          "smoke particles absorb the alpha or block the ions, so the current drops",
-          "smoke reduces the ion current, which triggers the alarm",
-          "when smoke enters, the current falls and the alarm sounds"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Inside the alarm, alpha radiation ionises the air between two metal plates, creating a small steady electric current. When smoke enters the alarm, the smoke particles disrupt the ionisation (either by absorbing alpha or by attaching to the ions). The current falls, and the alarm responds by sounding."
-  },
-  {
     "id": "alpha_static_eliminator_mcq",
     "tags": [
       "uses_alpha"
@@ -3143,6 +2782,7 @@ window.PREIB_RAD_QUESTIONS = [
   },
   {
     "id": "use_of_beta_short",
+    "type": "short",
     "tags": [
       "uses_beta"
     ],
@@ -3150,25 +2790,48 @@ window.PREIB_RAD_QUESTIONS = [
       "7.14"
     ],
     "difficultyRating": 1,
-    "type": "short",
-    "prompt": "State one use of beta radiation.",
     "marks": 1,
+    "prompt": "State one use of beta radiation.",
     "markPoints": [
       {
         "any": [
           "thickness gauge",
-          "paper thickness gauge",
-          "foil thickness gauge",
-          "thickness gauge for paper",
-          "thickness gauge for thin metal foil",
-          "tracer (beta-emitting medical tracer)",
+          "thickness gage",
+          "gauge for paper",
+          "gauge for foil",
+          "gauge for aluminium",
+          "gauge for thickness",
+          "paper gauge",
+          "foil gauge",
+          "aluminium foil",
+          "tin foil",
+          "kitchen foil",
+          "cooking foil",
+          "thin metal foil",
+          "thin foil",
+          "measure the thickness",
+          "measuring thickness",
+          "check the thickness",
+          "checking thickness",
+          "monitor the thickness",
+          "monitoring thickness",
+          "thickness of paper",
+          "thickness of foil",
+          "thickness of aluminium",
+          "tracer",
           "betalight",
-          "radiotherapy implant"
+          "beta light",
+          "radiotherapy",
+          "radio therapy",
+          "implant",
+          "brachytherapy",
+          "radioactive implant"
         ]
       }
     ],
     "allowAdjust": true,
-    "explanation": "The classic beta use is a thickness gauge for paper, plastic film or thin metal foil. Beta is also used in some implanted radiotherapy sources (where the beta delivers its energy locally to the tumour) and in betalights (e.g. exit signs)."
+    "explanation": "The classic beta use is a thickness gauge for paper, plastic film, or thin metal (aluminium) foil. Beta is also used in implanted radiotherapy sources (where the beta delivers its energy locally to the tumour) and in betalights (e.g. exit signs).",
+    "examinerNote": "Past-paper mark schemes accept 'thickness gauge', 'tracer', and 'radiotherapy' alone. 'Radiotherapy' is broader than the strict 'implanted radiotherapy' answer (since the everyday meaning of radiotherapy is gamma-from-outside) — examiners accept it but a stronger answer specifies 'implant' or 'brachytherapy'."
   },
   {
     "id": "paper_thickness_gauge_radiation_mcq",
@@ -3180,7 +2843,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 1,
     "type": "mcq",
-    "prompt": "Which radiation is used in a thickness gauge for paper or thin foil?",
+    "prompt": "Which radiation is used in a thickness gauge for paper or thin aluminium foil?",
     "choices": [
       "Beta",
       "Alpha",
@@ -3189,10 +2852,10 @@ window.PREIB_RAD_QUESTIONS = [
     "answerIndex": 0,
     "marks": 1,
     "distractorRationales": {
-      "1": "Alpha would be completely absorbed by even very thin paper, so the gauge would always read zero. It couldn't detect changes in thickness.",
-      "2": "Gamma would pass through paper or thin foil almost unaffected. The gauge couldn't detect changes in thickness either."
+      "1": "Alpha would be completely absorbed by even very thin paper or foil, so the gauge would always read zero. It couldn't detect changes in thickness.",
+      "2": "Gamma would pass through paper or thin aluminium foil almost unaffected. The gauge couldn't detect changes in thickness either."
     },
-    "explanation": "Beta is partially absorbed by paper or thin foil — a thicker sheet absorbs more, a thinner one absorbs less. The detector sees a count rate that varies with thickness, which is what a gauge needs."
+    "explanation": "Beta is partially absorbed by paper or thin aluminium foil. A thicker sheet absorbs more, a thinner one absorbs less, so the count rate at the detector tracks the thickness."
   },
   {
     "id": "thickness_gauge_halflife_mcq",
@@ -3223,89 +2886,8 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "A thickness gauge needs to give consistent readings over years. If the source decayed quickly, the count rate would drop over time even if the thickness was unchanged. So the half-life needs to be many years (e.g. strontium-90, 28 years, or krypton-85, 11 years)."
   },
   {
-    "id": "paper_thickness_gauge_short",
-    "tags": [
-      "uses_beta"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain why beta, rather than alpha or gamma, is the correct choice of radiation for a thickness gauge that monitors paper or thin metal foil.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "alpha would be absorbed completely (by even thin paper)",
-          "alpha cannot penetrate paper",
-          "alpha would not reach the detector",
-          "alpha is too easily absorbed"
-        ]
-      },
-      {
-        "any": [
-          "gamma would pass through (almost unaffected)",
-          "gamma is barely absorbed by paper or thin foil",
-          "gamma would give the same reading regardless of thickness",
-          "gamma is too penetrating"
-        ]
-      },
-      {
-        "any": [
-          "beta is partially absorbed; the count rate varies with thickness",
-          "beta is absorbed by an amount that depends on thickness, so the count rate tracks the thickness",
-          "beta lets the count rate change as the paper gets thicker or thinner",
-          "the count rate of beta varies with thickness"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "A thickness gauge works by measuring how much radiation is absorbed by the material. To do this, the radiation must be partially absorbed — neither stopped completely (or the gauge would always read zero) nor pass through unaffected (or the gauge would always read full count). For paper or thin foil, this 'partial absorption' Goldilocks zone is beta."
-  },
-  {
-    "id": "beta_for_local_treatment_short",
-    "tags": [
-      "uses_beta"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "A radioactive source is implanted directly into a tumour. Explain why a beta-emitter could be a sensible choice for this treatment, and a gamma-emitter would not be.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "beta has a moderate (short) range",
-          "beta deposits its energy locally",
-          "beta is absorbed within a few mm of where it is emitted",
-          "beta does not travel far from the source"
-        ]
-      },
-      {
-        "any": [
-          "the beta energy is concentrated in the tumour",
-          "the damage is confined to the tumour",
-          "the beta kills tumour cells without affecting distant healthy tissue",
-          "the energy is delivered into the tumour, not into surrounding tissue"
-        ]
-      },
-      {
-        "any": [
-          "gamma is highly penetrating",
-          "gamma would pass through the tumour and irradiate healthy tissue beyond",
-          "gamma would not be confined to the tumour",
-          "gamma's penetration would damage surrounding healthy cells"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "For an implanted source, you want the radiation to deposit its energy in the tumour only — not in healthy tissue further away. Beta's short range is a feature, not a bug: it stops within a few mm, exactly where you want the damage. Gamma, being highly penetrating, would carry on past the tumour and damage healthy tissue, which is the opposite of what's wanted."
-  },
-  {
     "id": "use_of_gamma_short",
+    "type": "short",
     "tags": [
       "uses_gamma"
     ],
@@ -3313,30 +2895,55 @@ window.PREIB_RAD_QUESTIONS = [
       "7.14"
     ],
     "difficultyRating": 1,
-    "type": "short",
-    "prompt": "State one use of gamma radiation.",
     "marks": 1,
+    "prompt": "State one use of gamma radiation.",
     "markPoints": [
       {
         "any": [
-          "sterilisation of medical equipment",
-          "sterilising medical equipment",
-          "sterilising food",
           "sterilisation",
+          "sterilising",
+          "sterilize",
+          "sterilization",
+          "kill bacteria",
+          "killing bacteria",
+          "kill germs",
+          "killing germs",
+          "kill microbes",
+          "kill microorganisms",
+          "preserving food",
+          "preserve food",
           "irradiating food",
-          "medical tracer",
+          "irradiate food",
+          "food irradiation",
+          "medical equipment",
+          "tracer",
+          "tracing leaks",
+          "trace leaks",
+          "tracing pipes",
+          "leak detection",
+          "find a leak",
+          "finding leaks",
           "medical imaging",
-          "tracing leaks in pipes",
-          "industrial tracer",
+          "imaging the body",
+          "PET scan",
           "radiotherapy",
+          "treating cancer",
+          "treat cancer",
+          "cancer treatment",
           "gamma knife",
-          "thickness gauge for thick steel",
-          "thickness gauge"
+          "kill cancer",
+          "killing cancer cells",
+          "thickness gauge",
+          "steel thickness",
+          "thick metal",
+          "thick steel",
+          "measuring thickness",
+          "measure thickness"
         ]
       }
     ],
     "allowAdjust": true,
-    "explanation": "Three big categories of use for gamma: (1) sterilisation (kills bacteria on equipment or food, and the radiation passes through packaging); (2) tracers (medical or industrial — gamma can leave the body or pipe and be detected outside); (3) radiotherapy (treating cancer with focused gamma beams)."
+    "explanation": "Three big categories of use for gamma: (1) sterilisation (kills bacteria on equipment or food, and the radiation passes through packaging); (2) tracers (medical or industrial — gamma can leave the body or pipe and be detected outside); (3) thickness gauges for thick steel or other thick metal (gamma is the only radiation penetrating enough to give a thickness-dependent count rate); (4) radiotherapy (treating cancer with focused gamma beams)."
   },
   {
     "id": "medical_tracer_radiation_mcq",
@@ -3348,7 +2955,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 1,
     "type": "mcq",
-    "prompt": "Which radiation is normally used in a medical tracer?",
+    "prompt": "A patient is given a radioactive tracer (typically by injection) so that a camera outside the body can build an image of where the tracer goes. Which radiation is used?",
     "choices": [
       "Gamma",
       "Alpha",
@@ -3360,7 +2967,7 @@ window.PREIB_RAD_QUESTIONS = [
       "1": "Alpha would be absorbed inside the body and never reach the detector outside. It would also be highly damaging to nearby tissue.",
       "2": "Beta is partially absorbed by tissue; only some would escape the body. Gamma is the more reliable choice for imaging."
     },
-    "explanation": "A medical tracer is a radioactive substance given to a patient (often by injection) so that radiation emerging from the body can be detected by an external camera. Gamma is highly penetrating, so it can leave the body and be detected. Alpha and (mostly) beta cannot."
+    "explanation": "A medical tracer is a radioactive substance given to a patient (most commonly by injection, sometimes by inhalation for lung scans, sometimes by swallowing for digestion scans) so that radiation emerging from the body can be detected externally. Gamma is highly penetrating, so it can leave the body and be detected. Alpha and (mostly) beta cannot."
   },
   {
     "id": "medical_tracer_property_mcq",
@@ -3372,21 +2979,21 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
-    "prompt": "Why is gamma used as a medical tracer? Gamma is the radiation that:",
+    "prompt": "Why is gamma used as a medical tracer (typically injected and detected by an external camera)? Gamma is the radiation that:",
     "choices": [
-      "Can leave the body and be detected outside",
-      "Is the most ionising",
-      "Has the largest charge",
-      "Has the longest half-life of the three"
+      "can leave the body and be detected outside",
+      "is the most ionising",
+      "has the largest charge",
+      "has the longest half-life of the three"
     ],
     "answerIndex": 0,
     "marks": 1,
     "distractorRationales": {
-      "1": "We don't want a tracer to be highly ionising — that would damage tissue. Alpha is the most ionising and is exactly what you don't want here.",
+      "1": "We don't want a tracer to be highly ionising — that would damage tissue more than necessary. Alpha is the most ionising and is exactly what you don't want here.",
       "2": "Gamma carries no charge.",
       "3": "Half-life isn't a property of the type of radiation; it depends on the isotope. Tracer half-lives are typically only a few hours."
     },
-    "explanation": "A tracer needs to be detectable from outside the body. Gamma's high penetrating power means most of it can leave the body and reach an external camera, where its arrival pattern is used to build an image."
+    "explanation": "An injected tracer needs to be detectable from outside the body. Gamma's high penetrating power means most of it can leave the body and reach an external camera, where its arrival pattern is used to build an image."
   },
   {
     "id": "medical_tracer_halflife_mcq",
@@ -3400,55 +3007,22 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "difficultyRating": 2,
     "type": "mcq",
-    "prompt": "A medical tracer should have a half-life of about:",
+    "prompt": "An injected medical tracer (e.g. for a heart or bone scan) should have a half-life of about:",
     "choices": [
-      "A few hours",
-      "A few seconds",
-      "Many years",
-      "A few months"
+      "a few hours",
+      "a few seconds",
+      "many years",
+      "a few months"
     ],
     "answerIndex": 0,
     "marks": 1,
     "distractorRationales": {
-      "1": "Too short. The tracer would have decayed before the imaging scan could be done.",
+      "1": "Too short for an injected tracer. The tracer would have decayed before the imaging scan could be done. (Some inhaled tracers do use seconds-half-life isotopes — see krypton-81m — but injected tracers are slower to deliver, image, and clear.)",
       "2": "Far too long. The tracer would continue to irradiate the patient long after the scan was over.",
       "3": "Still too long. The patient would be irradiated for months from the residual tracer."
     },
-    "explanation": "A medical tracer needs a half-life long enough for the scan to be carried out, but short enough that the tracer decays away soon afterwards (so the patient doesn't carry a radioactive source around). A few hours is about right (technetium-99m, the most-used medical tracer, has a half-life of 6 hours)."
-  },
-  {
-    "id": "why_gamma_for_tracer_short",
-    "tags": [
-      "uses_gamma"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "A radioactive tracer is injected into a patient and the radiation emerging from the body is detected by a camera outside. Explain why a gamma-emitter is used.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "gamma has a high penetrating ability",
-          "gamma is highly penetrating",
-          "gamma can pass through tissue",
-          "gamma can pass out of the body"
-        ]
-      },
-      {
-        "any": [
-          "gamma can be detected outside the body",
-          "the camera outside the body can detect the gamma",
-          "the gamma reaches the detector after passing through the body",
-          "gamma can be detected externally"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "A tracer only works if the radiation can get from inside the patient out to the camera. Gamma is the most penetrating radiation, so much of it passes through tissue and bone and reaches the detector. Alpha would be absorbed within millimetres; most beta would be absorbed too.",
-    "examinerNote": "Past-paper Q17 4SS0 (June 2019) mark scheme: 'gamma has a high penetrating ability; gamma can be detected outside the body / allow gamma can pass through / out of the body'."
+    "explanation": "An injected medical tracer needs a half-life long enough for the tracer to circulate, reach the target tissue, and be imaged, but short enough that it decays away soon afterwards (so the patient doesn't carry a radioactive source around). A few hours is about right (technetium-99m, the most-used medical tracer, has a half-life of 6 hours).",
+    "examinerNote": "The 'a few hours' answer is for injected tracers. Inhaled tracers used for lung scans (krypton-81m) have much shorter half-lives — about 13 seconds — because they're imaged immediately as the patient breathes them in."
   },
   {
     "id": "sterilisation_radiation_mcq",
@@ -3499,47 +3073,6 @@ window.PREIB_RAD_QUESTIONS = [
       "3": "Gamma is actually quite dangerous to be near — the workers operating the sterilisation plant must use thick lead and concrete shielding."
     },
     "explanation": "Sterilisation needs the radiation to penetrate the packaging. Only gamma is penetrating enough."
-  },
-  {
-    "id": "gamma_sterilisation_short",
-    "tags": [
-      "uses_gamma"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Surgical equipment is sterilised by exposing it (still in its packaging) to gamma radiation from a cobalt-60 source. Explain why gamma is the appropriate choice for this.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "gamma is highly penetrating",
-          "gamma can pass through the packaging",
-          "gamma penetrates the packaging to reach the equipment inside",
-          "gamma can pass through the box and the equipment"
-        ]
-      },
-      {
-        "any": [
-          "gamma kills bacteria (and other microorganisms)",
-          "gamma kills the bacteria/germs on the equipment",
-          "gamma kills any microbes",
-          "the gamma destroys the bacteria"
-        ]
-      },
-      {
-        "any": [
-          "the equipment can be sterilised in its sealed packaging",
-          "the packaging does not have to be opened for sterilisation",
-          "no need to expose the equipment to the air",
-          "equipment stays sterile until the packaging is opened by the user"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Three reasons in one: gamma is highly penetrating (so it can get through the packaging); it is ionising enough to kill bacteria inside; and the equipment never has to be removed from its sterile packaging. Alpha and beta would both fail at the first hurdle: they couldn't get through the packaging."
   },
   {
     "id": "steel_thickness_gauge_radiation_mcq",
@@ -3834,156 +3367,6 @@ window.PREIB_RAD_QUESTIONS = [
       "3": "Beta is partially absorbed by tissue and the half-life is far too short — the tracer would have decayed away before the scan could finish."
     },
     "explanation": "Gamma for the radiation (so it can leave the body and reach the camera); a few hours for the half-life (long enough for the scan, short enough that the tracer decays away soon afterwards). Technetium-99m is the standard choice."
-  },
-  {
-    "id": "gamma_thick_steel_short",
-    "tags": [
-      "uses_gamma"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain why gamma, rather than alpha or beta, is used in a thickness gauge for thick steel sheet.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "thick steel absorbs alpha and beta completely",
-          "alpha and beta cannot pass through thick steel",
-          "alpha and beta would be stopped completely",
-          "thick steel stops alpha and beta",
-          "neither alpha nor beta can penetrate thick steel"
-        ]
-      },
-      {
-        "any": [
-          "gamma is highly penetrating",
-          "gamma passes through thick steel partially",
-          "gamma is partially absorbed by thick steel",
-          "gamma is the only one penetrating enough to (partially) pass through",
-          "only gamma can get through thick steel"
-        ]
-      },
-      {
-        "any": [
-          "the count rate at the detector varies with the thickness",
-          "the gauge can detect changes in thickness",
-          "the count rate gives information about the thickness",
-          "the thickness can be measured because the count rate depends on it",
-          "as the steel gets thicker, more gamma is absorbed and the count rate falls"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Same logic as the paper-thickness gauge, but scaled up: you need a radiation that is partially absorbed by the material being measured. For paper that's beta; for thick steel that's gamma. Alpha and beta would both be stopped completely by thick steel, so the count rate would always read zero (or background) regardless of the steel thickness, and the gauge couldn't tell anything about it.",
-    "instances": [
-      {
-        "prompt": "A gamma thickness gauge monitors a continuous sheet of steel as it is rolled. The detector shows a sudden drop in the count rate. State what this tells the operator about the steel.",
-        "explanation": "A drop in the count rate means more gamma is being absorbed, so the steel has become thicker than expected at that point.",
-        "markPoints": [
-          {
-            "any": [
-              "the steel has become thicker",
-              "the steel is thicker than expected",
-              "thickness has increased",
-              "more gamma is being absorbed because the steel is thicker"
-            ]
-          }
-        ],
-        "marks": 1
-      }
-    ]
-  },
-  {
-    "id": "alpha_wrong_for_paper_gauge_short",
-    "tags": [
-      "uses_alpha",
-      "uses_beta"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain why alpha radiation would be a poor choice for a thickness gauge that monitors the thickness of paper or thin metal foil.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "alpha has very short range / low penetrating power",
-          "alpha is absorbed by very thin layers",
-          "alpha would be absorbed even by very thin paper",
-          "alpha cannot penetrate paper",
-          "alpha is the least penetrating"
-        ]
-      },
-      {
-        "any": [
-          "alpha would be stopped completely (by the paper)",
-          "no alpha would reach the detector",
-          "the detector would always read background",
-          "the count rate would always be (close to) zero",
-          "all the alpha would be absorbed"
-        ]
-      },
-      {
-        "any": [
-          "the gauge could not detect changes in thickness",
-          "the count rate wouldn't vary with thickness",
-          "you couldn't tell what the thickness was",
-          "the gauge needs the count to vary with thickness, but it wouldn't",
-          "the count would stay the same regardless of paper thickness"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "A thickness gauge works by detecting how much of the radiation gets through. If the radiation is absorbed completely (as alpha would be by even thin paper), the count rate is zero regardless of thickness, so the gauge tells you nothing. The radiation needs to be partially absorbed: that's beta for paper, gamma for thick steel.",
-    "examinerNote": "This 'alpha is wrong for paper gauges' angle complements the 'beta is right for paper gauges' angle in paper_thickness_gauge_short. A student can have one without the other, so both probes are useful."
-  },
-  {
-    "id": "alpha_static_eliminator_short",
-    "tags": [
-      "uses_alpha"
-    ],
-    "specRefs": [
-      "7.14"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Some industrial machines use a small alpha source to remove static electrical charge from materials moving on a conveyor (for example, plastic film or paper). Explain how the alpha source is able to do this.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "alpha ionises the air around the material",
-          "alpha ionises nearby air molecules",
-          "alpha creates ions in the air close to the material",
-          "alpha causes the air to become ionised",
-          "ions are produced in the air by the alpha radiation"
-        ]
-      },
-      {
-        "any": [
-          "the ions are attracted to opposite charges",
-          "positive ions are attracted to negatively charged material (and vice versa)",
-          "the ions in the air are pulled towards the static charge on the material",
-          "ions of opposite sign move to the charged surface"
-        ]
-      },
-      {
-        "any": [
-          "the static charge is neutralised",
-          "the build-up of charge is removed",
-          "the material loses its static charge",
-          "the charge on the material is cancelled out",
-          "the surface becomes neutral"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Alpha is highly ionising, so it creates many positive and negative ions in the air close to the material. Whichever sign of charge the material carries, the air ions of opposite sign are attracted to it, neutralising the build-up. Alpha's short range is also useful: the ionisation only happens close to where it's needed, and the alpha can't escape and harm anyone."
   },
   {
     "id": "choose_isotope_for_sterilisation_mcq",
@@ -4312,206 +3695,6 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "From outside, only the most penetrating radiation reaches you. Gamma travels easily through air and can also penetrate skin and clothing to deposit energy in deeper tissue. Alpha and beta would mostly be absorbed before reaching the body."
   },
   {
-    "id": "mechanism_of_harm_short",
-    "tags": [
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain how ionising radiation can damage living cells.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "ionising radiation knocks electrons off atoms",
-          "the radiation ionises atoms in the cell",
-          "the radiation creates ions in the cell",
-          "ionising radiation removes electrons from molecules"
-        ]
-      },
-      {
-        "any": [
-          "this damages molecules in the cell",
-          "this breaks chemical bonds",
-          "this damages DNA",
-          "molecular bonds are broken or atoms are damaged"
-        ]
-      },
-      {
-        "any": [
-          "damaged cells may die or behave abnormally",
-          "cells may be killed",
-          "cells may mutate (and become cancerous)",
-          "DNA damage can lead to mutations or cell death"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "The chain of damage: ionising radiation knocks electrons off atoms (creating ions), which breaks chemical bonds in important molecules (especially DNA), which leaves cells either non-functional, dead, or with mutations that may later cause cancer."
-  },
-  {
-    "id": "effect_depends_on_radiation_short",
-    "tags": [
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain why the biological effect of nuclear radiation depends on the type of radiation (alpha, beta, or gamma) as well as the activity of the source.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "different radiations have different ionising abilities",
-          "alpha is more ionising than beta or gamma",
-          "the three radiations damage tissue at different rates per particle",
-          "ionising power per particle differs by type"
-        ]
-      },
-      {
-        "any": [
-          "different radiations have different ranges in tissue",
-          "alpha is absorbed quickly; gamma can pass through",
-          "the radiations differ in how much tissue they pass through",
-          "different radiations differ in how far they travel before being absorbed"
-        ]
-      },
-      {
-        "any": [
-          "the same activity gives different doses depending on radiation type",
-          "the dose to the body is not the same for the same activity of different radiations",
-          "biological effect depends on both how much radiation is emitted and what type",
-          "activity alone doesn't tell you the biological effect; the type matters too"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Activity tells you only how many decays per second. Two sources with the same activity can have very different effects on the body if the radiation they emit is different. Alpha deposits a lot of energy in a small volume; gamma deposits very little. So the biological effect depends on both quantity (activity) and quality (type)."
-  },
-  {
-    "id": "dose_concept_short",
-    "tags": [
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why the dose received by a person from a radioactive source depends on the time spent near the source as well as on the type of radiation.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "the longer near the source, the more decays reach the person",
-          "more time near the source means more radiation reaches the body",
-          "exposure time multiplies the rate of radiation hitting the person",
-          "double the time means double the radiation received"
-        ]
-      },
-      {
-        "any": [
-          "type of radiation determines how much damage per particle",
-          "the type also determines how much radiation reaches the person at a given distance",
-          "alpha at distance does no damage; gamma does",
-          "different radiations cause different amounts of damage per particle that hits"
-        ]
-      },
-      {
-        "any": [
-          "dose depends on type, time, and distance from the source",
-          "dose is determined by how much energy is deposited in tissue, which depends on type and time",
-          "total damage = type x time x activity (approximately)",
-          "to reduce dose, reduce time, increase distance, or use shielding"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "The dose is essentially the total energy of ionising radiation deposited in tissue. More time means more decays reach the body. The type of radiation affects (a) what fraction of those decays reach tissue (alpha mostly doesn't, gamma mostly does) and (b) how much damage each one does once there. To minimise dose: minimise time, maximise distance, and use shielding to absorb the radiation before it reaches you."
-  },
-  {
-    "id": "dividing_cells_sensitive_short",
-    "tags": [
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why hair, gut lining, and bone marrow are typically the first parts of the body to show effects after a high dose of ionising radiation.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "these tissues divide rapidly",
-          "rapidly dividing cells are most affected",
-          "these are tissues with the most cell division",
-          "they all need fast cell replacement"
-        ]
-      },
-      {
-        "any": [
-          "rapidly dividing cells are more sensitive to DNA damage",
-          "DNA damage interferes with cell division",
-          "ionising radiation damages DNA, which is critical for division",
-          "cells dividing quickly cannot complete division if DNA is damaged"
-        ]
-      },
-      {
-        "any": [
-          "the visible effects appear when these tissues fail to be replaced",
-          "hair falls out because new hair cells aren't produced",
-          "gut and bone marrow problems show as the existing cells aren't replaced",
-          "the symptoms appear once the existing cells die without replacement"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Rapidly dividing tissues are doubly hit: more cells are actively trying to copy DNA (and so more are vulnerable to radiation damage during a critical step), and these tissues rely on constant replacement. Once the dividing cells are damaged, the tissue can't replace its surface (gut), its hair shafts, or its blood cells (marrow), and the symptoms appear."
-  },
-  {
-    "id": "radiation_sickness_short",
-    "tags": [
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 1,
-    "type": "short",
-    "prompt": "State two short-term harmful effects on the human body of a high dose of ionising radiation.",
-    "marks": 2,
-    "markPoints": [
-      {
-        "any": [
-          "radiation sickness",
-          "radiation poisoning",
-          "nausea",
-          "vomiting"
-        ]
-      },
-      {
-        "any": [
-          "burns / skin burns",
-          "hair loss",
-          "damage to / killing of cells",
-          "tissue damage",
-          "fatal at very high doses",
-          "death (at very high doses)"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Two of: radiation sickness (nausea, vomiting), skin burns, hair loss, damage to cells/DNA, fatal at very high doses.",
-    "examinerNote": "Past-paper Q48 (4SS0 June 2023) accepts: 'radiation sickness; (skin) burns; damaging/mutating/killing cells; cancer'. The 4PH1 papers list essentially the same set."
-  },
-  {
     "id": "acute_vs_long_term_categorise",
     "tags": [
       "bio_effects"
@@ -4745,90 +3928,6 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "Inside the body, all three reach tissue (no skin or air to stop them). The most ionising deposits the most energy per particle and so does the most damage: alpha > beta > gamma. This is the reverse of the external ordering, where penetration was the deciding factor."
   },
   {
-    "id": "external_alpha_safety_short",
-    "tags": [
-      "which_most_dangerous"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Explain why an external alpha source held at arm's length poses very little risk to a person.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "alpha has a very short range in air",
-          "alpha is absorbed by a few cm of air",
-          "alpha does not travel far in air",
-          "alpha is the least penetrating of the three radiations"
-        ]
-      },
-      {
-        "any": [
-          "no alpha (essentially) reaches the person",
-          "essentially no alpha reaches the body",
-          "the alpha doesn't reach the skin",
-          "the air absorbs the alpha before it reaches the person"
-        ]
-      },
-      {
-        "any": [
-          "alpha cannot penetrate skin",
-          "alpha is absorbed by skin",
-          "even if alpha reached the body, skin would absorb it",
-          "skin is enough of a barrier to absorb alpha"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Two layers of protection: (1) the air absorbs the alpha within a few centimetres of the source; (2) even if some did reach the body, skin would absorb it. So the alpha never reaches living cells beneath the skin."
-  },
-  {
-    "id": "alpha_inhaled_danger_short",
-    "tags": [
-      "which_most_dangerous",
-      "bio_effects"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why inhaling dust contaminated with an alpha-emitting substance is much more dangerous than holding a sealed alpha source in your hand.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "inhaled alpha bypasses the skin barrier",
-          "no skin barrier when alpha is inside the body",
-          "the alpha is now inside the body, where there is no skin to absorb it",
-          "skin can no longer protect the lungs from alpha"
-        ]
-      },
-      {
-        "any": [
-          "alpha deposits all its energy in nearby tissue",
-          "alpha is highly ionising, so it does a lot of damage per particle",
-          "alpha's short range means all the ionisation is dumped into the tissue near the source",
-          "alpha is the most ionising of the three"
-        ]
-      },
-      {
-        "any": [
-          "lung tissue is in close contact with the source and is damaged",
-          "the lung cells around the dust are heavily ionised",
-          "the lung tissue receives a high local dose of alpha",
-          "lung cells are damaged by the alpha — leading to risk of lung cancer"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Sealed in your hand, the alpha doesn't penetrate skin and so has no biological effect. Inhaled, it sits in lung tissue, where there is no skin barrier between source and cells. Alpha's huge ionising power, combined with its short range, means all that energy is deposited in a small volume of lung tissue — exactly the kind of localised damage that causes lung cancer. (This is why radon, an alpha-emitter, is a leading cause of lung cancer.)",
-    "examinerNote": "Past-paper Q42 (4PH1 Jan 2023) directly asks this kind of question about radon."
-  },
-  {
     "id": "ingested_beta_vs_alpha_mcq",
     "tags": [
       "which_most_dangerous",
@@ -4854,174 +3953,6 @@ window.PREIB_RAD_QUESTIONS = [
       "3": "Beta does ionise tissue. It just does less damage per particle than alpha."
     },
     "explanation": "Once inside the body, both alpha and beta reach tissue. The difference is the amount of damage per particle: alpha is highly ionising and short-range, so all its energy is deposited in tissue close to the source. Beta is moderately ionising and longer range, so a fraction of beta particles leave the body altogether without depositing all their energy. So the dose to tissue is lower for the same activity."
-  },
-  {
-    "id": "danger_through_barrier_short",
-    "tags": [
-      "which_most_dangerous",
-      "penetration"
-    ],
-    "specRefs": [
-      "7.5",
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "A worker stands behind a sheet of aluminium that completely blocks beta but only partly absorbs gamma. A source on the other side is emitting both beta and gamma. Identify which radiation contributes more to the worker's dose, and explain.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "the gamma contributes more",
-          "gamma is the main contributor",
-          "the dose is mostly from gamma",
-          "gamma contributes (almost) all the dose"
-        ]
-      },
-      {
-        "any": [
-          "the aluminium blocks the beta",
-          "no beta reaches the worker",
-          "beta is fully absorbed by the aluminium",
-          "all the beta is stopped by the aluminium"
-        ]
-      },
-      {
-        "any": [
-          "some gamma passes through the aluminium",
-          "gamma is only partly absorbed by the aluminium",
-          "a fraction of the gamma reaches the worker",
-          "gamma passes through the aluminium and reaches the worker"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Even though beta is more ionising than gamma per particle that arrives, it doesn't matter if no beta reaches the worker. The aluminium acts as a perfect filter against beta, but gamma is too penetrating for aluminium to absorb fully — so gamma reaches the worker, and gamma is responsible for the dose. The shielding choice has flipped the danger ranking."
-  },
-  {
-    "id": "danger_ranking_flips_short",
-    "tags": [
-      "which_most_dangerous"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why the ranking of dangers (alpha vs beta vs gamma) is different when the source is OUTSIDE the body versus INSIDE the body.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "outside the body, only the most penetrating radiation reaches you",
-          "outside, alpha and beta are absorbed by air or skin",
-          "outside the body, alpha doesn't reach you, so penetration matters most",
-          "from outside, you only get a dose from radiation that can reach you"
-        ]
-      },
-      {
-        "any": [
-          "inside the body there is no air or skin barrier",
-          "inside, all the radiation reaches surrounding tissue",
-          "inside the body, all three radiations reach tissue equally",
-          "inside, the radiations all have access to the cells"
-        ]
-      },
-      {
-        "any": [
-          "inside: ionising ability per particle is what matters most",
-          "internal: alpha's high ionising ability dominates",
-          "internal: damage per particle is the deciding factor",
-          "inside the body, alpha causes the most damage because it ionises the most"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Two different filters dominate in the two cases. Outside the body: penetration is the bottleneck — only what gets through air and skin can do harm, so gamma > beta > alpha. Inside the body: penetration is no longer a factor (everything reaches tissue), so ionising ability per particle takes over and alpha > beta > gamma."
-  },
-  {
-    "id": "same_situation_three_sources_short",
-    "tags": [
-      "which_most_dangerous"
-    ],
-    "specRefs": [
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Three sealed sources, one alpha, one beta and one gamma, each with the same activity, are laid on a teacher's desk for 5 minutes. The teacher stands 2 metres away. State which source contributes most to the dose received by the teacher, and explain.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "the gamma source",
-          "gamma",
-          "the gamma contributes most",
-          "the teacher's dose is mainly from the gamma source"
-        ]
-      },
-      {
-        "any": [
-          "alpha cannot reach the teacher because of its short range in air",
-          "alpha is absorbed by air before it reaches the teacher",
-          "alpha doesn't travel 2 m in air",
-          "the alpha is absorbed by air long before reaching the teacher"
-        ]
-      },
-      {
-        "any": [
-          "beta is mostly absorbed by air over short distances",
-          "beta is largely absorbed by 2 m of air",
-          "beta has medium range; much of it is absorbed before reaching the teacher",
-          "most of the beta is absorbed in the air on the way"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "Even though alpha is more ionising per particle than gamma, the alpha doesn't reach the teacher: it's absorbed by a few cm of air. The beta has tens of metres of range in air but is partially absorbed over 2 m, so only a fraction reaches the teacher. The gamma is essentially unchanged over 2 m of air, so it's the dominant contributor to the teacher's dose."
-  },
-  {
-    "id": "halflife_safe_time_short",
-    "tags": [
-      "which_most_dangerous",
-      "halflife"
-    ],
-    "specRefs": [
-      "7.12",
-      "7.16"
-    ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "A radioactive substance with a long half-life is generally regarded as 'dangerous for a long time'. Explain why.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "the substance keeps emitting (ionising) radiation for a long time",
-          "the activity stays high for a long time",
-          "the substance remains radioactive for many years",
-          "the substance emits radiation for a long time after release"
-        ]
-      },
-      {
-        "any": [
-          "even after a long period, much of the original substance is still present",
-          "the activity decreases very slowly",
-          "after years, much of the substance has not yet decayed",
-          "long half-life means the activity halves only once over a long time"
-        ]
-      },
-      {
-        "any": [
-          "anyone exposed during this time receives a dose",
-          "the area remains hazardous for many years",
-          "the substance can continue to harm people for many half-lives",
-          "the long-term hazard remains, sometimes for thousands of years"
-        ]
-      }
-    ],
-    "allowAdjust": true,
-    "explanation": "A long half-life means the substance loses its activity only slowly. So if some leaks into the environment, it will still be emitting ionising radiation thousands of years later — and anyone exposed will pick up a dose. Plutonium-239 (half-life 24,000 years) is the textbook worry."
   },
   {
     "id": "danger_ranking_grid",
@@ -5255,7 +4186,801 @@ window.PREIB_RAD_QUESTIONS = [
     "explanation": "Low-level waste: low activity, short-lived, stored in shallow burial sites where it will decay to safe levels in years to decades. High-level waste: high activity, long-lived (some isotopes have half-lives of thousands of years), stored deep underground in stable rock formations."
   },
   {
-    "id": "short_long_lived_waste_short",
+    "id": "atom_neutral_fillblank",
+    "type": "fillblank",
+    "tags": [
+      "atomic_struct"
+    ],
+    "specRefs": [
+      "7.2"
+    ],
+    "difficultyRating": 1,
+    "marks": 2,
+    "prompt": "An atom contains equal numbers of {} and {}, so its overall electrical charge is zero.",
+    "blanks": [
+      {
+        "expected": [
+          "protons"
+        ]
+      },
+      {
+        "expected": [
+          "electrons"
+        ]
+      }
+    ],
+    "explanation": "An atom is electrically neutral because the number of protons (charge +1 each) is the same as the number of electrons (charge −1 each). The positive and negative charges cancel exactly.",
+    "examinerNote": ""
+  },
+  {
+    "id": "ga68_vs_ga67_mcq",
+    "type": "mcq",
+    "tags": [
+      "nuclide_notation"
+    ],
+    "specRefs": [
+      "7.3"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Gallium-67 and gallium-68 are both isotopes of gallium. Compared with gallium-67, the nucleus of gallium-68 has:",
+    "choices": [
+      "one more neutron and the same number of protons",
+      "one more proton and the same number of neutrons",
+      "one more electron and the same number of protons",
+      "the same number of every type of particle"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Both are gallium, so both have the same number of protons (31). Adding a proton would make a different element.",
+      "2": "Electrons aren't in the nucleus, and adding one wouldn't change the mass number from 67 to 68.",
+      "3": "If they were identical, they wouldn't be different isotopes."
+    },
+    "explanation": "Both nuclei have 31 protons (because they are both gallium). Mass number 67 vs 68 differs by 1, so gallium-68 has one more neutron.",
+    "examinerNote": "Past paper Q17 4SS0 (June 2019) marks this; mark scheme rejects 'less neutrons' as a description of the difference."
+  },
+  {
+    "id": "radon_facts_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "background"
+    ],
+    "specRefs": [
+      "7.10"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Radon is the largest single source of natural background radiation for most people in the UK. Tick all the true statements about radon.",
+    "choices": [
+      "radon comes from the radioactive decay of uranium in rocks and soil",
+      "radon is a gas, so it can escape from the ground into the air",
+      "radon builds up to higher levels indoors because the air is less well dispersed",
+      "radon is produced by cosmic rays from space",
+      "radon is a man-made source from nuclear power stations",
+      "radon levels are higher outdoors than indoors because of wind"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Cosmic rays are a separate source of background radiation, and they are not what produces radon.",
+      "4": "Radon is natural, not man-made; it comes from decay of natural uranium in the ground.",
+      "5": "It's the other way round: outdoor wind disperses radon, so outdoor levels are lower than indoors."
+    },
+    "markingMode": "penalty",
+    "explanation": "Radon is a radioactive gas produced by the decay of natural uranium in rocks and soil. It seeps out of the ground and accumulates indoors, where there is less air movement to disperse it.",
+    "examinerNote": ""
+  },
+  {
+    "id": "irradiated_fruit_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "contam_irrad"
+    ],
+    "specRefs": [
+      "7.15",
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 2,
+    "prompt": "Fruit is irradiated with gamma rays at a sterilisation plant before being sold in supermarkets. Tick the statements that explain why the fruit is safe to eat afterwards.",
+    "choices": [
+      "the fruit has not been made radioactive",
+      "bacteria on the fruit have been killed by the radiation",
+      "the gamma source has been absorbed by the fruit",
+      "the radiation cleans the fruit chemically",
+      "the fruit was only briefly contaminated, and the contamination has now decayed"
+    ],
+    "answerIndices": [
+      0,
+      1
+    ],
+    "distractorRationales": {
+      "2": "Gamma is electromagnetic radiation; it isn't absorbed and stored as a substance in the fruit.",
+      "3": "Irradiation isn't a chemical cleaning process. Its effect on bacteria is biological — DNA damage.",
+      "4": "Irradiation does not contaminate the fruit at all. There is nothing radioactive on the fruit either before or after."
+    },
+    "markingMode": "penalty",
+    "explanation": "Irradiation does not transfer any radioactive material to the fruit; the fruit itself does not become radioactive. The gamma kills bacteria and microorganisms by damaging their DNA, so the fruit is safe and lasts longer.",
+    "examinerNote": "Past-paper Q34 mark scheme: 'fruit has no bacteria; fruit has not been contaminated; fruit has not been made radioactive; radioactive source has not been in contact with the fruit'."
+  },
+  {
+    "id": "irradiation_stops_when_away_mcq",
+    "type": "mcq",
+    "tags": [
+      "contam_irrad"
+    ],
+    "specRefs": [
+      "7.15"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Which statement about irradiation is correct?",
+    "choices": [
+      "irradiation stops as soon as the person moves away from the source",
+      "irradiation continues even after the person leaves the area",
+      "irradiation can only be removed by washing the skin",
+      "irradiation transfers radioactive material onto the person"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Irradiation only happens while radiation is reaching the person. Move away, and it stops.",
+      "2": "That describes contamination, not irradiation.",
+      "3": "Irradiation does not deposit radioactive material; nothing needs washing off."
+    },
+    "explanation": "Irradiation is exposure to radiation. As soon as the person leaves the source's reach, no more radiation arrives, so the irradiation stops.",
+    "examinerNote": ""
+  },
+  {
+    "id": "contamination_persists_mcq",
+    "type": "mcq",
+    "tags": [
+      "contam_irrad"
+    ],
+    "specRefs": [
+      "7.15"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Why is contamination usually harder to deal with than irradiation?",
+    "choices": [
+      "the radioactive material stays with the person and keeps emitting radiation wherever they go",
+      "contamination always involves alpha radiation, which is the most dangerous",
+      "contamination can be stopped by moving away from the original source",
+      "contamination only happens to inanimate objects, not to people"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Contamination can involve any kind of radioactive material, not specifically alpha.",
+      "2": "That's irradiation. Contamination travels with you because the radioactive material is on or in you.",
+      "3": "Contamination definitely happens to people. Internal contamination is one of the most serious cases."
+    },
+    "explanation": "Contamination means radioactive material is in physical contact with the person (on the skin, swallowed, or inhaled). Wherever they go, the material goes too, and it keeps emitting radiation. Removal usually requires washing or, for internal contamination, waiting for the substance to decay.",
+    "examinerNote": ""
+  },
+  {
+    "id": "alpha_safe_in_smoke_alarm_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_alpha",
+      "which_most_dangerous"
+    ],
+    "specRefs": [
+      "7.14",
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Alpha is the most ionising of the three radiations and the most dangerous if it reaches living tissue. Tick all the genuine reasons why an alpha source in a household smoke alarm is nonetheless considered safe.",
+    "choices": [
+      "alpha has a very short range in air, so it cannot travel far from the source",
+      "the source is sealed inside the alarm casing, so the radioactive material cannot be touched, swallowed, or inhaled",
+      "the small amount of alpha that escapes the casing is absorbed by even a few cm of air before reaching anyone",
+      "alpha is actually one of the safest radiations under all conditions",
+      "the alarm contains a beta source, not an alpha source",
+      "alpha sources have very short half-lives so they decay before reaching anyone"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Alpha is the MOST ionising and the most dangerous if it reaches tissue. It's only safe in the smoke alarm because it cannot reach tissue.",
+      "4": "The source genuinely is alpha (typically americium-241). The radiation type isn't different.",
+      "5": "Smoke-alarm sources have very long half-lives (americium-241 has a half-life of about 432 years). Decay isn't what makes them safe."
+    },
+    "markingMode": "penalty",
+    "explanation": "Alpha is dangerous to living tissue, but in a smoke alarm it never reaches living tissue. Two layers of protection apply at once: the source is sealed inside the alarm so it cannot be touched, swallowed, or inhaled; and the very short range of alpha in air means even any that escaped wouldn't reach a person standing nearby.",
+    "examinerNote": "An earlier draft of this question included 'alpha cannot penetrate skin' as a tick. That phrasing is technically loose — the syllabus treats touching alpha as dangerous (e.g. the radon contamination case) — so the cleaner safety reasons are containment and air absorption."
+  },
+  {
+    "id": "smoke_alarm_mechanism_ordering",
+    "type": "ordering",
+    "tags": [
+      "uses_alpha"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 4,
+    "prompt": "Put the steps that explain how an alpha source enables a smoke alarm to detect smoke in the right order.",
+    "items": [
+      "alpha radiation from the source passes through air between two electrodes inside the alarm",
+      "the alpha ionises air molecules, creating ions",
+      "the ions allow a small steady current to flow between the electrodes",
+      "smoke particles entering the alarm absorb the alpha or block the ions, so the current drops",
+      "the alarm detects the drop in current and sounds"
+    ],
+    "shuffleStart": true,
+    "markingMode": "per_position",
+    "explanation": "Alpha ionises the air inside the alarm, creating a small steady current. Smoke particles disrupt this ionisation, the current falls, and the alarm sounds.",
+    "examinerNote": "Five-step ordering at 4 marks (per_position, capped at 4)."
+  },
+  {
+    "id": "paper_gauge_beta_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_beta"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "A thickness gauge for paper or thin aluminium foil uses a beta source. Tick all the genuine reasons why beta is the right choice rather than alpha or gamma.",
+    "choices": [
+      "alpha would be absorbed completely by even thin paper or foil, so the count rate wouldn't depend on thickness",
+      "gamma would pass through almost unaffected, so the count rate wouldn't depend on thickness",
+      "beta is partially absorbed, so the count rate varies with thickness",
+      "beta is the only radiation that can travel through air",
+      "alpha and gamma do not work as gauges of any kind",
+      "beta is the cheapest radiation to produce"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Beta and gamma both travel through air; alpha doesn't go far. That's not the deciding factor here.",
+      "4": "Alpha and gamma are used for other thickness gauges (e.g. gamma for thick steel). The choice depends on what's being measured.",
+      "5": "The choice of radiation is governed by physics (penetration), not cost."
+    },
+    "markingMode": "penalty",
+    "explanation": "For a thickness gauge to work, the count rate at the detector must vary with thickness. Beta is partially absorbed by paper or thin aluminium foil, so the count rate tracks thickness. Alpha would be completely absorbed (gauge always reads background); gamma is barely absorbed at all (gauge reads the same regardless).",
+    "examinerNote": "The Edexcel syllabus uses 'aluminium foil' as the canonical thin-foil example for the beta gauge."
+  },
+  {
+    "id": "beta_implant_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_beta"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 3,
+    "marks": 4,
+    "prompt": "A radioactive source is implanted directly into a tumour. Tick all the genuine reasons why a beta-emitter could be a sensible choice over either alpha or gamma.",
+    "choices": [
+      "beta has a moderate range and deposits its energy locally, in and near the tumour",
+      "beta damage is mostly confined to the tumour, sparing distant healthy tissue",
+      "alpha would be absorbed within a fraction of a millimetre, so could not reach all the cancer cells in the tumour",
+      "gamma would pass through the tumour and irradiate healthy tissue beyond",
+      "beta is harmless, so it cannot damage the tumour",
+      "gamma cannot enter living tissue at all",
+      "the beta source is not actually radioactive once implanted"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "distractorRationales": {
+      "4": "Beta is harmful to cells; that's how it kills the tumour. The point is that the harm is local to the tumour.",
+      "5": "Gamma penetrates tissue easily; that's why it's used for external scans. For implants, that's the problem — gamma carries past the tumour.",
+      "6": "The source is radioactive in exactly the same way once implanted. That's how it treats the tumour."
+    },
+    "markingMode": "penalty",
+    "explanation": "An implanted source is meant to deliver dose to the tumour and as little as possible to surrounding healthy tissue. Beta has just the right range: long enough to reach all the cancer cells in a tumour several mm across, short enough that the dose is largely confined to the tumour. Alpha would only ionise the immediate surroundings of the source (a fraction of a mm), missing most of the tumour. Gamma would carry far past the tumour and irradiate distant healthy tissue.",
+    "examinerNote": "This is the syllabus's full reasoning: 'alpha would only ionise immediate surroundings, gamma would ionise too widely' — so beta is the Goldilocks choice. The 'why not alpha' angle is what the original question was missing."
+  },
+  {
+    "id": "gamma_tracer_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_gamma"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 2,
+    "prompt": "A radioactive tracer is injected into a patient and the radiation emerging from the body is detected by a camera outside. Tick all the genuine reasons why a gamma-emitter is used.",
+    "choices": [
+      "gamma is highly penetrating, so it can pass through tissue and out of the body",
+      "the gamma can be detected by a camera outside the body",
+      "alpha and beta would be absorbed inside the body and never reach the camera",
+      "gamma is harmless to all tissue",
+      "gamma is the only radiation that can be injected"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Gamma is harmful — that's why tracers are used in low doses with short-half-life isotopes. It's penetrating enough to escape, not harmless.",
+      "4": "Any radioactive substance can be injected. The radiation type is what differs."
+    },
+    "markingMode": "penalty",
+    "explanation": "For a tracer to work, the radiation must be detectable from outside the body. Gamma is the only radiation that reliably penetrates body tissue and reaches an external detector.",
+    "examinerNote": "Past-paper Q17 4SS0 (June 2019) accepts: 'gamma has a high penetrating ability; gamma can be detected outside the body'."
+  },
+  {
+    "id": "gamma_sterilisation_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_gamma"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Surgical equipment is sterilised by exposing it (still in its packaging) to gamma radiation from a cobalt-60 source. Tick all the genuine reasons why gamma is the right choice.",
+    "choices": [
+      "gamma is highly penetrating, so it can pass through the packaging to reach the equipment",
+      "gamma kills bacteria and microorganisms on the equipment",
+      "the equipment can be sterilised inside its sealed packaging without opening it",
+      "gamma chemically cleans the metal surfaces",
+      "alpha would also work, but is too expensive",
+      "the equipment becomes radioactive afterwards, so any new bacteria are also killed"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Gamma works biologically (DNA damage to bacteria), not by chemical cleaning.",
+      "4": "Alpha couldn't penetrate the packaging at all; it's the wrong radiation, not the wrong price.",
+      "5": "Irradiation does not make the equipment radioactive. That's a defining feature of irradiation, and the reason this method is safe."
+    },
+    "markingMode": "penalty",
+    "explanation": "Gamma penetrates the packaging easily, so the equipment can be sterilised without ever being unpacked. Gamma kills bacteria by damaging their DNA. The equipment doesn't become radioactive (irradiation, not contamination), so it's safe to use immediately.",
+    "examinerNote": ""
+  },
+  {
+    "id": "gamma_steel_gauge_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "uses_gamma"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "A thickness gauge for thick steel sheet uses a gamma source. Tick all the genuine reasons why gamma is the right choice rather than alpha or beta.",
+    "choices": [
+      "alpha and beta are both absorbed completely by thick steel",
+      "gamma is highly penetrating, so it passes through thick steel partially",
+      "the count rate at the detector varies with the thickness of the steel",
+      "gamma is the cheapest option",
+      "alpha cannot be made into a directional beam",
+      "thick steel is transparent to alpha"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Cost isn't the deciding factor; physics is.",
+      "4": "Beam directionality isn't the issue; thickness penetration is.",
+      "5": "Thick steel is the opposite of transparent to alpha — alpha is stopped by even thin material."
+    },
+    "markingMode": "penalty",
+    "explanation": "For a thickness gauge to work, the count rate must vary with thickness. Alpha and beta are both stopped by even modest thicknesses of steel, so neither would reach the detector. Gamma is highly penetrating but partially absorbed, so the count rate at the detector tracks the steel thickness.",
+    "examinerNote": ""
+  },
+  {
+    "id": "alpha_wrong_for_paper_gauge_mcq",
+    "type": "mcq",
+    "tags": [
+      "uses_alpha",
+      "uses_beta"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "What would happen if alpha (instead of beta) were used in a thickness gauge that monitors paper or thin metal foil?",
+    "choices": [
+      "the alpha would be absorbed completely by the paper, so the detector would always read background and could not detect changes in thickness",
+      "the alpha would pass through the paper unaffected, so the detector reading would never change",
+      "the alpha would make the paper radioactive, ruining the product",
+      "the alpha would heat the paper, causing it to char"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "That's gamma's behaviour with paper. Alpha is the opposite extreme: stopped completely.",
+      "2": "Irradiation by alpha doesn't make objects radioactive in any case.",
+      "3": "Alpha sources don't deliver enough energy to char paper at the levels used in gauges."
+    },
+    "explanation": "Alpha is absorbed by even very thin paper, so essentially no alpha would reach the detector regardless of paper thickness. The detector would just read background noise, and the gauge would be useless.",
+    "examinerNote": "The 'alpha is wrong for paper gauges' angle complements the 'beta is right for paper gauges' angle in paper_gauge_beta_multiselect."
+  },
+  {
+    "id": "alpha_static_eliminator_ordering",
+    "type": "ordering",
+    "tags": [
+      "uses_alpha"
+    ],
+    "specRefs": [
+      "7.14"
+    ],
+    "difficultyRating": 3,
+    "marks": 3,
+    "prompt": "Some industrial machines use a small alpha source to remove static electrical charge from materials moving on a conveyor (for example, plastic film or paper). Put the steps that explain how the alpha source does this in order.",
+    "items": [
+      "the alpha source ionises the air around the moving material",
+      "the ions in the air are attracted to the opposite static charge on the material",
+      "the static charge on the material is neutralised"
+    ],
+    "shuffleStart": true,
+    "markingMode": "per_position",
+    "explanation": "Alpha is highly ionising over its short range, so it produces lots of ions in the air right next to the material. Positive ions in the air are attracted to a negatively charged surface and vice versa, neutralising the static.",
+    "examinerNote": "Three-step ordering, 3 marks per_position."
+  },
+  {
+    "id": "harm_mechanism_ordering",
+    "type": "ordering",
+    "tags": [
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Put the steps that explain how ionising radiation can damage living cells in order.",
+    "items": [
+      "ionising radiation passes through tissue and ionises atoms in the cell",
+      "the ionisation breaks chemical bonds, including in DNA",
+      "damaged cells may die, or may survive with mutations and behave abnormally (e.g. become cancerous)"
+    ],
+    "shuffleStart": true,
+    "markingMode": "per_position",
+    "explanation": "Ionisation strips electrons from atoms, breaking chemical bonds. DNA is the most consequential target: damage there can kill the cell outright or leave it with mutations that lead to cancer over time.",
+    "examinerNote": "Three-step ordering captures the cause-and-effect chain that the original short tested across three MPs."
+  },
+  {
+    "id": "effect_depends_on_radiation_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "The biological effect of nuclear radiation depends on the type of radiation as well as the activity of the source. Tick all the genuine reasons why the type of radiation matters.",
+    "choices": [
+      "different radiations have different ionising abilities (alpha most, gamma least)",
+      "different radiations have different ranges in tissue (alpha very short, gamma long)",
+      "for the same activity, different radiations deposit different amounts of energy in the body",
+      "different radiations have different colours, which the body absorbs differently",
+      "different radiations always have different half-lives",
+      "only one of the three radiations is ionising"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Alpha and beta are particles; gamma is electromagnetic but not visible. None of them have a 'colour'.",
+      "4": "Half-life is a property of the source isotope, not of the radiation type.",
+      "5": "All three (alpha, beta, gamma) are ionising — that's why they all cause biological damage."
+    },
+    "markingMode": "penalty",
+    "explanation": "The radiation type affects how ionising it is per particle and how far it travels in tissue. The same activity of an alpha source vs a gamma source can deliver very different doses depending on whether the source is inside the body, behind shielding, or at a distance.",
+    "examinerNote": ""
+  },
+  {
+    "id": "dose_factors_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Tick all the factors that affect the dose a person receives from a radioactive source.",
+    "choices": [
+      "the time spent near the source",
+      "the distance from the source",
+      "the type of radiation emitted",
+      "the colour of the person's clothes",
+      "the person's age (in itself, holding everything else constant)",
+      "the time of day"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Clothes (other than purpose-made shielding) don't significantly absorb the kinds of radiation involved.",
+      "4": "Age affects susceptibility to harm from a given dose, but not the dose itself.",
+      "5": "Decay is independent of time of day."
+    },
+    "markingMode": "penalty",
+    "explanation": "Three factors govern the dose: time (more time = more decays reach you), distance (further away = fewer decays reach you), and the type of radiation (alpha, beta, gamma have different penetrating and ionising profiles, so deliver different doses for the same activity).",
+    "examinerNote": "The 'time, distance, type' triad. (Distance and shielding are the same family; both reduce how much radiation arrives.)"
+  },
+  {
+    "id": "dividing_cells_sensitive_mcq",
+    "type": "mcq",
+    "tags": [
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Why are hair, the lining of the gut, and bone marrow typically the first parts of the body to show effects after a high dose of ionising radiation?",
+    "choices": [
+      "the cells in these tissues divide rapidly, so DNA damage stops them being replaced",
+      "these tissues are closer to the skin, so they receive a larger dose",
+      "these tissues contain less water, so radiation passes through them more easily",
+      "these tissues are not protected by the immune system"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Bone marrow is deep inside the body, not near the skin. The dose argument doesn't fit.",
+      "2": "All tissues are mostly water; this isn't the explanation.",
+      "3": "The immune system isn't what protects against ionising radiation damage."
+    },
+    "explanation": "Rapidly dividing cells are the most sensitive to ionising radiation: DNA damage interferes with cell division, and these tissues rely on continuous cell replacement (new hair cells, new gut lining, new blood cells from marrow). So the visible effects (hair loss, gut symptoms, low blood counts) appear soon after exposure.",
+    "examinerNote": ""
+  },
+  {
+    "id": "radiation_sickness_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 1,
+    "marks": 3,
+    "prompt": "Tick all the harmful effects that can result from a high dose of ionising radiation.",
+    "choices": [
+      "radiation sickness (nausea, vomiting)",
+      "skin burns",
+      "hair loss",
+      "DNA mutations leading to cancer",
+      "deafness from loud radioactive emissions",
+      "magnetic damage to electronic implants"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "distractorRationales": {
+      "4": "Radioactive decay isn't audible; ionising radiation does not produce sound.",
+      "5": "Ionising radiation isn't a magnetic effect."
+    },
+    "markingMode": "penalty",
+    "explanation": "Acute high doses cause radiation sickness, burns, hair loss and damage or kill cells. Long-term, surviving cells with DNA damage may become cancerous.",
+    "examinerNote": "Past-paper Q48 (4SS0 June 2023) accepts: 'radiation sickness; (skin) burns; damaging/mutating/killing cells; cancer'."
+  },
+  {
+    "id": "external_alpha_low_risk_mcq",
+    "type": "mcq",
+    "tags": [
+      "which_most_dangerous"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Why does an external alpha source held at arm's length pose very little risk to a person?",
+    "choices": [
+      "alpha has a very short range in air, so essentially none reaches the person",
+      "alpha is the least ionising of the three radiations",
+      "alpha cannot be detected by the body's nerves",
+      "alpha is electromagnetic, so it passes harmlessly through tissue"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Alpha is the MOST ionising of the three; that's why it's so dangerous when it does reach tissue.",
+      "2": "Detection by nerves isn't the relevant safety mechanism.",
+      "3": "Alpha is a particle (helium nucleus), not electromagnetic."
+    },
+    "explanation": "Alpha is absorbed in just a few centimetres of air, so very little reaches a person at arm's length. The danger only arises when the source is much closer — touching the skin, or (especially) inside the body where it deposits all its energy in nearby living tissue.",
+    "examinerNote": "Note: students sometimes write 'alpha can't penetrate skin'. This is loosely true (the dead outer layer of skin absorbs much of the alpha), but the syllabus's framing is that alpha is dangerous from close contact (touching, inhaling), so the cleaner reason is that alpha is absorbed by air before it reaches you when held at arm's length."
+  },
+  {
+    "id": "inhaled_alpha_danger_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "which_most_dangerous",
+      "bio_effects"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 3,
+    "marks": 3,
+    "prompt": "Tick all the genuine reasons why inhaling dust contaminated with an alpha-emitting substance is much more dangerous than holding a sealed alpha source in your hand.",
+    "choices": [
+      "the alpha is now inside the body, so there is no skin to absorb it",
+      "alpha deposits its energy locally, and lung tissue is in close contact with the source",
+      "alpha is highly ionising, so a lot of damage is done per particle",
+      "inhaled alpha turns into beta inside the body",
+      "the lungs are made of unusually radiation-sensitive material",
+      "alpha has a much longer range inside tissue than in air"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Alpha doesn't change into another radiation type once inhaled; it's the same alpha.",
+      "4": "Lung tissue is sensitive but not unusually so. The danger comes from the source being right next to dividing cells, not lung-specific properties.",
+      "5": "Alpha's range in tissue is even shorter than in air. The danger isn't range; it's that all the energy is dumped into the very nearby tissue."
+    },
+    "markingMode": "penalty",
+    "explanation": "Alpha is dangerous to tissue when it can reach tissue. Held externally, the skin absorbs everything; inhaled, the source is in direct contact with lung tissue with no skin barrier, and alpha's high ionising power means heavy local damage.",
+    "examinerNote": "Past-paper Q42 (4PH1 Jan 2023) directly asks this kind of question about radon."
+  },
+  {
+    "id": "barrier_dose_dominant_mcq",
+    "type": "mcq",
+    "tags": [
+      "which_most_dangerous",
+      "penetration"
+    ],
+    "specRefs": [
+      "7.5",
+      "7.16"
+    ],
+    "difficultyRating": 3,
+    "marks": 1,
+    "prompt": "A worker stands behind a sheet of aluminium that completely blocks beta but only partly absorbs gamma. A source on the other side emits both beta and gamma. Which radiation contributes more to the worker's dose?",
+    "choices": [
+      "the gamma — the aluminium blocks beta entirely, but lets some gamma through",
+      "the beta — beta is more harmful than gamma in all situations",
+      "they contribute equally, because the aluminium absorbs both",
+      "neither — the aluminium blocks all radiation"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Beta isn't 'more harmful in all situations' — it depends on what reaches the body. Here, no beta reaches the worker at all.",
+      "2": "The aluminium blocks beta but only partly absorbs gamma; the absorptions are different.",
+      "3": "Aluminium of a few mm has very little effect on gamma; some always gets through."
+    },
+    "explanation": "If the aluminium completely blocks beta, no beta reaches the worker, so beta contributes zero to the dose. Some gamma passes through the aluminium and reaches the worker, so gamma is the only contributor.",
+    "examinerNote": ""
+  },
+  {
+    "id": "danger_external_vs_internal_grid",
+    "type": "grid",
+    "tags": [
+      "which_most_dangerous"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 3,
+    "marks": 6,
+    "prompt": "For each radiation, tick whether it is the most dangerous when the source is OUTSIDE the body, when the source is INSIDE the body, both, or neither.",
+    "rows": [
+      "alpha (α)",
+      "beta (β)",
+      "gamma (γ)"
+    ],
+    "columns": [
+      "most dangerous: external source",
+      "most dangerous: internal source"
+    ],
+    "correct": {
+      "0": [
+        1
+      ],
+      "1": [],
+      "2": [
+        0
+      ]
+    },
+    "neutral": {
+      "1": [
+        0,
+        1
+      ]
+    },
+    "markingMode": "per_row",
+    "explanation": "Outside the body, only the most penetrating radiation reaches tissue, so gamma is the worst external risk; alpha doesn't even reach the skin. Inside the body, all three reach tissue equally, but alpha's very high ionising ability makes it the worst per particle. Beta is in the middle in both cases — never the most dangerous, but always significant.",
+    "examinerNote": "Beta has empty correct and neutral cells for both columns: it's neither the worst external nor the worst internal, but a tick on either column isn't penalised because it's a defensible second-place."
+  },
+  {
+    "id": "three_sources_at_2m_mcq",
+    "type": "mcq",
+    "tags": [
+      "which_most_dangerous"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 3,
+    "marks": 1,
+    "prompt": "Three sealed sources, one alpha, one beta and one gamma, each with the same activity, are laid on a teacher's desk for 5 minutes. The teacher stands 2 metres away. Which source contributes most to the dose received by the teacher?",
+    "choices": [
+      "the gamma — alpha and beta are mostly absorbed by 2 m of air, so only gamma reaches the teacher",
+      "the alpha — alpha is the most ionising, so it always does the most damage",
+      "the beta — beta has the right range to reach 2 m and still cause damage",
+      "all three contribute equally, because the activities are the same"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Alpha is the most ionising IF it reaches tissue. At 2 m through air, essentially none reaches the teacher.",
+      "2": "Beta is largely absorbed by 2 m of air; only a small fraction reaches the teacher compared to gamma.",
+      "3": "Equal activity means equal decay rate, but most of the alpha and much of the beta is absorbed before reaching the teacher."
+    },
+    "explanation": "Alpha is absorbed by a few cm of air; almost none reaches the teacher 2 m away. Beta is mostly absorbed over 2 m of air. Gamma travels 2 m of air essentially unabsorbed. So even though the activities are the same, only the gamma reaches the teacher in significant amounts.",
+    "examinerNote": ""
+  },
+  {
+    "id": "long_halflife_long_danger_mcq",
+    "type": "mcq",
+    "tags": [
+      "which_most_dangerous",
+      "halflife"
+    ],
+    "specRefs": [
+      "7.12",
+      "7.16"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Why is a radioactive substance with a long half-life generally regarded as 'dangerous for a long time'?",
+    "choices": [
+      "the substance keeps emitting ionising radiation for a long time, because most of it decays only slowly",
+      "long-half-life isotopes are always more ionising than short-half-life ones",
+      "long-half-life isotopes always have higher activity than short-half-life ones",
+      "long-half-life means the substance decays into more dangerous products"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Half-life and ionising power are independent properties. Half-life doesn't determine which radiation comes out.",
+      "2": "It's the opposite, in fact: for the same number of nuclei, longer half-life means lower activity (slower decay).",
+      "3": "What it decays into depends on the specific isotope, not on the length of the half-life."
+    },
+    "explanation": "Long half-life means the substance takes a long time for its activity to drop. So even after years, much of the original substance is still present and still emitting radiation. Anyone exposed during this time receives a dose, and the area remains hazardous for many half-lives.",
+    "examinerNote": ""
+  },
+  {
+    "id": "waste_lifetime_storage_matching",
+    "type": "matching",
     "tags": [
       "waste_disposal",
       "halflife"
@@ -5264,41 +4989,29 @@ window.PREIB_RAD_QUESTIONS = [
       "7.16",
       "7.12"
     ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Some isotopes in nuclear waste have half-lives of years; others have half-lives of millions of years. Explain how this difference affects how each kind must be stored.",
-    "marks": 3,
-    "markPoints": [
+    "difficultyRating": 2,
+    "marks": 2,
+    "prompt": "Match each kind of nuclear waste to the storage approach typically used.",
+    "pairs": [
       {
-        "any": [
-          "short-lived isotopes decay to safe levels in years to decades",
-          "isotopes with short half-lives become safe relatively quickly",
-          "short-lived waste only needs storage for a few half-lives until activity is low",
-          "short-half-life waste only needs to be stored for tens of years"
-        ]
+        "left": "short-lived isotopes (half-lives of years to decades)",
+        "right": "decay to safe levels relatively quickly; surface-near sealed burial is acceptable"
       },
       {
-        "any": [
-          "long-lived isotopes remain radioactive for thousands or millions of years",
-          "long-lived waste is dangerous for thousands of years",
-          "long-half-life isotopes require very long storage",
-          "long-half-life waste needs to be kept safe for millennia"
-        ]
-      },
-      {
-        "any": [
-          "long-lived waste must be stored in deep geological repositories",
-          "long-lived waste needs extremely robust, very long-term storage",
-          "the storage method must keep the waste safe for the time the isotopes remain radioactive",
-          "long-lived waste needs containment that will last as long as the waste is dangerous"
-        ]
+        "left": "long-lived isotopes (half-lives of thousands to millions of years)",
+        "right": "remain radioactive for thousands of years; require deep geological repositories"
       }
     ],
-    "allowAdjust": true,
-    "explanation": "The half-life of a substance sets a timescale for how long it remains a hazard. Short-lived isotopes (years to decades) can be stored in shallower facilities and will be safe within a human lifetime. Long-lived isotopes (thousands of years) need geological-scale storage — buried deep in stable rock formations that will not be disturbed for at least as long as the waste is dangerous."
+    "rightExtras": [
+      "release into the atmosphere (the radiation disperses harmlessly)"
+    ],
+    "shuffleRight": true,
+    "explanation": "How long the waste must be safely stored is set by its half-life. Short-lived isotopes decay to safe activity in years to decades; long-lived isotopes need storage stable on a geological timescale.",
+    "examinerNote": "rightExtras includes the wrong-direction distractor that students sometimes write."
   },
   {
-    "id": "why_nuclear_waste_dangerous_short",
+    "id": "why_waste_dangerous_mcq",
+    "type": "mcq",
     "tags": [
       "waste_disposal",
       "bio_effects"
@@ -5306,217 +5019,1063 @@ window.PREIB_RAD_QUESTIONS = [
     "specRefs": [
       "7.16"
     ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Why must nuclear waste from a power station be disposed of carefully?",
+    "choices": [
+      "the waste contains radioactive isotopes that emit ionising radiation harmful to living tissue, sometimes with very long half-lives",
+      "the waste is hot and would otherwise burn anyone who touched it",
+      "the waste is acidic and would corrode soil over time",
+      "the waste is bulky and there is no space to store it casually"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Heat is one practical issue but not why disposal is regulated; the radiation hazard is.",
+      "2": "Nuclear waste is not chemically acidic in any unusual way.",
+      "3": "Nuclear waste is actually small in volume compared to fossil-fuel waste; the issue is its toxicity, not its bulk."
+    },
+    "explanation": "Spent fuel and other waste from a reactor contain a wide range of radioactive isotopes that emit ionising radiation. Some have long half-lives, so the waste can remain dangerous for thousands of years; the storage method has to keep the waste safely contained for that long.",
+    "examinerNote": ""
+  },
+  {
+    "id": "waste_storage_location_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "waste_disposal"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
+    "difficultyRating": 3,
+    "marks": 3,
+    "prompt": "Tick all the genuine reasons why nuclear waste is generally not stored near population centres or major waterways, even when packaged in robust containers.",
+    "choices": [
+      "if a container fails, radioactive material could spread and contaminate the area",
+      "for long-lived waste, any contamination would persist for thousands of years",
+      "groundwater could carry contamination far from the storage site",
+      "radiation can pass directly through any container to harm people nearby",
+      "the radioactive waste attracts wildlife that would spread the material",
+      "storing waste near towns is cheaper than the alternatives"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Properly designed containers shield the radiation effectively. The risk is from a leak, not from in-service shielding failure.",
+      "4": "Radioactive waste isn't biologically attractive in that way.",
+      "5": "Cost might be lower in the short term but the long-term consequences of a leak in a populated area are catastrophic."
+    },
+    "markingMode": "penalty",
+    "explanation": "The risk is contamination spread, not in-service radiation. If a container ever fails, radioactive material could leak into soil and groundwater. Since long-lived waste persists for thousands of years, even a remote storage site has to keep the waste contained on a geological timescale, and proximity to people or rivers makes a leak much more dangerous.",
+    "examinerNote": ""
+  },
+  {
+    "id": "nuclear_vs_fossil_waste_grid",
+    "type": "grid",
+    "tags": [
+      "waste_disposal"
+    ],
+    "specRefs": [
+      "7.16"
+    ],
     "difficultyRating": 2,
+    "marks": 4,
+    "prompt": "For each statement, tick which kind of power station's waste it best describes.",
+    "rows": [
+      "the volume of waste is small (per unit of electricity generated)",
+      "the volume of waste is very large (mostly ash and CO₂)",
+      "the waste is contained / sealed in storage",
+      "the waste is mostly released into the atmosphere"
+    ],
+    "columns": [
+      "nuclear",
+      "coal-fired",
+      "both"
+    ],
+    "correct": {
+      "0": [
+        0
+      ],
+      "1": [
+        1
+      ],
+      "2": [
+        0
+      ],
+      "3": [
+        1
+      ]
+    },
+    "markingMode": "per_row",
+    "explanation": "A nuclear station produces a small volume of intensely radioactive waste, which is sealed and stored. A coal station produces a large volume of ash plus CO₂ and other gases, most of which is released to the atmosphere. The headline trade-off is small-but-contained vs large-but-released.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_means_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.17",
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Nuclear fission is:",
+    "choices": [
+      "a large nucleus splitting into smaller nuclei",
+      "small nuclei joining to make a larger nucleus",
+      "an electron leaving a nucleus",
+      "a nucleus emitting a gamma ray"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Small nuclei joining is fusion, not fission.",
+      "2": "An electron leaving the nucleus is beta decay, not fission.",
+      "3": "Gamma emission is part of decay but is not fission."
+    },
+    "explanation": "Fission splits a large nucleus into smaller (daughter) nuclei. Fusion is the opposite.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_starter_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "What particle starts the fission of a uranium-235 nucleus?",
+    "choices": [
+      "a neutron",
+      "a proton",
+      "an alpha particle",
+      "a gamma ray"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Protons are positively charged like the U-235 nucleus, so they would be repelled. Neutrons are uncharged and can get in.",
+      "2": "Alpha particles are charged and would be repelled by the nucleus.",
+      "3": "Gamma rays don't usually trigger fission of U-235."
+    },
+    "explanation": "A neutron is absorbed by the U-235 nucleus, briefly making U-236, which then splits.",
+    "examinerNote": "Past paper Q23(a)(i): \"neutron\" with note \"ignore n\"."
+  },
+  {
+    "id": "fission_intermediate_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "When uranium-235 absorbs a neutron, it briefly becomes:",
+    "choices": [
+      "uranium-236",
+      "uranium-234",
+      "plutonium-239",
+      "barium-141"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "U-234 has fewer neutrons than U-235, not more.",
+      "2": "Plutonium-239 is a different fuel made by neutron capture on U-238, not from U-235.",
+      "3": "Barium-141 is a daughter nucleus produced AFTER the U-236 splits, not the intermediate."
+    },
+    "explanation": "U-235 + neutron → U-236, which is unstable and immediately splits.",
+    "examinerNote": "Past papers (Q22, Q30) award a separate mark point for naming U-236."
+  },
+  {
+    "id": "fission_fuel_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "What nucleus is most commonly used as fuel in a nuclear power station?",
+    "choices": [
+      "uranium-235",
+      "hydrogen-2",
+      "carbon-14",
+      "iron-56"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Hydrogen-2 (deuterium) is used in fusion reactors, not fission. Fission needs a heavy nucleus.",
+      "2": "Carbon-14 is a radioactive isotope used for dating, not as a power-station fuel.",
+      "3": "Iron-56 is the most stable nucleus; it cannot be split for energy."
+    },
+    "explanation": "Uranium-235 is the standard fission fuel. Plutonium-239 is also used.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_daughter_count_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "When U-235 splits in fission, how many daughter nuclei are produced?",
+    "choices": [
+      "two",
+      "one",
+      "three or four",
+      "it varies from zero to five"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Just one daughter would mean the nucleus didn't really split.",
+      "2": "Three or four would imply a more complex split. Two is the standard fission picture.",
+      "3": "The number of daughters is two every time."
+    },
+    "explanation": "Two daughter nuclei are produced from each U-235 fission event.",
+    "examinerNote": "Past paper Q30: \"producing (two) daughter nuclei\"."
+  },
+  {
+    "id": "fission_neutrons_released_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "When a U-235 nucleus splits in fission, how many neutrons are typically released?",
+    "choices": [
+      "two or three",
+      "always exactly one",
+      "always exactly four",
+      "zero"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Only one neutron triggered the fission, but more come out.",
+      "2": "Four neutrons is too many. The typical number is 2 or 3.",
+      "3": "Zero would mean no neutrons available for further reactions."
+    },
+    "explanation": "Fission of U-235 typically releases 2 or 3 neutrons, alongside the two daughter nuclei.",
+    "examinerNote": "4SS0 7.19 explicitly excludes the chain-reaction follow-up."
+  },
+  {
+    "id": "fission_daughters_radioactive_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission",
+      "waste_disposal"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Are the daughter nuclei produced by fission radioactive?",
+    "choices": [
+      "yes",
+      "no",
+      "only if the reactor is running"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "The daughters are radioactive, which is the source of nuclear waste's radioactivity.",
+      "2": "The daughters are radioactive whether the reactor is running or not."
+    },
+    "explanation": "The daughter nuclei are radioactive. This is why spent fuel from a reactor stays radioactive long after the reaction has stopped.",
+    "examinerNote": ""
+  },
+  {
+    "id": "why_fission_products_radioactive_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 3,
+    "marks": 1,
+    "prompt": "The daughter nuclei produced by fission are typically radioactive because:",
+    "choices": [
+      "they have too many neutrons compared to a stable nucleus of their size",
+      "they have too few neutrons compared to a stable nucleus of their size",
+      "they are all hydrogen nuclei",
+      "fission always heats them up too much"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "U-235 is very neutron-rich; the daughters inherit that, so they have too many, not too few.",
+      "2": "Most fission products are not hydrogen.",
+      "3": "Heat doesn't make a nucleus radioactive; the proton-neutron ratio does."
+    },
+    "explanation": "U-235 is very neutron-rich. When it splits, the smaller daughter nuclei inherit a high neutron-to-proton ratio, which is unstable for nuclei of that size. They then decay (typically by beta) until they reach a stable configuration.",
+    "examinerNote": "Replaces a 2-mark short. The 'neutron-rich' idea is the single reason; multiple synonyms fold in to one MCQ."
+  },
+  {
+    "id": "fission_energy_form_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Energy released in nuclear fission appears mainly as:",
+    "choices": [
+      "kinetic energy of the fission products",
+      "sound",
+      "light",
+      "chemical energy"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Sound energy is not significant in fission.",
+      "2": "Some gamma is emitted, but most of the energy is kinetic energy of the daughter nuclei.",
+      "3": "Fission is a nuclear process, not a chemical one."
+    },
+    "explanation": "The energy released appears as kinetic energy of the daughter nuclei and the released neutrons. This kinetic energy heats the surrounding material, which is how the reactor produces useful heat.",
+    "examinerNote": "Past paper Q23(a)(iii) accepts \"kinetic energy / KE\" with note \"allow thermal\"."
+  },
+  {
+    "id": "fission_products_summary_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "When a uranium-235 nucleus undergoes fission after absorbing a neutron, what are the typical products?",
+    "choices": [
+      "two equal smaller nuclei, with no other products",
+      "two smaller nuclei, plus 2 or 3 neutrons, plus energy",
+      "a single smaller nucleus, plus an alpha particle, plus energy",
+      "two electrons and a gamma ray"
+    ],
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "Fission also releases neutrons and energy.",
+      "2": "Fission splits into two roughly comparable nuclei, not one nucleus plus an alpha.",
+      "3": "The products are nuclei and neutrons, not electrons."
+    },
+    "explanation": "The typical products are two smaller (and usually unequal) nuclei, 2 or 3 free neutrons, and a large amount of energy. The smaller nuclei are themselves often radioactive.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_vs_other_processes_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Which of the following best describes nuclear fission?",
+    "choices": [
+      "two small nuclei joining to form a larger nucleus",
+      "a large nucleus splitting after absorbing a neutron, releasing energy and more neutrons",
+      "an unstable nucleus emitting an alpha particle",
+      "a chemical reaction in the fuel"
+    ],
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "That describes fusion, not fission.",
+      "2": "That describes alpha decay; fission is a different process.",
+      "3": "Fission is a nuclear reaction, not chemical."
+    },
+    "explanation": "Fission is the splitting of a large nucleus, triggered by absorption of a neutron, releasing energy and 2 or 3 more neutrons.",
+    "examinerNote": "Distinguish from fusion (joining), alpha decay (single particle emission), and chemistry."
+  },
+  {
+    "id": "nuclear_power_station_uses_mcq",
+    "type": "mcq",
+    "tags": [
+      "fission",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.17"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "A nuclear power station generates energy from:",
+    "choices": [
+      "fission",
+      "fusion",
+      "radioactive decay only",
+      "burning uranium"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Fusion would produce more energy but is not yet workable on Earth as a power source.",
+      "2": "Radioactive decay alone is too slow and weak for a power station.",
+      "3": "Uranium isn't burned chemically — it undergoes nuclear fission."
+    },
+    "explanation": "Power stations use fission of uranium-235 (or plutonium-239). Fusion would produce vastly more energy but is not yet workable on Earth.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_word_short",
     "type": "short",
-    "prompt": "Explain why nuclear waste from a power station must be disposed of carefully.",
-    "marks": 3,
+    "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "What is the name of the process in which a large nucleus splits, after absorbing a neutron, into smaller nuclei plus energy and more neutrons?",
     "markPoints": [
       {
         "any": [
-          "the waste contains radioactive isotopes",
-          "the waste is radioactive",
-          "spent fuel and waste contain isotopes that emit ionising radiation",
-          "the waste emits ionising radiation"
-        ]
-      },
-      {
-        "any": [
-          "ionising radiation damages living tissue",
-          "exposure to the radiation can cause cancer and other health effects",
-          "the radiation can harm people and the environment",
-          "ionising radiation is a hazard to people if it leaks"
-        ]
-      },
-      {
-        "any": [
-          "some of the waste has very long half-lives, lasting thousands of years",
-          "the waste remains radioactive for a long time",
-          "long-half-life isotopes mean the waste is dangerous for many years",
-          "the danger lasts for many human lifetimes"
+          "fission",
+          "nuclear fission"
         ]
       }
     ],
-    "allowAdjust": true,
-    "explanation": "Three reasons in one: the waste IS radioactive (so it emits radiation), the radiation DAMAGES tissue (so it's a real hazard to people), and parts of it are LONG-LIVED (so the hazard persists for many generations and the disposal method has to last)."
+    "allowAdjust": false,
+    "explanation": "This is nuclear fission. The word must be spelled correctly.",
+    "examinerNote": "Spelling matters: 'fission' not 'fision' or 'fussion'."
   },
   {
-    "id": "waste_near_people_short",
+    "id": "fission_process_ordering",
+    "type": "ordering",
     "tags": [
+      "fission"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 4,
+    "prompt": "Put the steps of the fission of uranium-235 in the order they happen.",
+    "items": [
+      "A free neutron is absorbed by a U-235 nucleus.",
+      "The nucleus briefly becomes U-236, which is unstable.",
+      "The nucleus splits into two smaller (daughter) nuclei.",
+      "Energy and 2 or 3 free neutrons are released."
+    ],
+    "shuffleStart": true,
+    "markingMode": "per_position",
+    "explanation": "U-235 absorbs a free neutron and momentarily becomes U-236. The unstable U-236 nucleus immediately splits into two smaller nuclei. Energy (mostly as kinetic energy of the products) and 2 or 3 free neutrons are released.",
+    "examinerNote": "Direct map to Q30 mark scheme phrasing. Past paper accepts 'allow atom for nucleus'."
+  },
+  {
+    "id": "fusion_means_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Nuclear fusion is:",
+    "choices": [
+      "the joining of two small nuclei to form a larger nucleus, releasing energy",
+      "the splitting of a large nucleus into smaller ones",
+      "the same as fission",
+      "a process that absorbs energy without releasing any"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "That describes fission.",
+      "2": "Fusion and fission are opposite processes.",
+      "3": "Fusion releases a large amount of energy."
+    },
+    "explanation": "Fusion joins two small nuclei into a larger one, releasing energy. The mass of the product is slightly less than the combined mass of the reactants; the difference becomes energy.",
+    "examinerNote": "Past paper Q28(b)(i) mark scheme: 'creation of a (large) nucleus from small nuclei; loss of mass; release of energy'."
+  },
+  {
+    "id": "fusion_word_short",
+    "type": "short",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "What is the name of the process in which two small nuclei combine to form a larger nucleus, releasing energy?",
+    "markPoints": [
+      {
+        "any": [
+          "fusion",
+          "nuclear fusion"
+        ]
+      }
+    ],
+    "allowAdjust": false,
+    "explanation": "This is nuclear fusion. The word must be spelled correctly.",
+    "examinerNote": "Spelling matters: 'fusion' not 'fussion' or 'fution'."
+  },
+  {
+    "id": "sun_uses_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.17",
+      "7.25"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "The Sun generates its energy from:",
+    "choices": [
+      "fusion",
+      "fission",
+      "burning hydrogen",
+      "radioactive decay"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Fission requires heavy nuclei like U-235; the Sun is mostly hydrogen.",
+      "2": "Hydrogen isn't burned chemically in the Sun — its nuclei fuse.",
+      "3": "Radioactive decay is too small a process to power the Sun."
+    },
+    "explanation": "The Sun fuses hydrogen nuclei into helium nuclei in its core, releasing huge amounts of energy.",
+    "examinerNote": "Past paper Q5: 'D - nuclear fusion'."
+  },
+  {
+    "id": "where_fusion_happens_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.25"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Where does fusion happen naturally?",
+    "choices": [
+      "inside stars",
+      "inside nuclear power stations on Earth",
+      "inside batteries",
+      "in rocks under the ground"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Power stations use fission, not fusion.",
+      "2": "Batteries use chemical reactions, not nuclear fusion.",
+      "3": "No fusion happens in rocks under normal conditions."
+    },
+    "explanation": "Fusion happens in the cores of stars, including the Sun. Experimental fusion reactors on Earth exist but are not yet workable for power generation.",
+    "examinerNote": ""
+  },
+  {
+    "id": "what_fuses_in_stars_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.25"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Which element is mostly fused into another in the Sun's core?",
+    "choices": [
+      "hydrogen (into helium)",
+      "helium (into hydrogen)",
+      "oxygen (into carbon)",
+      "iron (into uranium)"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "It's the other way round: hydrogen fuses to make helium.",
+      "2": "Oxygen fusion happens in massive stars at later stages, not in the Sun.",
+      "3": "Iron is the heaviest element formed by ordinary stellar fusion."
+    },
+    "explanation": "The Sun fuses hydrogen nuclei into helium nuclei.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fusion_in_sun_centre_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion"
+    ],
+    "specRefs": [
+      "7.25"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Where in the Sun does fusion happen?",
+    "choices": [
+      "evenly throughout the Sun",
+      "only at the centre, where it is hot enough",
+      "only at the surface",
+      "fusion does not happen in the Sun"
+    ],
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "Only the centre is hot and pressurised enough for fusion.",
+      "2": "The surface is too cool and not under enough pressure.",
+      "3": "Fusion is the source of the Sun's energy."
+    },
+    "explanation": "Fusion takes place only in the centre of the Sun. The rest of the Sun is too cool and not pressurised enough.",
+    "examinerNote": "Past paper Q32(a)(ii): '(Centre of) stars / allow the Sun'."
+  },
+  {
+    "id": "fusion_hard_on_earth_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "fusion",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Tick all the genuine reasons why fusion is not yet a working commercial energy source on Earth.",
+    "choices": [
+      "extremely high temperatures are needed",
+      "extremely high pressures are needed",
+      "no ordinary material can contain the hot fuel",
+      "hydrogen is in very short supply on Earth",
+      "the products of fusion are highly radioactive",
+      "fusion does not actually release any energy"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Hydrogen is abundant; deuterium can be extracted from sea water. Fuel supply isn't the problem.",
+      "4": "Fusion's main product (helium) is harmless; this is one of fusion's advantages, not a disadvantage.",
+      "5": "Fusion releases a great deal of energy; that's why we want it as a power source."
+    },
+    "markingMode": "penalty",
+    "explanation": "Fusion needs star-like conditions: very high temperatures (so nuclei have enough kinetic energy to overcome their electrical repulsion), very high pressures (to force them close enough), and no ordinary material can hold the resulting plasma. The other choices are common myths.",
+    "examinerNote": "Past paper Q28(b)(iii) accepts five MPs: high T, KE, high P, close enough to collide, repel each other."
+  },
+  {
+    "id": "fusion_state_of_tech_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Choose the most accurate statement about fusion as an energy source.",
+    "choices": [
+      "fusion is impossible on Earth",
+      "fusion happens easily on Earth, but is not yet economical",
+      "fusion has been demonstrated in experiments, but no commercial-scale fusion power station is yet operating",
+      "fusion power stations have been operating for decades"
+    ],
+    "answerIndex": 2,
+    "distractorRationales": {
+      "0": "Fusion has been demonstrated in experiments and in hydrogen bombs.",
+      "1": "Fusion does not happen easily on Earth; the conditions are very hard to create.",
+      "3": "There is currently no commercial fusion power station."
+    },
+    "explanation": "Fusion has been demonstrated experimentally, but no commercial-scale fusion power station is yet operating.",
+    "examinerNote": ""
+  },
+  {
+    "id": "fission_vs_fusion_grid",
+    "type": "grid",
+    "tags": [
+      "fission",
+      "fusion",
       "waste_disposal"
+    ],
+    "specRefs": [
+      "7.17",
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 5,
+    "prompt": "For each statement, tick whether it applies to fission, fusion, or both.",
+    "rows": [
+      "splits a large nucleus",
+      "joins two small nuclei",
+      "produces long-lived radioactive waste",
+      "happens naturally in the cores of stars",
+      "is currently used in commercial power stations"
+    ],
+    "columns": [
+      "fission",
+      "fusion",
+      "both"
+    ],
+    "correct": {
+      "0": [
+        0
+      ],
+      "1": [
+        1
+      ],
+      "2": [
+        0
+      ],
+      "3": [
+        1
+      ],
+      "4": [
+        0
+      ]
+    },
+    "markingMode": "per_row",
+    "explanation": "Fission splits a heavy nucleus and is currently used in power stations; its products are long-lived radioactive waste. Fusion joins light nuclei and happens naturally in stars. Both release energy because the products together have slightly less mass than the reactants — but only one row tests that here. (See `fusion_vs_fission_waste_mcq` for the cleanness comparison.)",
+    "examinerNote": "Five rows; one row per row is the marking mode. Direct contrast across both processes."
+  },
+  {
+    "id": "fusion_vs_fission_waste_mcq",
+    "type": "mcq",
+    "tags": [
+      "fusion",
+      "fission",
+      "waste_disposal"
+    ],
+    "specRefs": [
+      "7.18"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Choose the best statement comparing fusion and fission as energy sources.",
+    "choices": [
+      "fission and fusion produce the same kinds of waste",
+      "fission produces long-lived radioactive waste; fusion produces little radioactive waste, mostly with shorter half-lives",
+      "fusion produces more long-lived radioactive waste than fission",
+      "neither process produces any radioactive waste at all"
+    ],
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "The waste profiles are different: fission much worse than fusion in this respect.",
+      "2": "Fusion produces much LESS long-lived waste than fission.",
+      "3": "Fission certainly produces radioactive waste; fusion produces some too (from neutron activation of reactor materials)."
+    },
+    "explanation": "Fission produces long-lived radioactive waste, including spent fuel and fission products with half-lives of thousands of years. Fusion's main product (helium) is harmless; some reactor materials become radioactive through neutron activation, but with much shorter half-lives.",
+    "examinerNote": "Both produce some waste, but fusion's is smaller and shorter-lived."
+  },
+  {
+    "id": "energy_from_where_fillblank",
+    "type": "fillblank",
+    "tags": [
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.17"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "The energy released in fission and fusion comes from changes in the {}.",
+    "blanks": [
+      {
+        "expected": [
+          "nucleus",
+          "nuclei"
+        ]
+      }
+    ],
+    "explanation": "Fission and fusion are nuclear reactions: the energy comes from changes in the nucleus. (Chemical reactions, by contrast, only rearrange electrons.)",
+    "examinerNote": ""
+  },
+  {
+    "id": "nuclear_energy_source_mcq",
+    "type": "mcq",
+    "tags": [
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.17"
+    ],
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Choose the best statement about the source of nuclear energy.",
+    "choices": [
+      "nuclear energy comes from chemical reactions in the fuel",
+      "nuclear energy comes from changes in the nucleus, with a small amount of mass becoming energy",
+      "nuclear energy comes from heat already present in the fuel",
+      "nuclear energy comes from the kinetic energy of the fuel atoms"
+    ],
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "Chemistry rearranges electrons; nuclear energy comes from the nucleus.",
+      "2": "The fuel doesn't simply have the energy as heat; the energy comes from the reaction.",
+      "3": "The kinetic energy of fuel atoms is small; nuclear energy is from the nucleus."
+    },
+    "explanation": "Nuclear energy is released by changes in the nucleus, in which a tiny amount of mass is converted into energy. The energy per reaction is enormous compared to chemical reactions.",
+    "examinerNote": "The mass→energy idea is the headline."
+  },
+  {
+    "id": "reactor_shielding_material_mcq",
+    "type": "mcq",
+    "tags": [
+      "shielding",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.22"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "What material is typically used as shielding around a nuclear reactor?",
+    "choices": [
+      "thick concrete and lead",
+      "wood",
+      "aluminium foil",
+      "plastic sheets"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Wood is too thin and too low-density to absorb gamma.",
+      "2": "Aluminium foil is far too thin. (A few mm of aluminium stops beta but not gamma.)",
+      "3": "Plastic is too low-density. Gamma needs dense materials."
+    },
+    "explanation": "Thick concrete (often several metres) and/or lead are used because gamma is highly penetrating and only thick dense materials absorb it.",
+    "examinerNote": "Past paper Q29(b)(i) accepts 'concrete absorbs / weakens radiation'; Q23(b) accepts 'absorbed by many cm of lead'."
+  },
+  {
+    "id": "why_shielding_mcq",
+    "type": "mcq",
+    "tags": [
+      "shielding",
+      "energy_from_nuclear"
+    ],
+    "specRefs": [
+      "7.22"
+    ],
+    "difficultyRating": 1,
+    "marks": 1,
+    "prompt": "Why is shielding needed around a nuclear reactor?",
+    "choices": [
+      "to absorb harmful ionising radiation so it doesn't reach workers",
+      "to keep the reactor warm",
+      "to stop the fuel from falling out",
+      "to make the building look more solid"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Reactors produce far more heat than is useful; the issue is keeping radiation OUT, not heat IN.",
+      "2": "Shielding doesn't physically hold the fuel.",
+      "3": "Shielding is functional, not decorative."
+    },
+    "explanation": "The reactor produces large amounts of ionising radiation (especially gamma) that would harm anyone exposed. Shielding absorbs the radiation.",
+    "examinerNote": "Past paper Q22(d)(iii) anchors the 'radiation absorbed' phrasing."
+  },
+  {
+    "id": "shielding_to_radiation_matching",
+    "type": "matching",
+    "tags": [
+      "shielding",
+      "radiation_types"
+    ],
+    "specRefs": [
+      "7.16",
+      "7.5"
+    ],
+    "atoms": [
+      "alpha_penetration",
+      "beta_penetration",
+      "gamma_penetration"
+    ],
+    "difficultyRating": 2,
+    "marks": 3,
+    "prompt": "Match each radiation to the shielding usually needed to stop it.",
+    "pairs": [
+      {
+        "left": "alpha (α)",
+        "right": "paper or a few cm of air"
+      },
+      {
+        "left": "beta (β)",
+        "right": "a few mm of aluminium"
+      },
+      {
+        "left": "gamma (γ)",
+        "right": "thick lead or concrete"
+      }
+    ],
+    "rightExtras": [
+      "a single layer of clingfilm"
+    ],
+    "shuffleRight": true,
+    "explanation": "The denser/thicker the material, the more penetrating the radiation it can stop. Alpha is easy to stop; beta needs a few mm of aluminium; gamma needs thick lead or concrete.",
+    "examinerNote": "Match shielding to the penetrating power of the radiation."
+  },
+  {
+    "id": "extra_precautions_with_shielding_multiselect",
+    "type": "multiselect",
+    "tags": [
+      "shielding"
     ],
     "specRefs": [
       "7.16"
     ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Explain why nuclear waste is generally not stored near population centres or major waterways, even when packaged in robust containers.",
+    "difficultyRating": 2,
     "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "if a container fails, radioactive material could spread",
-          "leaks could contaminate the surroundings",
-          "container failure would expose the local population",
-          "no container is guaranteed to remain intact for the timescales involved"
-        ]
-      },
-      {
-        "any": [
-          "long-half-life waste means a leak could affect the area for thousands of years",
-          "any contamination from long-lived waste persists for a very long time",
-          "leaked radioactive material would be present for many generations",
-          "the contamination would not just decay away in a human lifetime"
-        ]
-      },
-      {
-        "any": [
-          "groundwater can carry contamination far from the storage site",
-          "contamination of waterways could spread the radioactive material widely",
-          "rivers and groundwater could carry the contamination to towns and farms",
-          "water can spread the contamination over a wide area"
-        ]
-      }
+    "prompt": "Shielding alone never absorbs all the radiation. Tick all the extra precautions that should be combined with shielding to keep the dose low.",
+    "choices": [
+      "limit the time spent near the source",
+      "increase the distance from the source",
+      "rotate workers so no one is near for too long",
+      "stand directly between the source and the wall",
+      "remove the shielding to check the source",
+      "ignore dose readings under 50 mSv"
     ],
-    "allowAdjust": true,
-    "explanation": "Robust containers can fail, especially over thousands of years. If they do, radioactive material can leak into soil and groundwater, which can carry the contamination far from the original site. Long half-lives mean any contamination would persist for many human generations. Storage sites are chosen far from population centres and away from groundwater systems for these reasons."
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "distractorRationales": {
+      "3": "Standing between the source and the wall puts you in the path of the radiation; the opposite of what you want.",
+      "4": "Removing shielding raises the dose, not lowers it.",
+      "5": "All dose matters; safety culture is to keep dose 'as low as reasonably achievable'."
+    },
+    "markingMode": "penalty",
+    "explanation": "The three pillars of radiation safety are time, distance and shielding. No shielding is perfect, so combine it with limiting time of exposure and increasing distance. Rotating workers spreads the dose so no individual receives too much over their career.",
+    "examinerNote": "The 'time, distance, shielding' triad. All three together is standard radiation safety."
   },
   {
-    "id": "nuclear_vs_fossil_waste_short",
+    "id": "shielding_application_examples_mcq",
+    "type": "mcq",
     "tags": [
-      "waste_disposal"
+      "shielding"
     ],
     "specRefs": [
       "7.16"
     ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Compare the waste produced by a nuclear power station with the waste produced by a coal-fired power station of similar power output, in terms of (i) the amount produced and (ii) how each kind of waste is dealt with.",
-    "marks": 3,
-    "markPoints": [
-      {
-        "any": [
-          "nuclear waste is small in volume",
-          "nuclear waste is much smaller in volume than coal waste",
-          "nuclear: small amount, but very radioactive",
-          "much less nuclear waste is produced per unit of energy"
-        ]
-      },
-      {
-        "any": [
-          "coal waste is large in volume (ash, gases)",
-          "coal produces large amounts of ash and CO₂",
-          "coal waste is much greater in volume than nuclear waste",
-          "coal: large quantities of waste in different forms"
-        ]
-      },
-      {
-        "any": [
-          "nuclear waste is contained / sealed in storage",
-          "coal waste is largely released to the atmosphere",
-          "coal CO₂ is released to the air; nuclear waste is contained",
-          "coal waste is dispersed; nuclear waste is sealed and buried"
-        ]
-      }
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Which pair correctly matches a use to the appropriate shielding?",
+    "choices": [
+      "smoke alarm: thick lead to contain the alpha",
+      "X-ray room: lead-lined walls to protect operators outside the room",
+      "gamma sterilisation facility: a few mm of aluminium between source and worker",
+      "alpha-source classroom demonstration: thick concrete blocks around the source"
     ],
-    "allowAdjust": true,
-    "explanation": "Nuclear power produces a small volume of highly radioactive waste, which is contained in sealed storage. Coal-fired power produces a much larger volume of waste — solid ash plus large quantities of CO₂ (which contributes to climate change) and other gases that are released to the atmosphere. The two waste streams have very different properties: small-and-contained vs large-and-dispersed."
+    "answerIndex": 1,
+    "distractorRationales": {
+      "0": "Alpha doesn't need lead — paper or even air absorbs it. The smoke alarm casing is enough.",
+      "2": "Aluminium is for beta. Gamma needs thick lead or concrete.",
+      "3": "Alpha is stopped by air or paper; thick concrete is wildly excessive."
+    },
+    "explanation": "X-rays are highly penetrating, similar to gamma, so an X-ray room needs thick lead-lined walls. The other pairs mismatch the radiation to the shielding.",
+    "examinerNote": ""
   },
   {
-    "id": "acute_vs_long_term_short",
+    "id": "combined_precautions_mcq",
+    "type": "mcq",
     "tags": [
+      "shielding",
       "bio_effects"
     ],
     "specRefs": [
       "7.16"
     ],
-    "difficultyRating": 3,
-    "type": "short",
-    "prompt": "Distinguish between the short-term and long-term biological effects of high doses of ionising radiation.",
-    "marks": 4,
-    "markPoints": [
-      {
-        "any": [
-          "short-term: cell death and tissue damage that shows soon after exposure",
-          "short-term: damage to cells visible within hours to days",
-          "short-term: cell death and tissue damage",
-          "short-term effects appear within hours to days"
-        ]
-      },
-      {
-        "any": [
-          "short-term symptoms include nausea, vomiting, burns, hair loss",
-          "high dose can cause radiation sickness, burns and hair loss",
-          "very high doses can be fatal in days to weeks",
-          "short-term: radiation sickness, skin burns, hair loss"
-        ]
-      },
-      {
-        "any": [
-          "long-term: cancer caused by mutations in DNA",
-          "long-term: cancer from damaged DNA",
-          "long-term: increased cancer risk from DNA mutations",
-          "long-term: cancer (e.g. leukaemia)"
-        ]
-      },
-      {
-        "any": [
-          "long-term effects can develop years or decades later",
-          "long-term effects appear over a long time",
-          "the cancer may not appear for many years after exposure",
-          "long-term effects show up many years after exposure"
-        ]
-      }
+    "difficultyRating": 2,
+    "marks": 1,
+    "prompt": "Choose the best statement about radiation safety precautions.",
+    "choices": [
+      "shielding alone is enough to make any radiation safe",
+      "shielding is useless if you have no other precautions",
+      "shielding combined with limiting time and increasing distance gives the best protection",
+      "distance is the only precaution that matters"
     ],
-    "allowAdjust": true,
-    "explanation": "Short-term (acute) effects from a high dose: cell death and tissue damage visible within hours or days, with symptoms like radiation sickness, skin burns and hair loss. At very high doses, fatal within weeks. Long-term effects, from any dose: DNA mutations may lead to cancer years or decades later, and may pass to offspring as inheritable mutations."
+    "answerIndex": 2,
+    "distractorRationales": {
+      "0": "Shielding alone is incomplete; long exposure can still build up dose.",
+      "1": "Shielding is very useful; just not the only thing.",
+      "3": "All three precautions matter; distance alone may be impractical."
+    },
+    "explanation": "Combining shielding with limiting time near the source and keeping a good distance gives the best practical protection. This combined approach is standard radiation safety practice.",
+    "examinerNote": "Time, distance, shielding — all three together."
   },
   {
-    "id": "low_high_level_distinguish_short",
+    "id": "thin_foil_vs_thick_steel_mcq",
+    "type": "mcq",
     "tags": [
-      "waste_disposal"
+      "uses_beta",
+      "uses_gamma",
+      "choosing_isotopes_for_uses"
     ],
     "specRefs": [
-      "7.16"
+      "7.14"
     ],
-    "difficultyRating": 2,
-    "type": "short",
-    "prompt": "Distinguish between low-level and high-level nuclear waste, and describe how each is typically disposed of.",
-    "marks": 4,
-    "markPoints": [
-      {
-        "any": [
-          "low-level waste has low activity",
-          "low-level waste is only weakly radioactive",
-          "low-level waste includes things like contaminated clothing and lab equipment",
-          "low-level: low-activity items like gloves, lab coats, paper"
-        ]
-      },
-      {
-        "any": [
-          "low-level waste is buried in shallow trenches or sealed near the surface",
-          "low-level waste is sealed in containers and buried near the surface",
-          "low-level waste is disposed of in shallow burial sites",
-          "low-level: shallow burial in sealed containers"
-        ]
-      },
-      {
-        "any": [
-          "high-level waste is highly radioactive (e.g. spent fuel)",
-          "high-level waste has high activity",
-          "high-level waste includes spent nuclear fuel",
-          "high-level: high-activity material from the reactor itself"
-        ]
-      },
-      {
-        "any": [
-          "high-level waste is stored deep underground in geologically stable rock",
-          "high-level waste is sealed in thick concrete and steel and stored deep underground",
-          "high-level waste is buried in deep, stable geological repositories",
-          "high-level: deep underground in stable rock formations"
-        ]
-      }
+    "difficultyRating": 3,
+    "marks": 1,
+    "prompt": "Which row correctly matches the radiation to the thickness gauge?",
+    "choices": [
+      "Beta for thin paper or aluminium foil; gamma for thick steel sheet",
+      "Gamma for thin paper or aluminium foil; beta for thick steel sheet",
+      "Alpha for thin paper or aluminium foil; gamma for thick steel sheet",
+      "The same radiation works for both, since both gauges measure thickness"
     ],
-    "allowAdjust": true,
-    "explanation": "Low-level waste (mildly radioactive items like contaminated lab equipment, paper, gloves): sealed in containers and buried in shallow trenches near the surface. High-level waste (highly radioactive material such as spent nuclear fuel): sealed in thick concrete and steel containers and stored deep underground in geologically stable rock formations."
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Gamma is barely absorbed by thin paper or foil, so the count rate wouldn't depend on the thickness. Beta would also be stopped completely by thick steel, so the gauge would always read background.",
+      "2": "Alpha would be stopped completely by even thin paper. The gauge needs partial absorption.",
+      "3": "The choice depends on the material's thickness. Thin material needs a less penetrating radiation (beta); thick material needs a more penetrating radiation (gamma)."
+    },
+    "explanation": "The rule is: choose the radiation that is partially absorbed by the material being measured. For thin paper or aluminium foil, beta is partially absorbed (alpha completely, gamma not at all). For thick steel, gamma is partially absorbed (alpha and beta both completely)."
+  },
+  {
+    "id": "inhaled_lung_tracer_mcq",
+    "type": "mcq",
+    "tags": [
+      "uses_gamma",
+      "halflife"
+    ],
+    "specRefs": [
+      "7.14",
+      "7.12"
+    ],
+    "difficultyRating": 3,
+    "marks": 1,
+    "prompt": "A medical tracer used to image the lungs is sometimes inhaled rather than injected. The patient breathes in a small amount of a radioactive gas while the gamma camera makes an image of how the gas spreads through the lungs. The half-life of an inhaled tracer of this kind is typically:",
+    "choices": [
+      "a few seconds",
+      "a few hours",
+      "a few months",
+      "many years"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Hours is right for an injected tracer that has to circulate, reach the target tissue, and be imaged. An inhaled tracer reaches the lungs immediately and is imaged on the spot.",
+      "2": "Months would mean the patient continues to breathe out radioactive gas long after the scan.",
+      "3": "Far too long for a tracer; the patient would be irradiated for life."
+    },
+    "explanation": "An inhaled tracer reaches the imaging target (the lungs) immediately when the patient breathes in, so a very short half-life is fine and is actually preferred — the radioactivity decays away within minutes of the scan ending. Krypton-81m (half-life about 13 seconds) is a typical example.",
+    "examinerNote": "This is genuine 4SS0-level physics: the question is asking the student to apply the half-life-matches-the-application principle to a slightly less standard case. Inhaled tracers can have much shorter half-lives than injected ones because they don't have to circulate before being imaged."
   }
 ];

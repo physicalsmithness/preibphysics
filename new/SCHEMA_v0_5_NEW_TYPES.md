@@ -1,6 +1,10 @@
 # Schema v0.5 — five new interaction types
 
-**Status:** drafted 2026-05-03. Adds matching, multiselect, ordering, categorise, fillblank. Does not change v0.4 contracts; existing types (`mcq`, `short`, `long`, `numeric`) keep their behaviour.
+**Status:** drafted 2026-05-03. Last updated 2026-05-08 with v0.4 base-type clarifications, fillblank verb/descriptor callout, and matching by-value confirmation. Adds matching, multiselect, ordering, categorise, fillblank. Does not change v0.4 contracts; existing types (`mcq`, `short`, `long`, `numeric`) keep their behaviour.
+
+> **⚠ Authors: work from the live engine, not a reference copy.**
+>
+> If your commission gives you a "reference engine" or "engine_reference" file as a snapshot, treat it as out-of-date. The live engine lives at `G:\My Drive\github local files\preibphysics\new\engine.js` and accumulates fixes that may invalidate earlier reference snapshots. Topic 8's authoring chat hit two false trails (matching marker thought to compare indices not values; KaTeX thought to be unwired) by working from a stale reference. Both had been fixed in the live engine. Always grep the live file before designing around an apparent engine limitation.
 
 **Why:** keyword-based marking of free-text short-answers is a dead end for anything past one-phrase recall. Rewriting weak short-answers into structured-interaction questions gives deterministic marking, faster student feedback, and no AI dependency. See architecture chat 2026-05-03.
 
@@ -29,7 +33,11 @@
 
 **Marker.** For each `pairs[i]`, the student has paired left `i` with some right tile (which may be a canonical pair tile or a `rightExtras` distractor). The student earns +1 if the **text** of the chosen right tile equals `pairs[i].right` exactly. Compared by value rather than canonical index, so non-injective matchings work: two pairs that legitimately share the same right text (e.g. "Planet → a star" and "Comet → a star") both score when the student pairs either left with any tile bearing that text. Total awarded is capped at `marks`. Default `marks = pairs.length`.
 
-**Schema notes.** `pairs[i].right` is the correct right value for `pairs[i].left`. Distractor right items live in `rightExtras`. `shuffleRight` defaults to `true`; set `false` if the question needs a fixed display order. **Authoring tip:** if multiple pairs share the same right value, the engine renders one tile per pair entry (one "a star" tile per pair pointing to it). To make a non-injective matching genuinely discriminating against a "everything matches the same thing" wrong belief, add an extra "a star" tile via `rightExtras` so a student who wrongly thinks ALL items match "a star" can place all of them there and be wrong about most of them. Without that extra, the student is forced to spread their answers and accidentally gets some right.
+**Schema notes.** `pairs[i].right` is the correct right value for `pairs[i].left`. Distractor right items live in `rightExtras`. `shuffleRight` defaults to `true`; set `false` if the question needs a fixed display order.
+
+> **Note on non-injective matching.** Earlier engine versions (pre-v1.5.3) compared by canonical right index, which broke many-to-one matchings: a student who legitimately paired Planet→"a star" and Comet→"a star" had no way to choose between the two visually identical tiles. The current engine (v1.5.3 onward) compares by right *value*, so legitimate many-to-one matchings score correctly. **However**, `categorise` is usually a better fit for "sort items into bins" tasks than non-injective matching, because the bin structure makes the cognitive shape explicit and gives wrong beliefs a place to fail visibly (a student who thinks everything orbits a star puts everything in the "Orbits a star" bin and scores zero, instead of getting partial credit by accident).
+
+**Authoring tip:** if multiple pairs share the same right value, the engine renders one tile per pair entry (one "a star" tile per pair pointing to it). To make a non-injective matching genuinely discriminating against a "everything matches the same thing" wrong belief, either (a) prefer `categorise` (recommended), or (b) add an extra "a star" tile via `rightExtras` so a student who wrongly thinks ALL items match "a star" can place all of them there and be wrong about most of them. Without that extra, the student is forced to spread their answers and accidentally gets some right.
 
 ---
 
@@ -143,6 +151,31 @@ Multi-blank example:
 
 **Schema notes.** The number of `{}` placeholders in `prompt` must match `blanks.length`. The engine fails gracefully if they don't, by rendering whatever blanks it has and flagging a console warning. Each `expected[]` must contain at least one string; the first is treated as the canonical answer for display purposes.
 
+> **⚠ Read this before authoring fillblanks.**
+>
+> Fillblank is **exact match after normalisation**. NOT substring. NOT semantic. NOT stem-based. "decreases" does not match "cools". "gravity" does not match "gravitational field strength". Every form a student might plausibly write must appear explicitly in `expected[]`.
+>
+> This means fillblank is the **wrong type for verb-shaped, direction-shaped, or comparative-descriptor slots.** The synonym explosion for "the temperature {decreases / cools / falls / drops / goes down / reduces / is lower}" is unbounded. The next author who tries to enumerate it will fail at least one student.
+>
+> **Use fillblank when:** the slot tests recall of a specific named physics term (e.g. "galaxy", "fusion", "elliptical", "core", "nebula"). Synonym list covers typographical variants (case, abbreviations, the term vs its symbol, apostrophe/article variants) but NOT conceptual variants.
+>
+> **Use mcq when:** the slot is a verb (action: "decreases", "expands"), a direction (towards / away from), or a comparative descriptor (lower / cooler / faster / smaller). MCQ choices can include the related-but-wrong terms as named distractors, which actually tests the discrimination better than fillblank can.
+>
+> **NEVER include in `expected[]`:**
+> - Colloquial near-synonyms ("gravity" for "gravitational field strength")
+> - Generalised forms ("field strength" for "gravitational field strength")
+> - Descriptive paraphrases when the slot asks for a named stage ("cloud of gas" for "nebula")
+>
+> **DO include:**
+> - The symbol form alongside the word form (g, m, W)
+> - GB/US spelling variants where the engine doesn't auto-handle them
+> - Synonyms that are themselves valid physics terms at the same level of specificity (e.g. "nebula" and "protostar" are both named stages; both are fine for "stage before main sequence")
+> - Apostrophe and article variants for nouns ("sun's centre", "centre of the sun")
+>
+> When in doubt, **prefer mcq.** Discrimination is the same; marking is robust.
+>
+> *Heuristic distilled from Topic 8's fillblank synonym audit, 2026-05-06.*
+
 ---
 
 ## Cross-cutting
@@ -191,6 +224,75 @@ Added 2026-05-03 alongside the other five. A matrix of rows × columns with a ch
 - `"per_cell"`: +1 per correctly-ticked cell, −1 per wrongly-ticked cell (cells in neither correct nor neutral). Neutrals score 0 either way. Floor at 0, cap at `marks`.
 
 **Schema notes.** `correct[i]` is an array of column indices for row `i`. `neutral[i]` is optional and lists column indices that don't count. Anything not in either is wrong. A row with no `correct` entry is treated as "no expected ticks" (so any tick on that row is wrong in per-row, costs in per-cell).
+
+---
+
+## v0.4 base-type clarifications (added 2026-05-08)
+
+The Topic 7 authoring chat surfaced gaps where v0.4 base-type behaviour was under-documented and authors had to guess. Recording the actual engine semantics here so the next chat doesn't have to.
+
+### `numeric`
+
+```jsonc
+{
+  "type": "numeric",
+  "prompt": "Convert 4 minutes to seconds.",
+  "answer": 240,
+  "unitHint": "seconds",
+  "marks": 1
+}
+```
+
+**Tolerance.** If `q.tolerance` is set (absolute number), uses that. Otherwise default is `max(|answer| × 0.005, 0.0001)` — so ±0.5% with a tiny absolute floor. For `answer: 240` that's ±1.2 (so 238.8 to 241.2 all pass). For `answer: 0.0001` the floor kicks in.
+
+**Override pattern.** If a problem's natural rounding produces a wider acceptable range (e.g. "give your answer to 2 sig figs" for an answer that's actually 7.84), set `tolerance` explicitly to cover both 7.8 and 7.9. Default 0.5% tolerance is too tight for sig-fig-rounded answers.
+
+**Unit handling.** The marker regex-strips non-numeric tail before parsing, so "240", "240 s", "240 seconds", "240sec", "2.4e2" all parse to 240 and pass. The unit is never validated. Authors should name the unit in the prompt; `unitHint` is purely decorative (appears as a small label next to the input field, and shown next to the correct answer in feedback). Don't worry about students having to remember the canonical unit form.
+
+**Field aliases.** Both `q.answer` and `q.expectedNumeric` are accepted. Use `answer` for new questions; `expectedNumeric` is legacy.
+
+**What numeric is NOT for.** Anything where the unit choice is itself the test (e.g. "what unit is activity measured in?"). For those, use `mcq` or `fillblank`. Numeric is for quantitative answers where the unit is given by the prompt.
+
+### `short`
+
+**Marker pre-pass.** Every input goes through normalisation (case, whitespace, articles, contractions, GB/US, hyphens, punctuation) before any matching. Authors don't need to list every permutation.
+
+**Match rules.** A response matches if every entry in `q.markPoints` has at least one of its `any` synonyms appearing in the (normalised) response. Default match style is **substring**: typing "the helium nucleus" matches a synonym of "helium". With `q.matchStyle: "exact"` or per-`markPoint` `style: "exact"`, the response (or the relevant token) must equal the synonym whole.
+
+**`mustNotInclude`.** Per-`markPoint` array of phrases that, if present in the response, void that mark point even if the `any` synonyms also matched. Useful for "don't say X" answers (e.g. testing "name two effects of beta radiation" without accepting an answer that also names a wrong effect). **Authoring note:** unused across 200+ Topic 7 questions. If you reach for it, you may be reaching for the wrong type — consider `multiselect` or `grid` instead, where wrong picks are scored explicitly.
+
+**Multi-mark-point shorts: don't.** If your answer requires the student to articulate more than one independent thing, atomise into separate single-MP shorts, or rewrite as `multiselect`, `categorise`, `matching`, or `grid`. The marker can score multi-MP shorts but the experience is poor: the student types one fluent answer and gets back partial credit with no clear feedback on which MP they missed. This was the single biggest rot pattern in Topic 7 (43 multi-MP shorts had to be atomised).
+
+### `mcq`
+
+**Distractor rationales.** Required on every wrong choice. Shown to the student after marking, alongside the choice they picked and the correct one. The rationale is what makes MCQs pedagogically valuable beyond "you guessed right". An MCQ without distractor rationales is a parking lot.
+
+**Choice shuffling.** The engine shuffles the displayed choice order on every delivery (v1.5.11). Authors don't need to randomise; just put them in any order.
+
+### `long`
+
+Parked at the engine level. Don't author. If a question seems to need a long-form answer, it almost certainly needs to be reframed as a sequence of structured-type questions, or omitted entirely.
+
+### File-level structure (cross-cutting)
+
+A topic question file declares one global: `window.PREIB_<TOPIC>_QUESTIONS = [...]`. Topic 7 uses `PREIB_RAD_QUESTIONS`, Topic 8 uses `PREIB_TOPIC8_QUESTIONS`. The TOPIC_CONFIG in each topic's deployment `topic<N>_config.js` points at this variable name.
+
+Earlier schema generations referenced `META` and `REPORT_FORM` blocks alongside the questions array. **These are deprecated.** The engine doesn't read them. Don't author them in new topic files. If you encounter a brief that asks for them, that's a stale reference.
+
+### Cross-cutting tags
+
+- `definition` — questions where the answer is a definition of a term.
+- `extended_writing` — questions reframed from the kind of multi-sentence response that pre-schema would have been a `long`. Marker is the natural type's marker (usually `ordering`); the tag exists for analytics.
+- `practical_skill` — questions about experimental design, data interpretation, or method.
+- `calc` — questions that involve a calculation step. **Engine treats `q.type === "numeric"` as auto-calc, so don't add `calc` tag to numeric questions; it would be redundant.** Use `calc` only for non-numeric questions that test calculation reasoning (e.g. an MCQ where the choices are different numeric answers, or an ordering of arithmetic steps).
+
+---
+
+## Decisions deferred
+
+- **Numeric unit synonyms / required-unit mode.** Considered, rejected for now. The lenient regex-strip is the right balance for IGCSE — the prompt names the unit, the student types or doesn't type it, both are accepted. Re-evaluate only if a real failure mode shows up.
+- **`mustNotInclude` deprecation.** Pending Topic 8 audit. If Topic 8 also produces zero uses, deprecate from the brief and document as legacy.
+- **Multi-MP short marker improvements.** Engine could in principle return per-MP feedback ("you got MP1 and MP3, missed MP2"), but the better fix is structural — atomise. Not implementing.
 
 ---
 

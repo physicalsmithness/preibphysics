@@ -39,6 +39,10 @@
     <div class="cov-drawer-panel">
       <button id="cov-drawer-close" class="cov-drawer-close" type="button" aria-label="Close coverage map">×</button>
       <section id="coverage" class="coverage"></section>
+      <!-- v1.5.16: inline stats panel. Always-on, scope-aware. Replaces the
+           old modal drilldown for routine viewing. The modal still exists for
+           the "Full breakdown" power-user view (atom-by-atom + recent attempts). -->
+      <section id="cov-stats" class="cov-stats" aria-live="polite"></section>
     </div>
   </aside>
 </div>

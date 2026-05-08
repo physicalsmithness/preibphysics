@@ -645,7 +645,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.13";
+  const APP_VERSION = "v1.5.17";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1181,6 +1181,41 @@
   // ── State for the current question delivery ──
   let current = null; // { question, instanceIndex, view, mark? }
   let phase = "answering"; // "answering" | "feedback"
+
+  // ── Module-scope state for the "Enter advances to next question" arm.
+  //
+  // History: this lived as a closure inside showFeedback(). That worked when
+  // every question boundary went through Enter (which removed the listener
+  // itself on fire). But if the user clicked Next manually with a mouse, the
+  // listener was never removed — it lingered, and the next time the user
+  // pressed Enter on a non-text question (multiselect, matching, ordering,
+  // categorise, grid, fillblank) the lingering arm consumed the keypress
+  // instead of letting the question's own Enter-to-submit path run. Result:
+  // user's answer was never submitted, no feedback shown, deck advanced
+  // silently. v1.5.17 promotes the arm to module scope so renderQuestion()
+  // can reliably tear it down at the start of every question.
+  let _armOnEnter = null;        // the actual keydown handler (or null)
+  let _armOnKeyup = null;        // the keyup-to-arm listener (or null)
+  let _armTimerId = 0;           // setTimeout id for the 300ms fallback
+  let _armedAt = 0;              // timestamp when the keydown listener went live
+
+  function disarmNextOnEnter() {
+    // Remove every lingering listener and clear the fallback timer. Idempotent:
+    // safe to call from anywhere, any number of times.
+    if (_armOnEnter) {
+      document.removeEventListener("keydown", _armOnEnter);
+      _armOnEnter = null;
+    }
+    if (_armOnKeyup) {
+      document.removeEventListener("keyup", _armOnKeyup);
+      _armOnKeyup = null;
+    }
+    if (_armTimerId) {
+      clearTimeout(_armTimerId);
+      _armTimerId = 0;
+    }
+    _armedAt = 0;
+  }
 
   /* ──────────────────────────────────────────────────────────────────────────
      v1.5 renderers for the five new interaction types. Each one builds its
@@ -1746,6 +1781,13 @@
   // -- Question card rendering --
   function renderQuestion() {
     dbg("renderQuestion.start");
+    // v1.5.17: tear down any lingering Enter-to-Next arm BEFORE we render.
+    // If the previous question's feedback armed Enter and the user clicked
+    // Next manually (not via Enter), the listener used to outlive the
+    // question boundary and would eat the user's first Enter on the new
+    // question. See bug report 2026-05-07.
+    disarmNextOnEnter();
+    dbg("disarm.onRenderQuestion");
     const card = document.getElementById("qcard");
     card.className = "qcard";
     card.innerHTML = "";
@@ -2438,28 +2480,27 @@
 
     // Capture Enter for next-question.
     // History: in v1.1 we deferred listener attach by setTimeout(0) so the
-    // same Enter that submitted didn't also advance. That handles a single
-    // press cleanly. In v1.4.3 we add two more guards because the bug came
-    // back on questions where the user momentarily HELD Enter:
-    //   1. Ignore e.repeat. Auto-repeat keydowns from a held key shouldn't
-    //      count as a deliberate "advance now" press.
-    //   2. A 200ms grace window after the listener attaches. If anything
-    //      sneaks through in that window (focus shifting to a button while
-    //      Enter is still down, browser quirks), it's ignored.
-    // v1.5.3: belt and braces. The 200ms grace turned out to be too short
-    // on at least one observed case, plus relying on auto-repeat detection
-    // alone misses scenarios where the same physical Enter generates a fresh
-    // keydown (focus shifting between elements mid-flight, certain browser
-    // quirks). Now we (a) require an explicit Enter keyup before the listener
-    // arms, so any Enter still being held when showFeedback ran is fully
-    // released before the listener acts; (b) keep the e.repeat guard; (c)
-    // keep a 300ms time grace as a final safety net.
-    let listenerArmedAt = 0;
-    function nextOnEnter(e) {
-      if (e.key !== "Enter") {
+    // same Enter that submitted didn't also advance. v1.4.3 added e.repeat +
+    // 200ms grace for held-Enter cases. v1.5.3 added the keyup-arm pattern
+    // so a still-held Enter fully releases before the listener arms. v1.5.17
+    // promotes all this state to module scope and adds disarm-on-renderQ +
+    // a phase guard, fixing the case where a manual mouse-click on Next left
+    // a lingering keydown listener that ate Enter on the next question.
+    //
+    // Defence in depth: disarm anything left from a previous arm before we
+    // arm a new one. (Should be a no-op; renderQuestion already disarms.)
+    disarmNextOnEnter();
+
+    _armOnEnter = function (e) {
+      if (e.key !== "Enter") return;
+      // v1.5.17: phase guard. If we're not in feedback any more (e.g. the
+      // user hit Next manually and renderQuestion ran but somehow this
+      // listener survived), refuse to fire.
+      if (phase !== "feedback") {
+        dbg("nextOnEnter.skipped.notFeedback", { phase: phase });
         return;
       }
-      const delta = Date.now() - listenerArmedAt;
+      const delta = Date.now() - _armedAt;
       if (e.repeat) {
         dbg("nextOnEnter.skipped.repeat", { delta: delta });
         return;
@@ -2470,29 +2511,38 @@
       }
       dbg("nextOnEnter.fired", { delta: delta });
       e.preventDefault();
-      document.removeEventListener("keydown", nextOnEnter);
+      disarmNextOnEnter();
       nextBtn.click();
-    }
-    function armOnNextKeyup() {
-      dbg("arm.start");
-      function onUp(e) {
-        if (e.key !== "Enter") return;
-        document.removeEventListener("keyup", onUp);
-        listenerArmedAt = Date.now();
-        dbg("arm.viaKeyup");
-        document.addEventListener("keydown", nextOnEnter);
+    };
+
+    dbg("arm.start");
+    _armOnKeyup = function (e) {
+      if (e.key !== "Enter") return;
+      // The keyup signals the previously-held Enter is fully released. Now
+      // it's safe to listen for the NEXT keydown as the advance trigger.
+      document.removeEventListener("keyup", _armOnKeyup);
+      _armOnKeyup = null;
+      if (_armTimerId) { clearTimeout(_armTimerId); _armTimerId = 0; }
+      _armedAt = Date.now();
+      dbg("arm.viaKeyup");
+      document.addEventListener("keydown", _armOnEnter);
+    };
+    document.addEventListener("keyup", _armOnKeyup);
+    _armTimerId = setTimeout(function () {
+      // Fallback path: 300ms with no keyup observed (mouse-click submit, or
+      // the user never pressed Enter at all). Arm the keydown listener
+      // anyway so subsequent Enter presses can advance.
+      if (_armOnKeyup) {
+        document.removeEventListener("keyup", _armOnKeyup);
+        _armOnKeyup = null;
       }
-      document.addEventListener("keyup", onUp);
-      setTimeout(function () {
-        document.removeEventListener("keyup", onUp);
-        if (listenerArmedAt === 0) {
-          listenerArmedAt = Date.now();
-          dbg("arm.viaTimeout");
-          document.addEventListener("keydown", nextOnEnter);
-        }
-      }, 300);
-    }
-    armOnNextKeyup();
+      _armTimerId = 0;
+      if (_armedAt === 0) {
+        _armedAt = Date.now();
+        dbg("arm.viaTimeout");
+        document.addEventListener("keydown", _armOnEnter);
+      }
+    }, 300);
 
     // Bump the coverage map
     renderCoverage();
@@ -2548,8 +2598,13 @@
             // v1.5.5: real group-level filter. The pool now includes any
             // question whose tags reference any subtag in this group.
             // If we're already filtered to this group, clicking again clears.
-            if (isGroupActive) setFilter(null);
-            else setFilter({ type: "group", id: group.id });
+            // v1.5.16: stops opening the modal — the inline stats panel below
+            // the coverage map updates to reflect the new filter.
+            if (isGroupActive) {
+              setFilter(null);
+            } else {
+              setFilter({ type: "group", id: group.id });
+            }
           },
           text: group.name
         }),
@@ -2621,13 +2676,15 @@
           title: titleText,
           "data-id": st.id,
           style: tileStyle,
-          // v1.5.5: tile click sets the subtag filter and opens the drilldown.
-          // The drilldown's filter button still toggles the filter on/off as
-          // before. Click an atom cell inside the tile to drill further to a
-          // single question (handled in renderAutoAtomMosaic).
+          // v1.5.16: tile click sets the subtag filter only. The inline
+          // stats panel below the coverage map shows scope-appropriate
+          // stats; the modal is reserved for the "Full breakdown" link.
+          // Click again on the same tile to clear; click an atom cell to
+          // drill to a single question (handled in renderAutoAtomMosaic).
           onClick: function () {
-            setFilter({ type: "subtag", id: st.id });
-            openDrilldown(st.id);
+            const af = store.activeFilter;
+            const isAlreadyHere = af && af.type === "subtag" && af.id === st.id;
+            setFilter(isAlreadyHere ? null : { type: "subtag", id: st.id });
           }
         }, children);
         tiles.appendChild(tile);
@@ -2656,6 +2713,12 @@
       }))
     ]);
     root.appendChild(legend);
+
+    // v1.5.16: keep the inline stats panel in lock-step with the coverage map.
+    // Cheap to render (a few DOM nodes) and ensures the panel exists on
+    // initial load and after any coverage refresh, even from call sites that
+    // don't directly touch setFilter.
+    renderCoverageStats();
   }
 
   function setFilter(filterSpec) {
@@ -2664,12 +2727,16 @@
     if (typeof filterSpec === "string") filterSpec = { type: "subtag", id: filterSpec };
     store.activeFilter = filterSpec || null;
     persist();
-    // On mobile, close the coverage drawer once a filter is set/cleared so
-    // the student goes straight back to the question.
-    const drawer = document.getElementById("cov-drawer");
-    if (drawer) drawer.classList.remove("open");
+    // v1.5.16: drawer no longer auto-closes on filter change — the inline
+    // stats panel now lives in the drawer and we want it visible while the
+    // user picks/changes focus. They can dismiss the drawer themselves with
+    // the close button or the toggle button when ready to practise.
+    // Also close the modal drilldown if it's open: it'd otherwise show stats
+    // for the OLD scope while the inline panel updates for the new one.
+    closeDrilldown();
     renderQuestion();
     renderCoverage();
+    renderCoverageStats();
     updateProgressLine();
   }
 
@@ -2716,21 +2783,183 @@
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
+     8a-bis. Inline coverage stats panel (v1.5.16)
+     Always-on stats strip at the bottom of the coverage drawer/column. Shows
+     scope-appropriate stats for the current activeFilter, or a topic-wide
+     summary when there's no filter. Rebuilt every time setFilter() runs and
+     on initial coverage render.
+     The modal drilldown is still here too — accessed via the "Full breakdown"
+     link for the rich detail (atom-by-atom, recent attempts list).
+     ────────────────────────────────────────────────────────────────────────── */
+
+  function computeStatsForScope(af) {
+    // af is null (topic-wide) or a {type, id} filter spec.
+    let title, eyebrow, totalActive, scopeAttempts, subtagIdsInScope, questionInScope;
+
+    if (!af) {
+      // No filter: topic-wide. Title comes from TOPIC_CONFIG.topicLabel if
+      // set, else from the brand-title element ("Topic 7: Radioactivity"),
+      // else a generic fallback.
+      const brand = document.querySelector(".brand-title");
+      title = TOPIC_CONFIG.topicLabel
+            || (brand ? brand.textContent.trim() : "")
+            || "All questions";
+      eyebrow = "Whole topic";
+      // Active = not parked.
+      totalActive = ALL_QUESTIONS.filter(function (q) { return q.parked !== true; }).length;
+      scopeAttempts = store.attempts.slice();
+    } else if (af.type === "group") {
+      const grp = VOCAB.parentGroups.find(function (g) { return g.id === af.id; });
+      title = grp ? grp.name : af.id;
+      eyebrow = "Parent group";
+      subtagIdsInScope = grp ? grp.subtags.map(function (st) { return st.id; }) : [];
+      totalActive = subtagIdsInScope.reduce(function (sum, sid) { return sum + (SUBTAG_COUNTS[sid] || 0); }, 0);
+      scopeAttempts = store.attempts.filter(function (a) {
+        return Array.isArray(a.subtags) && a.subtags.some(function (t) { return subtagIdsInScope.indexOf(t) !== -1; });
+      });
+    } else if (af.type === "question") {
+      questionInScope = ALL_QUESTIONS.find(function (qq) { return qq.id === af.id; });
+      const promptPreview = questionInScope && questionInScope.prompt
+        ? (String(questionInScope.prompt).length > 80 ? String(questionInScope.prompt).slice(0, 77) + "…" : String(questionInScope.prompt))
+        : af.id;
+      title = promptPreview;
+      eyebrow = "Single question · " + af.id;
+      totalActive = (questionInScope && questionInScope.parked !== true) ? 1 : 0;
+      scopeAttempts = store.attempts.filter(function (a) { return a.questionId === af.id; });
+    } else { // subtag
+      const info = SUBTAG_INDEX[af.id];
+      title = info ? info.name : af.id;
+      eyebrow = info ? (info.parentName + " · subtag") : "Subtag";
+      totalActive = SUBTAG_COUNTS[af.id] || 0;
+      scopeAttempts = store.attempts.filter(function (a) {
+        return Array.isArray(a.subtags) && a.subtags.indexOf(af.id) !== -1;
+      });
+    }
+
+    const win = (typeof store.coverageWindow === "number" && store.coverageWindow > 0) ? store.coverageWindow : 2;
+    const recent = scopeAttempts.slice(-win);
+
+    function avgFraction(arr) {
+      if (!arr.length) return null;
+      let s = 0;
+      arr.forEach(function (a) {
+        const possible = a.marksPossible > 0 ? a.marksPossible : 1;
+        s += a.marksAwarded / possible;
+      });
+      return s / arr.length;
+    }
+
+    return {
+      title: title,
+      eyebrow: eyebrow,
+      totalActive: totalActive,
+      totalAttempts: scopeAttempts.length,
+      recentAvg: avgFraction(recent),
+      recentCount: recent.length,
+      allTimeAvg: avgFraction(scopeAttempts),
+      win: win
+    };
+  }
+
+  // v1.5.16: track the last scope key so the fade-up animation only fires
+  // when the SCOPE changes, not on every renderCoverage tick (which happens
+  // after each answered question to update tile colours).
+  let _lastStatsScopeKey = null;
+
+  function renderCoverageStats() {
+    const root = document.getElementById("cov-stats");
+    if (!root) return;
+    const af = store.activeFilter;
+    const s = computeStatsForScope(af);
+
+    function pct(v) { return v == null ? "—" : Math.round(v * 100) + "%"; }
+
+    // Compute a key for the current scope. If it matches what we rendered
+    // last time, skip the fade animation — just refresh the numbers in
+    // place. This keeps the stats panel quiet when the user is just answering
+    // questions and noisy only when they actually change focus.
+    const scopeKey = af ? (af.type + ":" + af.id) : "topic";
+    const scopeChanged = (scopeKey !== _lastStatsScopeKey);
+    _lastStatsScopeKey = scopeKey;
+
+    root.innerHTML = "";
+    if (scopeChanged) {
+      // Restart the CSS fade-up by toggling animation-name only. We don't
+      // touch the .cov-stats class because that holds all the layout styles.
+      root.style.animation = "none";
+      void root.offsetWidth; // force reflow
+      root.style.animation = "";
+    }
+
+    root.appendChild(el("div", { class: "cov-stats-eyebrow", text: s.eyebrow }));
+    root.appendChild(el("div", { class: "cov-stats-title", text: s.title }));
+
+    const grid = el("div", { class: "cov-stats-grid" }, [
+      el("div", { class: "cov-stats-cell" }, [
+        el("div", { class: "cov-stats-cell-label", text: "Active Qs" }),
+        el("div", { class: "cov-stats-cell-value", text: String(s.totalActive) })
+      ]),
+      el("div", { class: "cov-stats-cell" }, [
+        el("div", { class: "cov-stats-cell-label", text: "Attempts" }),
+        el("div", { class: "cov-stats-cell-value", text: String(s.totalAttempts) })
+      ]),
+      el("div", { class: "cov-stats-cell" }, [
+        el("div", { class: "cov-stats-cell-label", text: "Last " + s.win + " avg" }),
+        el("div", { class: "cov-stats-cell-value", text: pct(s.recentAvg) }),
+        el("div", { class: "cov-stats-cell-sub", text: s.recentCount + " in window" })
+      ]),
+      el("div", { class: "cov-stats-cell" }, [
+        el("div", { class: "cov-stats-cell-label", text: "All-time avg" }),
+        el("div", { class: "cov-stats-cell-value", text: pct(s.allTimeAvg) })
+      ])
+    ]);
+    root.appendChild(grid);
+
+    // Action row
+    const actions = el("div", { class: "cov-stats-actions" });
+    if (af) {
+      const scopeWord = af.type === "group" ? "group" : af.type === "question" ? "question" : "subtag";
+      actions.appendChild(el("button", {
+        class: "cov-stats-filter-btn is-clear",
+        type: "button",
+        onClick: function () { setFilter(null); },
+        text: "Clear " + scopeWord + " filter"
+      }));
+      actions.appendChild(el("button", {
+        class: "cov-stats-more",
+        type: "button",
+        onClick: function () { openDrilldown(af); },
+        text: "Full breakdown"
+      }));
+    } else {
+      // No filter: hint, no buttons. Gives the panel something to say.
+      root.appendChild(el("div", {
+        class: "cov-stats-hint",
+        text: "Click a group, tile, or atom cell above to focus stats on it."
+      }));
+    }
+    if (actions.childNodes.length) root.appendChild(actions);
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
      8b. Subtag drill-down (v1.3)
      Click a tile, see a modal with stats: total questions, attempts, accuracy
      within the configured window and overall, type breakdown, recent attempts.
      "Filter practice to this subtag" button replaces the old click-to-filter.
      ────────────────────────────────────────────────────────────────────────── */
 
-  function openDrilldown(subtagId) {
+  // v1.5.14: drilldown takes a {type, id} scope, not just a subtag id.
+  // Accepts a bare string for backwards compat (treated as subtag id).
+  function openDrilldown(scope) {
     const overlay = document.getElementById("drilldown-overlay");
     if (!overlay) return;
+    if (typeof scope === "string") scope = { type: "subtag", id: scope };
+    if (!scope || !scope.type || !scope.id) return;
     const content = document.getElementById("drilldown-content");
     content.innerHTML = "";
-    content.appendChild(buildDrilldownContent(subtagId));
+    content.appendChild(buildDrilldownContent(scope));
     overlay.classList.add("open");
     overlay.setAttribute("aria-hidden", "false");
-    // Mark body so the main app layout can shift over to make room (desktop).
     document.body.classList.add("drilldown-open");
   }
 
@@ -2829,13 +3058,17 @@
         style: "background:" + cov.fill + ";",
         "data-question": q.id,
         // v1.5.5: clicking a cell narrows the practice pool to that single
-        // question. Useful when you've spotted the one you got wrong and want
-        // to retry it. stopPropagation so the click doesn't bubble up to the
-        // tile (which would set a subtag-level filter and override this).
+        // question. v1.5.16: no more modal — the inline stats panel reflects
+        // the question scope. stopPropagation so the click doesn't bubble up
+        // to the tile (which would set a subtag-level filter and override
+        // this).
         onClick: function (e) {
           e.stopPropagation();
-          if (isThisQActive) setFilter(null);
-          else setFilter({ type: "question", id: q.id });
+          if (isThisQActive) {
+            setFilter(null);
+          } else {
+            setFilter({ type: "question", id: q.id });
+          }
         }
       });
       wrap.appendChild(cell);
@@ -2843,21 +3076,50 @@
     return wrap;
   }
 
-  function buildDrilldownContent(subtagId) {
-    const info = SUBTAG_INDEX[subtagId];
-    const subtagName = info ? info.name : subtagId;
-    const groupName = info ? info.parentName : "";
-    const totalActive = SUBTAG_COUNTS[subtagId] || 0;
+  function buildDrilldownContent(scope) {
+    // v1.5.14: scope is {type, id}. Compute scope-appropriate values, then
+    // build the panel using a common shape.
+    let title, eyebrow, totalActive, scopeAttempts, typeCountsByType, isAtomScope;
+    let questionInScope = null; // for type === "question"
+    let subtagIdsInScope = [];  // for type === "group" or "subtag"
 
-    // Filter attempts to this subtag.
-    const subAttempts = store.attempts.filter(function (a) {
-      return Array.isArray(a.subtags) && a.subtags.indexOf(subtagId) !== -1;
-    });
-    const totalAttempts = subAttempts.length;
+    if (scope.type === "group") {
+      const grp = VOCAB.parentGroups.find(function (g) { return g.id === scope.id; });
+      title = grp ? grp.name : scope.id;
+      eyebrow = "Parent group";
+      subtagIdsInScope = grp ? grp.subtags.map(function (st) { return st.id; }) : [];
+      totalActive = subtagIdsInScope.reduce(function (sum, sid) { return sum + (SUBTAG_COUNTS[sid] || 0); }, 0);
+      scopeAttempts = store.attempts.filter(function (a) {
+        return Array.isArray(a.subtags) && a.subtags.some(function (t) { return subtagIdsInScope.indexOf(t) !== -1; });
+      });
+      isAtomScope = false;
+    } else if (scope.type === "question") {
+      questionInScope = ALL_QUESTIONS.find(function (qq) { return qq.id === scope.id; });
+      const promptPreview = questionInScope && questionInScope.prompt
+        ? (questionInScope.prompt.length > 90 ? questionInScope.prompt.slice(0, 87) + "…" : questionInScope.prompt)
+        : scope.id;
+      title = promptPreview;
+      eyebrow = "Single question · " + scope.id;
+      totalActive = (questionInScope && questionInScope.parked !== true) ? 1 : 0;
+      scopeAttempts = store.attempts.filter(function (a) { return a.questionId === scope.id; });
+      isAtomScope = false;
+    } else { // "subtag"
+      const info = SUBTAG_INDEX[scope.id];
+      title = info ? info.name : scope.id;
+      eyebrow = (info ? info.parentName + " · subtag" : "Subtag");
+      subtagIdsInScope = [scope.id];
+      totalActive = SUBTAG_COUNTS[scope.id] || 0;
+      scopeAttempts = store.attempts.filter(function (a) {
+        return Array.isArray(a.subtags) && a.subtags.indexOf(scope.id) !== -1;
+      });
+      isAtomScope = subtagIsAtomised(scope.id);
+    }
+
+    const totalAttempts = scopeAttempts.length;
 
     // Accuracy in window vs all-time.
     const win = (typeof store.coverageWindow === "number" && store.coverageWindow > 0) ? store.coverageWindow : 2;
-    const recent = subAttempts.slice(-win);
+    const recent = scopeAttempts.slice(-win);
     function avgFraction(arr) {
       if (!arr.length) return null;
       let s = 0;
@@ -2868,23 +3130,28 @@
       return s / arr.length;
     }
     const recentAvg = avgFraction(recent);
-    const allTimeAvg = avgFraction(subAttempts);
+    const allTimeAvg = avgFraction(scopeAttempts);
 
     // Status counts (full / partial / none) within all attempts.
     const statusCounts = { full: 0, partial: 0, none: 0 };
-    subAttempts.forEach(function (a) {
+    scopeAttempts.forEach(function (a) {
       if (a.status === "full") statusCounts.full++;
       else if (a.status === "partial") statusCounts.partial++;
       else statusCounts.none++;
     });
 
-    // Active questions per type WITHIN this subtag.
-    const typeCounts = { mcq: 0, short: 0, long: 0, numeric: 0 };
-    ALL_QUESTIONS.forEach(function (q) {
-      if (q.parked === true) return;
-      if (!Array.isArray(q.tags) || q.tags.indexOf(subtagId) === -1) return;
-      if (typeCounts[q.type] != null) typeCounts[q.type]++;
-    });
+    // Active questions per type within scope.
+    typeCountsByType = { mcq: 0, short: 0, long: 0, numeric: 0, matching: 0, multiselect: 0, ordering: 0, categorise: 0, fillblank: 0, grid: 0 };
+    if (scope.type === "question") {
+      if (questionInScope && typeCountsByType[questionInScope.type] != null) typeCountsByType[questionInScope.type]++;
+    } else {
+      ALL_QUESTIONS.forEach(function (q) {
+        if (q.parked === true) return;
+        if (!Array.isArray(q.tags)) return;
+        if (!q.tags.some(function (t) { return subtagIdsInScope.indexOf(t) !== -1; })) return;
+        if (typeCountsByType[q.type] != null) typeCountsByType[q.type]++;
+      });
+    }
 
     // Header row
     const closeBtn = el("button", {
@@ -2896,8 +3163,8 @@
     });
     const head = el("div", { class: "dd-head" }, [
       el("div", null, [
-        el("div", { class: "dd-eyebrow", text: groupName + " · subtag" }),
-        el("h2", { class: "dd-title", text: subtagName })
+        el("div", { class: "dd-eyebrow", text: eyebrow }),
+        el("h2", { class: "dd-title", text: title })
       ]),
       closeBtn
     ]);
@@ -2919,13 +3186,16 @@
     ]);
 
     // Type breakdown
+    const typeHeader = (scope.type === "group") ? "Question types in this group (active)"
+                     : (scope.type === "question") ? "Question type"
+                     : "Question types in this subtag (active)";
     const typeBreakdown = el("div", { class: "dd-types" }, [
-      el("h3", { text: "Question types in this subtag (active)" }),
-      el("div", { class: "dd-types-row" }, ["mcq", "short", "long", "numeric"].map(function (t) {
-        if ((typeCounts[t] || 0) === 0) return null;
+      el("h3", { text: typeHeader }),
+      el("div", { class: "dd-types-row" }, TYPES.map(function (t) {
+        if ((typeCountsByType[t] || 0) === 0) return null;
         return el("div", { class: "dd-type-item" }, [
           el("span", { class: "dd-type-label", text: t }),
-          el("span", { class: "dd-type-count", text: String(typeCounts[t]) })
+          el("span", { class: "dd-type-count", text: String(typeCountsByType[t]) })
         ]);
       }).filter(Boolean))
     ]);
@@ -2943,17 +3213,18 @@
       ]);
     }
 
-    // v1.4.1: per-atom breakdown for atomised subtags. Each row shows the
-    // atom's current colour swatch, its name, recent count and average,
-    // and an all-time count. Untried atoms show as a muted row.
+    // v1.4.1: per-atom breakdown for atomised subtags (only when scope IS a
+    // subtag with a designed atom registry). Each row shows the atom's
+    // current colour swatch, its name, recent count and average, and an
+    // all-time count.
     let atomBreakdown = null;
-    if (subtagIsAtomised(subtagId)) {
-      const atomList = ATOMS[subtagId];
+    if (scope.type === "subtag" && subtagHasDesignedAtoms(scope.id)) {
+      const atomList = ATOMS[scope.id];
       atomBreakdown = el("div", { class: "dd-atoms" }, [
         el("h3", { text: "Atom breakdown (last " + win + " in window)" }),
         el("ul", { class: "dd-atom-list" }, atomList.map(function (atom) {
           const cov = coverageForAtom(atom.id);
-          const allCount = subAttempts.filter(function (a) {
+          const allCount = scopeAttempts.filter(function (a) {
             return Array.isArray(a.atoms) && a.atoms.indexOf(atom.id) !== -1;
           }).length;
           const stat = (cov.attemptCount === 0)
@@ -2973,7 +3244,7 @@
     // Recent attempts list (last 10, newest first)
     let recentList = null;
     if (totalAttempts > 0) {
-      const lastTen = subAttempts.slice(-10).reverse();
+      const lastTen = scopeAttempts.slice(-10).reverse();
       recentList = el("div", { class: "dd-recent" }, [
         el("h3", { text: "Recent attempts (newest first)" }),
         el("ul", { class: "dd-recent-list" }, lastTen.map(function (a) {
@@ -2989,17 +3260,20 @@
       ]);
     }
 
-    // Footer actions
+    // Footer actions — scope-aware filter toggle.
     const af = store.activeFilter;
-    const isCurrent = !!(af && af.type === "subtag" && af.id === subtagId);
+    const isCurrent = !!(af && af.type === scope.type && af.id === scope.id);
+    const scopeWord = scope.type === "group" ? "group"
+                    : scope.type === "question" ? "question"
+                    : "subtag";
     const filterBtn = el("button", {
       class: "btn btn-primary dd-filter-btn",
       type: "button",
       onClick: function () {
-        setFilter(isCurrent ? null : { type: "subtag", id: subtagId });
+        setFilter(isCurrent ? null : { type: scope.type, id: scope.id });
         closeDrilldown();
       },
-      text: isCurrent ? "Stop filtering, show all subtags" : "Filter practice to this subtag"
+      text: isCurrent ? ("Stop filtering, show all") : ("Filter practice to this " + scopeWord)
     });
     const closeFootBtn = el("button", {
       class: "btn dd-close-foot-btn",

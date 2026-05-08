@@ -766,11 +766,18 @@ body {
   .cov-drawer-panel {
     position: relative;
     width: 100%;
+    /* v1.5.16: scroll container moved here from .coverage so the inline
+       stats panel can sit at the bottom of the same scrolling context as
+       the map and remain sticky-anchored to the bottom edge of the drawer. */
+    max-height: 88vh;
+    overflow-y: auto;
+    background: var(--paper);
+    border-radius: var(--radius) var(--radius) 0 0;
   }
   .coverage {
     width: 100%;
-    max-height: 88vh;
-    overflow-y: auto;
+    /* v1.5.16: no longer the scroller. Drop max-height/overflow and let it
+       grow with content; .cov-drawer-panel handles the scrolling now. */
     border-radius: var(--radius) var(--radius) 0 0;
     border-bottom: 0;
     padding-top: 38px; /* leave room for the close button */
@@ -934,6 +941,141 @@ body {
   color: var(--ink);
   font-size: 13px;
   font-family: inherit;
+}
+
+/* ============================================================================
+   v1.5.16: Inline coverage stats panel
+   Sticks to the bottom of the coverage drawer/column. Always visible whenever
+   the drawer is open, and reflects the active filter (or the whole topic when
+   there's no filter). Replaces the modal drilldown for routine viewing — the
+   modal is still available via the "Full breakdown" link for the rich detail
+   (atom-by-atom, recent attempts list).
+   ============================================================================ */
+
+.cov-stats {
+  /* Sticky to the bottom edge of the scrolling .col-side container on
+     desktop, and to the drawer on mobile. */
+  position: sticky;
+  bottom: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-top: 10px;
+  padding: 12px 12px 11px;
+  box-shadow: 0 -8px 18px -12px rgba(0,0,0,0.12), var(--shadow-card);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  /* Cross-fade content swap when the active filter changes. The render
+     function swaps innerHTML which re-triggers this animation. */
+  animation: cov-stats-in 0.22s ease-out;
+}
+@keyframes cov-stats-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cov-stats-eyebrow {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.cov-stats-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.25;
+  margin: 0 0 9px 0;
+  /* Single-question scope can have a long preview; clamp for tidiness. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cov-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.cov-stats-cell {
+  background: color-mix(in oklab, var(--ink) 2.5%, var(--paper));
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  padding: 7px 8px 6px;
+  text-align: left;
+}
+.cov-stats-cell-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+.cov-stats-cell-value {
+  font-family: var(--serif);
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.05;
+}
+.cov-stats-cell-sub {
+  font-size: 10px;
+  color: var(--ink-2);
+  margin-top: 1px;
+}
+.cov-stats-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cov-stats-filter-btn {
+  flex: 1 1 auto;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cov-stats-filter-btn:hover { background: color-mix(in oklab, var(--ink) 88%, var(--accent)); }
+.cov-stats-filter-btn.is-clear {
+  background: var(--paper);
+  color: var(--ink);
+}
+.cov-stats-more {
+  background: transparent;
+  border: 0;
+  color: var(--ink-2);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 4px 2px;
+  font-family: inherit;
+}
+.cov-stats-more:hover { color: var(--ink); }
+.cov-stats-hint {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+/* On narrow side columns / phones, give cells slightly less padding. */
+@media (max-width: 600px) {
+  .cov-stats { padding: 11px 11px 10px; margin-top: 8px; }
+  .cov-stats-cell-value { font-size: 17px; }
 }
 
 /* ============================================================================
@@ -1605,6 +1747,11 @@ body {
   width: 100%;
   border-collapse: collapse;
   font-size: 13.5px;
+  /* table-layout: fixed lets long column headers wrap instead of forcing
+     horizontal scroll. Column widths come from the FIRST row, where the
+     row-label corner gets a fixed width and the .grid-col cells split the
+     rest evenly. */
+  table-layout: fixed;
 }
 .grid-q th, .grid-q td {
   padding: 8px 10px;
@@ -1612,29 +1759,38 @@ body {
   border-right: 1px solid var(--line-2);
   text-align: center;
   vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 .grid-q tr:last-child th,
 .grid-q tr:last-child td { border-bottom: 0; }
 .grid-q th:last-child, .grid-q td:last-child { border-right: 0; }
 .grid-corner {
   background: color-mix(in oklab, var(--ink) 3%, var(--paper));
+  /* Anchors the row-label column at a fixed width under table-layout:fixed.
+     Everything else (the .grid-col cells) splits the remaining width. */
+  width: 130px;
 }
 .grid-col {
   background: color-mix(in oklab, var(--ink) 3%, var(--paper));
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--ink-2);
   font-weight: 700;
-  white-space: nowrap;
+  line-height: 1.25;
+  /* white-space: nowrap removed in v1.5.15 — long headers like
+     "MOST DANGEROUS WHEN SOURCE IS INSIDE THE BODY" need to wrap or they
+     blow out the table width and force horizontal scroll. */
 }
 .grid-row-label {
   text-align: left;
   font-weight: 600;
   color: var(--ink);
   background: color-mix(in oklab, var(--ink) 2%, var(--paper));
-  white-space: nowrap;
-  min-width: 140px;
+  /* No nowrap here either — short labels (Alpha/Beta/Gamma) won't wrap
+     anyway, but we don't want a long row label to expand the column. */
 }
 .grid-cell-label {
   display: inline-flex;
@@ -1683,5 +1839,7 @@ body {
 @media (max-width: 600px) {
   .grid-q { font-size: 13px; }
   .grid-q th, .grid-q td { padding: 6px 7px; }
-  .grid-row-label { min-width: 120px; }
+  /* Shrink the row-label column on phones so the data columns get more room. */
+  .grid-corner { width: 100px; }
+  .grid-col { font-size: 10px; letter-spacing: 0.02em; }
 }

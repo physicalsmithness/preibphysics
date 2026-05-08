@@ -7,12 +7,18 @@ reference/
 
 # Internal architecture and authoring docs. They live alongside the code so
 # Cowork and author chats can read them, but they shouldn't be in the
-# deployed repo. Author briefs, schema specs, decision logs, and proposed
-# vocabularies are all internal-only.
+# deployed repo. Author briefs, schema specs, decision logs, proposed
+# vocabularies, content gotchas, commissions for other chats, and
+# implementation plans are all internal-only.
 AUTHOR_BRIEF_*.md
 SCHEMA_*.md
 *_decisions.md
 *_proposal.md
+TOPIC*_GOTCHAS.md
+COMMISSION_*.md
+BRIEF_*.md
+PLAN_*.md
+feedback_for_*.md
 
 # OS junk that sometimes turns up.
 .DS_Store
