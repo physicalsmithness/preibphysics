@@ -20,6 +20,13 @@ BRIEF_*.md
 PLAN_*.md
 feedback_for_*.md
 
+# Question bank editor — for teacher use only. Lives in the live folder so
+# Smith can use it locally, but never pushed to the deployed public repo so
+# students can't reach it by URL even if they guess the path.
+editor.html
+editor.css
+editor.js
+
 # OS junk that sometimes turns up.
 .DS_Store
 Thumbs.db

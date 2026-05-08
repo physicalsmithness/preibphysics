@@ -4,98 +4,539 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#faf6ed">
-  <title>Pre-IB Physics Practice — Topic 7: Radioactivity</title>
+  <title>Pre-IB Physics Practice</title>
+  <!-- Reuse the main stylesheet for design tokens (--ink, --paper, fonts).
+       Hub-specific layout is defined inline below. -->
   <link rel="stylesheet" href="styles.css">
-  <!-- KaTeX for math rendering. defer means it loads in parallel with HTML
-       parsing and runs before DOMContentLoaded, so engine.js's init() can
-       use it. Engine has a fallback if KaTeX hasn't arrived. -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <style>
+    /* ──────────────────────────────────────────────────────────────────────
+       Hub-specific layout. Builds on styles.css's tokens; everything below
+       is for this page only. The body/header chrome from styles.css applies.
+       ────────────────────────────────────────────────────────────────────── */
+    .hub {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+    .hub-intro {
+      font-family: var(--serif, "Iowan Old Style", "Source Serif Pro", Georgia, serif);
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0 0 28px 0;
+      max-width: 60ch;
+    }
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .hub-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px 22px 22px;
+      box-shadow: var(--shadow-card);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s ease-out, transform 0.15s ease-out;
+    }
+    .hub-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .hub-card-eyebrow {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .hub-card-title {
+      font-family: var(--serif, "Iowan Old Style", "Source Serif Pro", Georgia, serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 4px 0;
+      line-height: 1.2;
+    }
+    .hub-card-sub {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--ink-2);
+      margin-bottom: 18px;
+    }
+    .hub-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .hub-stat {
+      background: color-mix(in oklab, var(--ink) 2.5%, var(--paper));
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px 7px;
+    }
+    .hub-stat-label {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .hub-stat-value {
+      font-family: var(--serif, "Iowan Old Style", "Source Serif Pro", Georgia, serif);
+      font-variant-numeric: tabular-nums;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.05;
+    }
+    .hub-stat-sub {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 10px;
+      color: var(--ink-2);
+      margin-top: 1px;
+    }
+    /* ───── Mini coverage mosaic ───────────────────────────────────────────
+       A condensed version of the per-topic coverage map. Rows correspond to
+       parent groups; cells correspond to subtags. Each cell is coloured by
+       the topic's recent average accuracy on that subtag — same colour bands
+       as the in-topic coverage map, so the visual language is consistent.
+       ──────────────────────────────────────────────────────────────────── */
+    .hub-mosaic {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+    .hub-mosaic-row {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+    .hub-mosaic-cell {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--untried, #ece4d2);
+      border: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
+      flex-shrink: 0;
+      cursor: help;
+    }
+    .hub-mosaic-empty {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 11px;
+      font-style: italic;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+    .hub-cta {
+      margin-top: auto;
+      align-self: flex-start;
+      background: var(--ink);
+      color: var(--paper);
+      border: 1px solid var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .hub-card:hover .hub-cta {
+      background: color-mix(in oklab, var(--ink) 88%, var(--accent));
+    }
+    .hub-foot {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hub-foot a {
+      color: var(--ink-2);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .hub-foot a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+    }
+    @media (max-width: 600px) {
+      .hub { padding: 22px 16px 32px; }
+      .hub-grid { grid-template-columns: 1fr; gap: 14px; }
+      .hub-card-title { font-size: 20px; }
+      .hub-stat-value { font-size: 17px; }
+    }
+  </style>
 </head>
 <body>
 
 <header class="app-header">
   <div class="brand">
     <div class="brand-eyebrow">Pre-IB Physics · Practice</div>
-    <h1 class="brand-title">Topic 7: Radioactivity</h1>
-    <div class="brand-sub">Edexcel International GCSE Single Award · question-by-question drill</div>
-  </div>
-  <div class="header-actions">
-    <button id="settings-btn" class="icon-btn" aria-label="Settings">⚙ Settings</button>
+    <h1 class="brand-title">Practice topics</h1>
+    <div class="brand-sub">Edexcel International GCSE Single Award (4SS0) · pick a topic</div>
   </div>
 </header>
 
-<!-- v1.3: surface per-type filters here so they're always visible. -->
-<div id="type-strip" class="type-strip"></div>
+<main class="hub">
 
-<div class="app">
-  <main class="col-main">
-    <div id="progress-line" class="progress-line"></div>
-    <button id="cov-drawer-btn" class="cov-drawer-btn" type="button">▦ Coverage map</button>
-    <section id="qcard" class="qcard"></section>
-  </main>
+  <p class="hub-intro">
+    Each topic has its own question bank and progress. Pick one to practise. Your
+    progress lives in this browser only; the two topics keep separate progress, so
+    practising one doesn't reset the other.
+  </p>
 
-  <aside id="cov-drawer" class="col-side">
-    <div class="cov-drawer-panel">
-      <button id="cov-drawer-close" class="cov-drawer-close" type="button" aria-label="Close coverage map">×</button>
-      <section id="coverage" class="coverage"></section>
-      <!-- v1.5.16: inline stats panel. Always-on, scope-aware. Replaces the
-           old modal drilldown for routine viewing. The modal still exists for
-           the "Full breakdown" power-user view (atom-by-atom + recent attempts). -->
-      <section id="cov-stats" class="cov-stats" aria-live="polite"></section>
-    </div>
-  </aside>
-</div>
-
-<!-- Settings panel -->
-<div id="settings-overlay" class="settings-overlay">
-  <div class="settings-panel" role="dialog" aria-label="Settings">
-    <div class="settings-hd">
-      <div class="settings-title">Settings</div>
-      <button id="settings-close" class="settings-close-btn" aria-label="Close">×</button>
-    </div>
-
-    <div class="settings-section">
-      <h3>Reset progress</h3>
-      <p>This deletes every attempt logged on this device. There is no undo.</p>
-      <button id="reset-progress" class="danger-btn" type="button">Reset all progress</button>
-    </div>
-
-    <div class="settings-section">
-      <h3>Feedback</h3>
-      <p>Spotted something wrong, or got an idea? Tell your teacher: tag the question id (it's logged in the page) so they can find it.</p>
-      <p class="settings-link"><a href="mailto:?subject=Pre-IB%20Physics%20Practice%20feedback">Email feedback</a></p>
-    </div>
-
-    <div class="settings-section">
-      <h3>About</h3>
-      <p>This is a revision tool for the Edexcel International GCSE Single Award (4SS0) physics specification, Topic 7. Your progress lives in this browser only — clearing the browser data resets it.</p>
-    </div>
-
-    <div class="settings-footer">
-      <span class="settings-version">v <span id="settings-version">v1</span></span>
-      &nbsp;·&nbsp;
-      <span>Smithics</span>
-    </div>
+  <div class="hub-grid" id="hub-grid">
+    <!-- Cards rendered by JS below so the stats are live from localStorage. -->
   </div>
-</div>
 
-<!-- v1.3: subtag drill-down modal. Filled in by engine.js when a tile is clicked. -->
-<div id="drilldown-overlay" class="drilldown-overlay" aria-hidden="true">
-  <div class="drilldown-panel" role="dialog" aria-label="Subtag stats">
-    <div id="drilldown-content"></div>
+  <div class="hub-foot">
+    <span style="margin-left:auto;">Smithics</span>
   </div>
-</div>
 
-<!-- Question bank — defines window.PREIB_RAD_QUESTIONS -->
-<script src="topic7_radioactivity.js"></script>
+</main>
 
-<!-- v1.5 demo questions for the new interaction types. Comment out or
-     delete this line to detach them from the live pool. -->
-<script src="demo_new_types.js"></script>
+<script>
+(function () {
+  // ─────────────────────────────────────────────────────────────────────────
+  // Topic registry. Each entry knows where its page lives, what its
+  // localStorage key is, which display label / subtitle to use, and a flat
+  // vocab structure (subtags grouped by parent group) for the coverage
+  // mosaic. The vocab is hardcoded here rather than loaded dynamically: it
+  // changes rarely, and loading topic config files just to get vocab is
+  // overkill. Keep these in sync with engine.js (Topic 7 default vocab) and
+  // topic8/topic8_config.js (Topic 8 vocab).
+  // ─────────────────────────────────────────────────────────────────────────
+  var TOPICS = [
+    {
+      id: "topic7",
+      number: "Topic 7",
+      title: "Radioactivity",
+      subtitle: "Edexcel 4SS0 · α / β / γ, half-life, applications, fission & fusion",
+      href: "topic7.html",
+      storageKey: "smithics_topic7_v1",
+      vocab: [
+        { id: "basics",    name: "Basic ideas",
+          subtags: [
+            { id: "units",            name: "Units" },
+            { id: "atomic_struct",    name: "Atomic structure" },
+            { id: "nuclide_notation", name: "Nuclide notation" },
+            { id: "ionising_random",  name: "Ionising / random" },
+            { id: "radiation_types",  name: "Nature of α, β, γ" },
+            { id: "penetration",      name: "Penetration" },
+            { id: "background",       name: "Background radiation" },
+            { id: "halflife",         name: "Half-life" }
+          ]
+        },
+        { id: "practical", name: "Practical",
+          subtags: [
+            { id: "practical_penetration", name: "Penetration practical" }
+          ]
+        },
+        { id: "uses",      name: "Uses",
+          subtags: [
+            { id: "uses_alpha", name: "Uses of alpha" },
+            { id: "uses_beta",  name: "Uses of beta" },
+            { id: "uses_gamma", name: "Uses of gamma" }
+          ]
+        },
+        { id: "hazards",   name: "Hazards",
+          subtags: [
+            { id: "bio_effects",          name: "Biological effects" },
+            { id: "which_most_dangerous", name: "Most dangerous when" },
+            { id: "contam_irrad",         name: "Contamination vs irradiation" },
+            { id: "waste_disposal",       name: "Waste & precautions" }
+          ]
+        },
+        { id: "nuclear",   name: "Fission & fusion",
+          subtags: [
+            { id: "energy_from_nuclear", name: "Nuclear energy" },
+            { id: "fission",             name: "Fission" },
+            { id: "fusion",              name: "Fusion" },
+            { id: "shielding",           name: "Reactor shielding" }
+          ]
+        }
+      ]
+    },
+    {
+      id: "topic8",
+      number: "Topic 8",
+      title: "Astrophysics",
+      subtitle: "Edexcel 4SS0 · gravity, orbits, stars, lifecycle",
+      href: "topic8/index.html",
+      storageKey: "smithics_topic8_v1",
+      vocab: [
+        { id: "universe", name: "Universe structure",
+          subtags: [
+            { id: "scale_hierarchy",   name: "Scale & hierarchy" },
+            { id: "objects_inventory", name: "Solar system" }
+          ]
+        },
+        { id: "gravity",  name: "Gravity",
+          subtags: [
+            { id: "g_variation",       name: "g variation" },
+            { id: "weight_calc_astro", name: "Weight calcs" }
+          ]
+        },
+        { id: "orbits",   name: "Orbits",
+          subtags: [
+            { id: "gravity_causes_orbits", name: "Gravity → orbits" },
+            { id: "force_direction",       name: "Force direction" },
+            { id: "orbit_shapes",          name: "Orbit shapes" },
+            { id: "orbit_speeds",          name: "Orbit speeds" },
+            { id: "orbit_periods",         name: "Orbit periods" },
+            { id: "orbit_properties",      name: "Orbit properties" }
+          ]
+        },
+        { id: "stars",    name: "Stars and lifecycle",
+          subtags: [
+            { id: "colour_classification",   name: "Star colour" },
+            { id: "colour_temperature",      name: "Colour & temp" },
+            { id: "fusion_in_stars",         name: "Stellar fusion" },
+            { id: "lifecycle_low_mass",      name: "Low-mass lifecycle" },
+            { id: "lifecycle_stages_detail", name: "Lifecycle stages" }
+          ]
+        }
+      ]
+    }
+  ];
 
-<!-- Engine -->
-<script src="engine.js"></script>
+  // Top-level "headline" averages: how many recent attempts to fold in.
+  // Wider than the per-subtag default so the headline is a stable signal.
+  var TOPLINE_WINDOW = 20;
+  // Per-subtag mosaic colouring: how many recent attempts on that subtag to
+  // average. Matches the engine's coverage-map default (configurable per
+  // topic via the topic page settings; default 2). We use 5 here as the
+  // hub-side compromise: longer than the per-question signal of 2 so colour
+  // bands don't bounce, shorter than the headline's 20 so subtag-level
+  // changes are visible.
+  var SUBTAG_WINDOW = 5;
+
+  // Coverage colour bands: identical thresholds and hex values to the
+  // engine's BAND constant in engine.js. Keep these in sync.
+  var BAND_COLOURS = {
+    untried:     "#ece4d2",
+    band_strong: "#2d6a3f",   // ≥ 0.9
+    band_mid:    "#5a9a5a",   // 0.7 – 0.9
+    band_yellow: "#d6a847",   // 0.5 – 0.7
+    band_orange: "#c17034",   // 0.25 – 0.5
+    band_red:    "#b03030"    // < 0.25
+  };
+  function bandKey(avg) {
+    if (avg == null) return "untried";
+    if (avg >= 0.9)  return "band_strong";
+    if (avg >= 0.7)  return "band_mid";
+    if (avg >= 0.5)  return "band_yellow";
+    if (avg >= 0.25) return "band_orange";
+    return "band_red";
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // localStorage reading. Defensive: if data is missing, malformed, or from
+  // an older schema, return null and the card shows "no attempts yet".
+  // ─────────────────────────────────────────────────────────────────────────
+  function readTopicProgress(topic) {
+    try {
+      var raw = localStorage.getItem(topic.storageKey);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.attempts)) return null;
+      return parsed;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function avgFraction(attempts) {
+    if (!attempts.length) return null;
+    var s = 0;
+    for (var i = 0; i < attempts.length; i++) {
+      var a = attempts[i];
+      var possible = (a.marksPossible > 0) ? a.marksPossible : 1;
+      s += (a.marksAwarded || 0) / possible;
+    }
+    return s / attempts.length;
+  }
+
+  function pct(v) {
+    return (v == null) ? "—" : Math.round(v * 100) + "%";
+  }
+
+  function relTime(ts) {
+    if (!ts) return "no attempts";
+    var d = new Date(ts);
+    if (isNaN(d)) return "no attempts";
+    var now = Date.now();
+    var deltaMs = now - d.getTime();
+    var deltaDays = Math.floor(deltaMs / (1000 * 60 * 60 * 24));
+    if (deltaDays < 0) return d.toLocaleDateString();
+    if (deltaDays === 0) {
+      var deltaHrs = Math.floor(deltaMs / (1000 * 60 * 60));
+      if (deltaHrs < 1) return "minutes ago";
+      if (deltaHrs === 1) return "1 hour ago";
+      return deltaHrs + " hours ago";
+    }
+    if (deltaDays === 1) return "yesterday";
+    if (deltaDays < 7)  return deltaDays + " days ago";
+    if (deltaDays < 30) return Math.floor(deltaDays / 7) + " week" + (deltaDays < 14 ? "" : "s") + " ago";
+    return d.toLocaleDateString();
+  }
+
+  // Per-subtag recent average. Matches against the attempt's `subtags` array,
+  // so a question tagged with multiple subtags counts toward each.
+  function subtagAvg(subtagId, allAttempts) {
+    var matches = allAttempts.filter(function (a) {
+      return Array.isArray(a.subtags) && a.subtags.indexOf(subtagId) !== -1;
+    });
+    var recent = matches.slice(-SUBTAG_WINDOW);
+    return {
+      avg: avgFraction(recent),
+      count: matches.length,
+      recentCount: recent.length
+    };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Card builder
+  // ─────────────────────────────────────────────────────────────────────────
+  function buildMosaic(topic, attempts) {
+    var wrap = document.createElement("div");
+    wrap.className = "hub-mosaic";
+
+    var anyCells = false;
+
+    topic.vocab.forEach(function (group) {
+      var row = document.createElement("div");
+      row.className = "hub-mosaic-row";
+      group.subtags.forEach(function (st) {
+        var cov = subtagAvg(st.id, attempts);
+        // We render every subtag, even those with zero attempts — the untried
+        // colour communicates "this area exists but you haven't tried it".
+        var cell = document.createElement("span");
+        cell.className = "hub-mosaic-cell";
+        cell.style.background = BAND_COLOURS[bandKey(cov.avg)];
+        var titleParts = [group.name + " · " + st.name];
+        if (cov.count === 0) {
+          titleParts.push("untried");
+        } else {
+          titleParts.push(cov.recentCount + " recent attempt" + (cov.recentCount === 1 ? "" : "s"));
+          titleParts.push("avg " + pct(cov.avg));
+          if (cov.count !== cov.recentCount) {
+            titleParts.push(cov.count + " all-time");
+          }
+        }
+        cell.title = titleParts.join(" · ");
+        row.appendChild(cell);
+        anyCells = true;
+      });
+      if (row.childNodes.length) wrap.appendChild(row);
+    });
+
+    if (!anyCells) {
+      var empty = document.createElement("div");
+      empty.className = "hub-mosaic-empty";
+      empty.textContent = "No subtags configured.";
+      wrap.appendChild(empty);
+    }
+
+    return wrap;
+  }
+
+  function buildCard(topic) {
+    var store = readTopicProgress(topic);
+    var attempts = (store && store.attempts) || [];
+    var totalAttempts = attempts.length;
+    var recent = attempts.slice(-TOPLINE_WINDOW);
+    var recentAvg = avgFraction(recent);
+    var allTimeAvg = avgFraction(attempts);
+    var lastAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    var lastSeen = lastAttempt ? relTime(lastAttempt.timestamp) : "no attempts yet";
+
+    var card = document.createElement("a");
+    card.className = "hub-card";
+    card.href = topic.href;
+
+    // Header lines
+    var eyebrow = document.createElement("div");
+    eyebrow.className = "hub-card-eyebrow";
+    eyebrow.textContent = topic.number;
+    card.appendChild(eyebrow);
+
+    var title = document.createElement("h2");
+    title.className = "hub-card-title";
+    title.textContent = topic.title;
+    card.appendChild(title);
+
+    var sub = document.createElement("div");
+    sub.className = "hub-card-sub";
+    sub.textContent = topic.subtitle;
+    card.appendChild(sub);
+
+    // Stat tiles
+    var stats = document.createElement("div");
+    stats.className = "hub-stats";
+    stats.innerHTML =
+      '<div class="hub-stat">' +
+        '<div class="hub-stat-label">Attempts</div>' +
+        '<div class="hub-stat-value">' + totalAttempts + '</div>' +
+        '<div class="hub-stat-sub">' + lastSeen + '</div>' +
+      '</div>' +
+      '<div class="hub-stat">' +
+        '<div class="hub-stat-label">Last ' + TOPLINE_WINDOW + ' avg</div>' +
+        '<div class="hub-stat-value">' + pct(recentAvg) + '</div>' +
+        '<div class="hub-stat-sub">all-time ' + pct(allTimeAvg) + '</div>' +
+      '</div>';
+    card.appendChild(stats);
+
+    // Mini coverage mosaic
+    card.appendChild(buildMosaic(topic, attempts));
+
+    // CTA
+    var cta = document.createElement("span");
+    cta.className = "hub-cta";
+    cta.textContent = "Practice " + topic.number + " →";
+    card.appendChild(cta);
+
+    return card;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────────
+  function renderAll() {
+    var grid = document.getElementById("hub-grid");
+    grid.innerHTML = "";
+    TOPICS.forEach(function (topic) {
+      grid.appendChild(buildCard(topic));
+    });
+  }
+  renderAll();
+
+  // Refresh stats when the user comes back to the hub (e.g. after practising
+  // on a topic page and pressing back). bfcache-restored navigations fire
+  // pageshow with persisted=true; reload the data so the latest attempts are
+  // visible.
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) renderAll();
+  });
+})();
+</script>
 
 </body>
 </html>

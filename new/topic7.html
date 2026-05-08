@@ -4,9 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#faf6ed">
-  <title>Pre-IB Physics Practice — Topic 8: Astrophysics</title>
-  <link rel="stylesheet" href="../styles.css">
-  <!-- KaTeX for math rendering. -->
+  <title>Pre-IB Physics Practice — Topic 7: Radioactivity</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- KaTeX for math rendering. defer means it loads in parallel with HTML
+       parsing and runs before DOMContentLoaded, so engine.js's init() can
+       use it. Engine has a fallback if KaTeX hasn't arrived. -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 </head>
@@ -14,12 +16,12 @@
 
 <header class="app-header">
   <div class="brand">
-    <div class="brand-eyebrow"><a href="../index.html" style="color:inherit;text-decoration:none;">Pre-IB Physics · Practice</a></div>
-    <h1 class="brand-title">Topic 8: Astrophysics</h1>
+    <div class="brand-eyebrow"><a href="index.html" style="color:inherit;text-decoration:none;">Pre-IB Physics · Practice</a></div>
+    <h1 class="brand-title">Topic 7: Radioactivity</h1>
     <div class="brand-sub">Edexcel International GCSE Single Award · question-by-question drill</div>
   </div>
   <div class="header-actions">
-    <a href="../index.html" class="icon-btn" style="text-decoration:none;" aria-label="Back to topic hub">← Topics</a>
+    <a href="index.html" class="icon-btn" style="text-decoration:none;" aria-label="Back to topic hub">← Topics</a>
     <button id="settings-btn" class="icon-btn" aria-label="Settings">⚙ Settings</button>
   </div>
 </header>
@@ -68,7 +70,7 @@
 
     <div class="settings-section">
       <h3>About</h3>
-      <p>This is a revision tool for the Edexcel International GCSE Single Award (4SS0) physics specification, Topic 8: Astrophysics. Your progress lives in this browser only — clearing the browser data resets it.</p>
+      <p>This is a revision tool for the Edexcel International GCSE Single Award (4SS0) physics specification, Topic 7. Your progress lives in this browser only — clearing the browser data resets it.</p>
     </div>
 
     <div class="settings-footer">
@@ -79,22 +81,22 @@
   </div>
 </div>
 
-<!-- Subtag drill-down modal -->
+<!-- v1.3: subtag drill-down modal. Filled in by engine.js when a tile is clicked. -->
 <div id="drilldown-overlay" class="drilldown-overlay" aria-hidden="true">
   <div class="drilldown-panel" role="dialog" aria-label="Subtag stats">
     <div id="drilldown-content"></div>
   </div>
 </div>
 
-<!-- Topic 8 config: defines window.TOPIC_CONFIG with vocab, storage key, etc.
-     MUST load before engine.js. -->
-<script src="topic8_config.js"></script>
+<!-- Question bank — defines window.PREIB_RAD_QUESTIONS -->
+<script src="topic7_radioactivity.js"></script>
 
-<!-- Topic 8 question bank: defines window.PREIB_TOPIC8_QUESTIONS. -->
-<script src="topic8_questions.js"></script>
+<!-- v1.5 demo questions for the new interaction types. Comment out or
+     delete this line to detach them from the live pool. -->
+<script src="demo_new_types.js"></script>
 
-<!-- Shared engine, lives in the parent folder. -->
-<script src="../engine.js"></script>
+<!-- Engine -->
+<script src="engine.js"></script>
 
 </body>
 </html>
