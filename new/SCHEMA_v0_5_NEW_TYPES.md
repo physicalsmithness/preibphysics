@@ -279,6 +279,26 @@ A topic question file declares one global: `window.PREIB_<TOPIC>_QUESTIONS = [..
 
 Earlier schema generations referenced `META` and `REPORT_FORM` blocks alongside the questions array. **These are deprecated.** The engine doesn't read them. Don't author them in new topic files. If you encounter a brief that asks for them, that's a stale reference.
 
+### Atom fields (v0.5 + 0.6 minor)
+
+Each atom in a registry carries:
+
+```js
+{
+  id: "halflife_independent_temp",
+  name: "Half-life is independent of temperature",   // shown on mosaic hover
+  group: "halflife",                                  // clustering axis 1 (mosaic columns)
+  attr: "external_factors",                           // clustering axis 2 (mosaic rows)
+  principle: "Nuclear processes happen in the nucleus; thermal effects are atomic-orbital-level. Different domains, no interaction."
+}
+```
+
+**`principle` (added 2026-05-08, v0.6 minor).** Optional freeform string. Captures the underlying physics that makes the atom true — the deeper understanding a student could use to *derive* the atom rather than memorising it. Authoring intent: when adding atoms, write a one-line principle-shaped explanation alongside. Future v0.7+ work will formalise principles as a linked registry with inferred-mastery analytics; for now the field just bankrupts the freeform text so it's available later.
+
+**Engine behaviour for `principle`.** Currently ignored by the engine; no rendering, no analytics. Authors should still write it. v0.6 will likely surface it in the atom hover tooltip and the drilldown view.
+
+**Naming guidance for `principle`.** One sentence, ideally articulating the deeper fact the atom flows from. If multiple atoms share the same principle, repeat the same string verbatim across them — that's a feature, not redundancy, because the duplication is what lets future tooling cluster atoms by shared principle without ambiguous matching. Avoid restating the atom's `name`; the principle should be the *reason behind* the name, not a paraphrase of it.
+
 ### Cross-cutting tags
 
 - `definition` — questions where the answer is a definition of a term.
