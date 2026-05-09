@@ -21,6 +21,18 @@ PLAN_*.md
 *feedback_for_*.md
 topic*_atom_*.md
 topic*_coverage_*.md
+topic*_multicell_*.json
+HANDOVER_*.md
+MANIFEST*.md
+FINAL_PACK_*.md
+*_v2_FINAL.js
+FINAL_merged_*.json
+atomisation_plan.md
+atomisations.js
+chunk5.js
+chunks_3_4_sources.txt
+round2_patches.js
+gap_fill_questions.js
 
 # Question bank editor — for teacher use only. Lives in the live folder so
 # Smith can use it locally, but never pushed to the deployed public repo so
