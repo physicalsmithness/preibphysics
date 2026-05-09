@@ -71,25 +71,25 @@ window.TOPIC_CONFIG = {
   // capturing the deeper physics the atom flows from (v0.6 minor, freeform
   // string, currently ignored by the engine but preserved for v0.7+ tooling).
   //
-  // stellar_lifecycle: 22 atoms (4 groups × 6 attrs minus 2 nebula
-  //   atoms — nebula_colour and nebula_temperature dropped 2026-05-08
-  //   because a diffuse cloud has no surface for the colour-temperature
-  //   link to apply).
+  // stellar_lifecycle: 23 atoms (4 groups × 6 attrs minus nebula_colour,
+  //   which is un-MCQ-able for 4SS0; nebula_temperature kept with its own
+  //   principle. Decision per Topic 8 chat teacher review 2026-05-08).
   // orbit_properties: 12 atoms (3 groups × 4 attrs).
   atoms: {
 
     // ──────────────────────────────────────────────────────────────────────
-    // stellar_lifecycle — 22 atoms across 4 stages × 6 attrs (minus 2)
+    // stellar_lifecycle — 23 atoms across 4 stages × 6 attrs (minus nebula_colour)
     //   groups: nebula, main_sequence, red_giant, white_dwarf
     //   attrs:  state, fuel, size, temperature, colour, fusion_active
     //
-    // Principle clusters:
-    //   P-stellar-1 (gravity-vs-fusion balance defines stage): 14 atoms.
-    //   P-stellar-2 (colour as temperature proxy): 6 atoms.
-    //   No principle: nebula_state alone of the matrix-consistency atoms,
-    //     because pre-fusion the "balance" reduces to "no fusion yet,
-    //     gravity is collapsing the cloud" — same principle applies, just
-    //     in the limit case.
+    // Principle clusters (per Topic 8 chat teacher review 2026-05-08):
+    //   P-stellar-1 (gravity-vs-fusion balance defines stage): 16 atoms —
+    //     all *_state, *_fuel, *_size, *_fusion_active across all four stages.
+    //   P-stellar-2 (colour as temperature proxy): 6 atoms — three
+    //     surface-bearing stages × {colour, temperature}. Nebula excluded
+    //     because it has no coherent surface to apply the principle to.
+    //   P-stellar-3 (pre-fusion-ignition cloud is at interstellar
+    //     temperature): 1 atom — nebula_temperature alone, one-atom cluster.
     // ──────────────────────────────────────────────────────────────────────
     lifecycle_stages_detail: [
       // state axis (4 atoms)
@@ -122,7 +122,9 @@ window.TOPIC_CONFIG = {
       { id: "white_dwarf_size",     name: "White dwarf — size scale",   group: "white_dwarf",   attr: "size",
         principle: "A star's stage is defined by what nuclear fuel is fusing in its core; the resulting fusion-vs-gravity balance sets both how big the star is and what physical form it takes." },
 
-      // temperature axis (3 atoms — nebula_temperature dropped 2026-05-08)
+      // temperature axis (4 atoms — nebula_temperature kept with its own one-atom principle, 2026-05-08)
+      { id: "nebula_temperature",        name: "Nebula — temperature",                group: "nebula",        attr: "temperature",
+        principle: "Before gravitational collapse has compressed and heated a forming star, the cloud of gas and dust is at the cold temperature of interstellar space." },
       { id: "main_sequence_temperature", name: "Main sequence — surface temperature", group: "main_sequence", attr: "temperature",
         principle: "A star's surface colour is determined by its surface temperature: hotter surfaces glow towards blue, cooler surfaces glow towards red. So colour and temperature are two views of the same fact." },
       { id: "red_giant_temperature",     name: "Red giant — surface temperature",     group: "red_giant",     attr: "temperature",
@@ -130,7 +132,7 @@ window.TOPIC_CONFIG = {
       { id: "white_dwarf_temperature",   name: "White dwarf — surface temperature",   group: "white_dwarf",   attr: "temperature",
         principle: "A star's surface colour is determined by its surface temperature: hotter surfaces glow towards blue, cooler surfaces glow towards red. So colour and temperature are two views of the same fact." },
 
-      // colour axis (3 atoms — nebula_colour dropped 2026-05-08)
+      // colour axis (3 atoms — nebula_colour dropped 2026-05-08, un-MCQ-able for 4SS0 spec)
       { id: "main_sequence_colour", name: "Main sequence — surface colour", group: "main_sequence", attr: "colour",
         principle: "A star's surface colour is determined by its surface temperature: hotter surfaces glow towards blue, cooler surfaces glow towards red. So colour and temperature are two views of the same fact." },
       { id: "red_giant_colour",     name: "Red giant — surface colour",     group: "red_giant",     attr: "colour",

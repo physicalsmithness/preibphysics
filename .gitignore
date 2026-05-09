@@ -18,7 +18,9 @@ TOPIC*_GOTCHAS.md
 COMMISSION_*.md
 BRIEF_*.md
 PLAN_*.md
-feedback_for_*.md
+*feedback_for_*.md
+topic*_atom_*.md
+topic*_coverage_*.md
 
 # Question bank editor — for teacher use only. Lives in the live folder so
 # Smith can use it locally, but never pushed to the deployed public repo so
