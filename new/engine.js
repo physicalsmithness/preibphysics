@@ -900,7 +900,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.19";
+  const APP_VERSION = "v1.5.20";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -3252,20 +3252,40 @@
 
     const wrap = el("span", { class: "atom-mosaic-wrap" });
 
-    // Column markers: derive distinct groups in registry order.
+    // Column markers: derive distinct groups in registry order. The mosaic's
+    // grid column count is set dynamically from the group count, so registries
+    // with 4 groups (e.g. stellar lifecycle) lay out cleanly without column
+    // headers wrapping. v1.5.20.
     const groupsSeen = [];
     atomList.forEach(function (atom) {
       if (groupsSeen.indexOf(atom.group) === -1) groupsSeen.push(atom.group);
     });
+    const colCount = Math.max(groupsSeen.length, 1);
+    const gridStyle = "grid-template-columns: repeat(" + colCount + ", 1fr);";
+
+    // Group labels: known short glyphs for radiation types; for everything
+    // else, take the first character of each underscore-delimited word and
+    // join (e.g. "main_sequence" → "MS", "white_dwarf" → "WD"). Two letters
+    // fits any column width comfortably and the full group name remains on
+    // hover via the title attribute.
     const groupGlyph = { alpha: "α", beta: "β", gamma: "γ" };
-    const headerRow = el("span", { class: "atom-mosaic-head" },
+    function shortLabel(g) {
+      if (groupGlyph[g]) return groupGlyph[g];
+      const parts = String(g).split(/[_-]+/).filter(Boolean);
+      if (parts.length === 0) return String(g).slice(0, 2).toUpperCase();
+      if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+      // Multi-word: first letter of each, capped at 3 letters total.
+      return parts.map(function (p) { return p.charAt(0).toUpperCase(); }).join("").slice(0, 3);
+    }
+
+    const headerRow = el("span", { class: "atom-mosaic-head", style: gridStyle },
       groupsSeen.map(function (g) {
-        return el("span", { class: "atom-mosaic-col-label", text: groupGlyph[g] || g });
+        return el("span", { class: "atom-mosaic-col-label", title: g, text: shortLabel(g) });
       })
     );
     wrap.appendChild(headerRow);
 
-    const mosaic = el("span", { class: "atom-mosaic" });
+    const mosaic = el("span", { class: "atom-mosaic", style: gridStyle });
     atomList.forEach(function (atom) {
       const cov = coverageForAtom(atom.id);
       const titleParts = [atom.name];

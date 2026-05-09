@@ -1118,10 +1118,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "grid_compare_orbits",
-    "tags": ["orbit_shapes", "orbit_speeds", "orbit_periods", "objects_inventory"],
+    "tags": ["orbit_shapes", "orbit_speeds", "orbit_periods", "objects_inventory", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 3,
     "type": "grid",
+    "atoms": ["comet_shape", "comet_speed", "comet_period", "comet_orbits", "planet_shape", "planet_speed", "planet_period", "planet_orbits", "moon_shape", "moon_speed", "moon_period", "moon_orbits"],
     "prompt": "For each property, tick which orbiting object(s) it correctly describes.",
     "rows": [
       "Has a roughly circular orbit",
@@ -1209,10 +1210,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "differences_planet_vs_comet_multiselect",
-    "tags": ["orbit_shapes", "orbit_speeds"],
+    "tags": ["orbit_shapes", "orbit_speeds", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "multiselect",
+    "atoms": ["planet_shape", "planet_speed", "comet_shape", "comet_speed"],
     "prompt": "A planet and a comet both orbit the Sun. Tick the statements that are TRUE differences between a planet's orbit and a comet's orbit.",
     "choices": [
       "A planet's orbit is approximately circular, but a comet's orbit is highly elliptical.",
@@ -1236,10 +1238,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "categorise_comet_planet_features",
-    "tags": ["orbit_shapes", "orbit_speeds", "objects_inventory"],
+    "tags": ["orbit_shapes", "orbit_speeds", "objects_inventory", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "categorise",
+    "atoms": ["comet_shape", "comet_speed", "comet_orbits", "planet_shape", "planet_speed", "planet_orbits"],
     "prompt": "A comet and a planet both orbit the Sun. Sort each statement into the right group.",
     "bins": [
       "True of comets only",
@@ -1263,10 +1266,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "differences_planet_vs_moon_multiselect",
-    "tags": ["orbit_periods", "orbit_shapes", "objects_inventory"],
+    "tags": ["orbit_periods", "orbit_shapes", "objects_inventory", "orbit_properties"],
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "multiselect",
+    "atoms": ["planet_orbits", "moon_orbits", "planet_period", "moon_period"],
     "prompt": "A planet orbits the Sun. A moon orbits its planet. Tick the statements that are TRUE differences between these two orbits.",
     "choices": [
       "A planet orbits a star, but a moon orbits a planet.",
@@ -1630,10 +1634,11 @@ window.PREIB_TOPIC8_QUESTIONS = [
 
   {
     "id": "lifecycle_stages_recall",
-    "tags": ["lifecycle_low_mass", "definition"],
+    "tags": ["lifecycle_low_mass", "definition", "lifecycle_stages_detail"],
     "specRefs": ["8.9"],
     "difficultyRating": 1,
     "type": "multiselect",
+    "atoms": ["nebula_state", "main_sequence_state", "red_giant_state", "white_dwarf_state"],
     "prompt": "Tick the stages in the life cycle of a star with a similar mass to the Sun.",
     "choices": [
       "nebula",
@@ -1774,6 +1779,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "multiselect",
+    "atoms": ["red_giant_size", "red_giant_temperature", "red_giant_colour", "red_giant_state"],
     "prompt": "Tick all the statements that correctly describe a red giant.",
     "choices": [
       "It is much larger than the original main sequence star.",
@@ -1798,6 +1804,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "ordering",
+    "atoms": ["main_sequence_fuel", "main_sequence_fusion_active", "red_giant_fuel", "red_giant_size", "red_giant_temperature"],
     "prompt": "Put these steps in the right order to describe what happens when a Sun-mass star changes from a main sequence star into a red giant.",
     "items": [
       "Hydrogen fusion in the core stops.",
@@ -1819,6 +1826,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "ordering",
+    "atoms": ["red_giant_fuel", "red_giant_fusion_active", "white_dwarf_state", "white_dwarf_size", "white_dwarf_temperature", "white_dwarf_fusion_active"],
     "prompt": "Put these steps in the right order to describe what happens when a red giant becomes a white dwarf.",
     "items": [
       "Helium fusion in the core stops.",
@@ -1839,6 +1847,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "multiselect",
+    "atoms": ["white_dwarf_state", "white_dwarf_fusion_active", "white_dwarf_size", "white_dwarf_temperature"],
     "prompt": "Tick all the statements that correctly describe a white dwarf.",
     "choices": [
       "It is the leftover hot core of a red giant.",
@@ -1862,6 +1871,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "ordering",
+    "atoms": ["nebula_state", "main_sequence_state", "main_sequence_fuel", "red_giant_state", "red_giant_size", "white_dwarf_state", "white_dwarf_fusion_active"],
     "prompt": "Describe the full evolution of a Sun-mass star by putting these descriptions in order, starting from the earliest stage.",
     "items": [
       "A cloud of gas and dust collapses under gravity (a nebula).",
@@ -1883,6 +1893,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9", "8.8"],
     "difficultyRating": 3,
     "type": "grid",
+    "atoms": ["main_sequence_state", "main_sequence_fuel", "main_sequence_size", "main_sequence_temperature", "main_sequence_colour", "main_sequence_fusion_active", "red_giant_state", "red_giant_fuel", "red_giant_size", "red_giant_temperature", "red_giant_colour", "red_giant_fusion_active", "white_dwarf_state", "white_dwarf_fuel", "white_dwarf_size", "white_dwarf_temperature", "white_dwarf_colour", "white_dwarf_fusion_active"],
     "prompt": "For each property, tick the stages of a Sun-mass star where the property is true.",
     "rows": [
       "Hydrogen fusion is happening at the core",
