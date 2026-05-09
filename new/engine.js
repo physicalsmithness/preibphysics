@@ -894,13 +894,105 @@
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
+     3c. Per-atom score attribution (v0.6+, added 2026-05-08)
+
+     For multi-cell question types (multiselect, grid, categorise, fillblank),
+     a question can declare an `atomMap` in addition to `atoms`. The map says:
+     "atom X is tested by these specific cells/choices/items". When present,
+     the engine attributes per-atom scores from the cell-level correctness
+     rather than from the question's aggregate score. So a student who gets
+     the size choices right but the temperature choices wrong sees the size
+     atom go green and the temperature atom go red — proper per-atom signal
+     instead of one aggregate fraction across all atoms.
+
+     atomMap shape:
+       multiselect: { atomId: [choiceIndex, ...] }
+       grid:        { atomId: [[row, col], ...] }
+       categorise:  { atomId: [itemIndex, ...] }
+       fillblank:   { atomId: [blankIndex, ...] }
+
+     If atomMap is missing or doesn't cover an atom, that atom falls back to
+     the aggregate-fraction behaviour. Backward compatible: questions tagged
+     with `atoms` but no `atomMap` get the same behaviour as before.
+
+     Matching and ordering don't get per-atom attribution — matching is
+     usually one atom per pair already, and ordering's per-position scoring
+     doesn't map cleanly onto atomic claims (item positions depend on
+     neighbours; a single misplacement shifts everything).
+     ────────────────────────────────────────────────────────────────────────── */
+
+  function isCellCorrectForAtom(question, result, cell) {
+    switch (question.type) {
+      case "multiselect": {
+        const chosen = Array.isArray(result.chosenIndices) ? result.chosenIndices : [];
+        const correct = Array.isArray(result.correctIndices) ? result.correctIndices : [];
+        const wasChecked = chosen.indexOf(cell) !== -1;
+        const shouldCheck = correct.indexOf(cell) !== -1;
+        return wasChecked === shouldCheck;
+      }
+      case "grid": {
+        if (!Array.isArray(cell) || cell.length !== 2) return false;
+        const row = cell[0], col = cell[1];
+        const userTicks = (result.userTicks && typeof result.userTicks === "object") ? result.userTicks : {};
+        const correctMap = (question.correct && typeof question.correct === "object") ? question.correct : {};
+        const neutralMap = (question.neutral && typeof question.neutral === "object") ? question.neutral : {};
+        const correctCells = Array.isArray(correctMap[String(row)]) ? correctMap[String(row)] : [];
+        const neutralCells = Array.isArray(neutralMap[String(row)]) ? neutralMap[String(row)] : [];
+        const tickedRow = Array.isArray(userTicks[row]) ? userTicks[row] : [];
+        const ticked = tickedRow.indexOf(col) !== -1;
+        // Neutrals always count as correct for atom purposes (no penalty either way).
+        if (neutralCells.indexOf(col) !== -1) return true;
+        const shouldTick = correctCells.indexOf(col) !== -1;
+        return ticked === shouldTick;
+      }
+      case "categorise": {
+        const placements = (result.placements && typeof result.placements === "object") ? result.placements : {};
+        const items = Array.isArray(question.items) ? question.items : [];
+        const idx = parseInt(cell, 10);
+        if (isNaN(idx) || idx < 0 || idx >= items.length) return false;
+        return placements[idx] === items[idx].bin;
+      }
+      case "fillblank": {
+        const perBlank = Array.isArray(result.perBlank) ? result.perBlank : [];
+        const idx = parseInt(cell, 10);
+        if (isNaN(idx) || idx < 0 || idx >= perBlank.length) return false;
+        return !!perBlank[idx].ok;
+      }
+      default:
+        return false;
+    }
+  }
+
+  function computeAtomScores(question, result) {
+    const atoms = Array.isArray(question.atoms) ? question.atoms : [];
+    if (atoms.length === 0) return {};
+    const possible = result.marksPossible > 0 ? result.marksPossible : 1;
+    const aggregate = result.marksAwarded / possible;
+    const map = (question.atomMap && typeof question.atomMap === "object") ? question.atomMap : null;
+    const scores = {};
+    atoms.forEach(function (atomId) {
+      const cells = (map && Array.isArray(map[atomId])) ? map[atomId] : null;
+      if (!cells || cells.length === 0) {
+        scores[atomId] = aggregate;
+        return;
+      }
+      let correct = 0;
+      cells.forEach(function (c) {
+        if (isCellCorrectForAtom(question, result, c)) correct++;
+      });
+      scores[atomId] = correct / cells.length;
+    });
+    return scores;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
      4. Persistence
      Single localStorage key, JSON blob with attempt log + active filter.
      Per IMPLEMENTATION_BRIEF_v1.md §3.6.
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.20";
+  const APP_VERSION = "v1.5.21";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1286,10 +1378,13 @@
 
   // v1.4 prototype: same idea as coverageForSubtag but at the atom level.
   // Filters store.attempts for ones whose .atoms array contains atomId.
+  // v0.6+ (2026-05-08): passes atomId to coverageFromMatches so the per-atom
+  // score from atomScores is used when the question declared an atomMap.
+  // Falls back to the question's aggregate fraction otherwise.
   function coverageForAtom(atomId) {
     return coverageFromMatches(function (a) {
       return Array.isArray(a.atoms) && a.atoms.indexOf(atomId) !== -1;
-    });
+    }, atomId);
   }
 
   // v1.5.3: same shape as coverageForAtom but matches by questionId. Used for
@@ -1303,7 +1398,12 @@
   // Shared coverage-band computation. Walks store.attempts newest-first, picks
   // up to coverageWindow matches via predicate, returns { attemptCount, avg,
   // fill, text, textSoft } the same way as coverageForSubtag.
-  function coverageFromMatches(predicate) {
+  // v0.6+ (2026-05-08): optional atomId argument. When passed, the per-attempt
+  // score is read from atomScores[atomId] (if present) instead of the question's
+  // aggregate marksAwarded/marksPossible. atomScores are populated at attempt
+  // time by computeAtomScores; absent on legacy attempts (those fall back to
+  // aggregate, same as before the per-cell upgrade).
+  function coverageFromMatches(predicate, atomId) {
     const matched = [];
     const win = (typeof store.coverageWindow === "number" && store.coverageWindow > 0) ? store.coverageWindow : 2;
     for (let i = store.attempts.length - 1; i >= 0; i--) {
@@ -1322,8 +1422,14 @@
     }
     let sum = 0;
     matched.forEach(function (a) {
-      const possible = a.marksPossible > 0 ? a.marksPossible : 1;
-      sum += a.marksAwarded / possible;
+      let frac;
+      if (atomId && a.atomScores && typeof a.atomScores[atomId] === "number") {
+        frac = a.atomScores[atomId];
+      } else {
+        const possible = a.marksPossible > 0 ? a.marksPossible : 1;
+        frac = a.marksAwarded / possible;
+      }
+      sum += frac;
     });
     const avg = sum / matched.length;
     const band = BAND[bandKeyForAverage(avg)];
@@ -2377,6 +2483,12 @@
     const attemptAtoms = Array.isArray(v.atoms)
       ? v.atoms.filter(function (a) { return Object.prototype.hasOwnProperty.call(ATOM_INDEX, a); })
       : [];
+    // v0.6+ (2026-05-08): per-atom score attribution. For multi-cell types
+    // with an atomMap declared, computeAtomScores yields per-atom fractions
+    // from cell-level correctness; otherwise atoms get the aggregate fraction.
+    // The full score map is stored on the attempt so coverageForAtom can
+    // average the right value per atom rather than always using marks/possible.
+    const atomScores = computeAtomScores(v, result);
     const attempt = {
       timestamp: new Date().toISOString(),
       questionId: current.question.id,
@@ -2384,6 +2496,7 @@
       subtags: coverageTags,
       parentGroup: parentGroup,
       atoms: attemptAtoms,
+      atomScores: atomScores,
       marksAwarded: result.marksAwarded,
       marksPossible: result.marksPossible,
       status: result.status,

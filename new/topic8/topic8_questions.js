@@ -1122,7 +1122,18 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.5"],
     "difficultyRating": 3,
     "type": "grid",
-    "atoms": ["comet_shape", "comet_speed", "comet_period", "comet_orbits", "planet_shape", "planet_speed", "planet_period", "planet_orbits", "moon_shape", "moon_speed", "moon_period", "moon_orbits"],
+    "atoms": ["comet_shape", "comet_speed", "comet_orbits", "planet_shape", "planet_speed", "planet_orbits", "moon_shape", "moon_speed", "moon_orbits"],
+    "atomMap": {
+      "comet_shape":   [[0, 0], [1, 0]],
+      "comet_speed":   [[2, 0], [3, 0]],
+      "comet_orbits":  [[4, 0], [5, 0]],
+      "planet_shape":  [[0, 1], [1, 1]],
+      "planet_speed":  [[2, 1], [3, 1]],
+      "planet_orbits": [[4, 1], [5, 1]],
+      "moon_shape":    [[0, 2], [1, 2]],
+      "moon_speed":    [[2, 2], [3, 2]],
+      "moon_orbits":   [[4, 2], [5, 2]]
+    },
     "prompt": "For each property, tick which orbiting object(s) it correctly describes.",
     "rows": [
       "Has a roughly circular orbit",
@@ -1214,7 +1225,14 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.5"],
     "difficultyRating": 2,
     "type": "multiselect",
-    "atoms": ["planet_shape", "planet_speed", "comet_shape", "comet_speed"],
+    "atoms": ["planet_shape", "planet_speed", "comet_shape", "comet_speed", "comet_orbits"],
+    "atomMap": {
+      "planet_shape": [0, 2],
+      "planet_speed": [1],
+      "comet_shape":  [0, 2],
+      "comet_speed":  [1],
+      "comet_orbits": [3]
+    },
     "prompt": "A planet and a comet both orbit the Sun. Tick the statements that are TRUE differences between a planet's orbit and a comet's orbit.",
     "choices": [
       "A planet's orbit is approximately circular, but a comet's orbit is highly elliptical.",
@@ -1243,6 +1261,14 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "difficultyRating": 2,
     "type": "categorise",
     "atoms": ["comet_shape", "comet_speed", "comet_orbits", "planet_shape", "planet_speed", "planet_orbits"],
+    "atomMap": {
+      "comet_shape":   [0, 2],
+      "comet_speed":   [1],
+      "comet_orbits":  [6],
+      "planet_shape":  [3, 5],
+      "planet_speed":  [4],
+      "planet_orbits": [6]
+    },
     "prompt": "A comet and a planet both orbit the Sun. Sort each statement into the right group.",
     "bins": [
       "True of comets only",
@@ -1271,6 +1297,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "difficultyRating": 2,
     "type": "multiselect",
     "atoms": ["planet_orbits", "moon_orbits", "planet_period", "moon_period"],
+    "atomMap": {
+      "planet_orbits": [0],
+      "moon_orbits":   [0],
+      "planet_period": [2],
+      "moon_period":   [2]
+    },
     "prompt": "A planet orbits the Sun. A moon orbits its planet. Tick the statements that are TRUE differences between these two orbits.",
     "choices": [
       "A planet orbits a star, but a moon orbits a planet.",
@@ -1639,6 +1671,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "difficultyRating": 1,
     "type": "multiselect",
     "atoms": ["nebula_state", "main_sequence_state", "red_giant_state", "white_dwarf_state"],
+    "atomMap": {
+      "nebula_state":        [0],
+      "main_sequence_state": [1],
+      "red_giant_state":     [2],
+      "white_dwarf_state":   [3]
+    },
     "prompt": "Tick the stages in the life cycle of a star with a similar mass to the Sun.",
     "choices": [
       "nebula",
@@ -1779,7 +1817,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9"],
     "difficultyRating": 2,
     "type": "multiselect",
-    "atoms": ["red_giant_size", "red_giant_temperature", "red_giant_colour", "red_giant_state"],
+    "atoms": ["red_giant_size", "red_giant_temperature", "red_giant_state"],
+    "atomMap": {
+      "red_giant_size":        [0, 3],
+      "red_giant_temperature": [1, 2],
+      "red_giant_state":       [4]
+    },
     "prompt": "Tick all the statements that correctly describe a red giant.",
     "choices": [
       "It is much larger than the original main sequence star.",
@@ -1848,6 +1891,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "difficultyRating": 2,
     "type": "multiselect",
     "atoms": ["white_dwarf_state", "white_dwarf_fusion_active", "white_dwarf_size", "white_dwarf_temperature"],
+    "atomMap": {
+      "white_dwarf_state":         [0, 4],
+      "white_dwarf_fusion_active": [1],
+      "white_dwarf_size":          [2],
+      "white_dwarf_temperature":   [3]
+    },
     "prompt": "Tick all the statements that correctly describe a white dwarf.",
     "choices": [
       "It is the leftover hot core of a red giant.",
@@ -1893,7 +1942,21 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "specRefs": ["8.9", "8.8"],
     "difficultyRating": 3,
     "type": "grid",
-    "atoms": ["main_sequence_state", "main_sequence_fuel", "main_sequence_size", "main_sequence_temperature", "main_sequence_colour", "main_sequence_fusion_active", "red_giant_state", "red_giant_fuel", "red_giant_size", "red_giant_temperature", "red_giant_colour", "red_giant_fusion_active", "white_dwarf_state", "white_dwarf_fuel", "white_dwarf_size", "white_dwarf_temperature", "white_dwarf_colour", "white_dwarf_fusion_active"],
+    "atoms": ["main_sequence_fuel", "main_sequence_size", "main_sequence_colour", "main_sequence_fusion_active", "red_giant_fuel", "red_giant_size", "red_giant_colour", "red_giant_fusion_active", "white_dwarf_fuel", "white_dwarf_size", "white_dwarf_colour", "white_dwarf_fusion_active"],
+    "atomMap": {
+      "main_sequence_fuel":          [[0, 0]],
+      "main_sequence_fusion_active": [[0, 0], [4, 0]],
+      "main_sequence_size":          [[1, 0], [5, 0]],
+      "main_sequence_colour":        [[2, 0], [3, 0]],
+      "red_giant_fuel":              [[0, 1]],
+      "red_giant_fusion_active":     [[0, 1], [4, 1]],
+      "red_giant_size":              [[1, 1], [5, 1]],
+      "red_giant_colour":            [[2, 1], [3, 1]],
+      "white_dwarf_fuel":            [[0, 2]],
+      "white_dwarf_fusion_active":   [[0, 2], [4, 2]],
+      "white_dwarf_size":            [[1, 2], [5, 2]],
+      "white_dwarf_colour":          [[2, 2], [3, 2]]
+    },
     "prompt": "For each property, tick the stages of a Sun-mass star where the property is true.",
     "rows": [
       "Hydrogen fusion is happening at the core",
