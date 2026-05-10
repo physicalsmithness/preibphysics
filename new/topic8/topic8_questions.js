@@ -2050,6 +2050,467 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "markingMode": "per_position",
     "explanation": "From now (main sequence) onwards: main sequence → red giant → white dwarf.",
     "examinerNote": "A simpler version of the full lifecycle ordering, focusing only on what comes after the present moment."
+  },
+
+  // ==========================================================================
+  // GAP-COVERAGE MCQs (added 2026-05-10)
+  // 18 MCQs targeting the previously-uncovered atoms in the stellar_lifecycle
+  // and orbit_properties registries. Drafts in topic8_coverage_gap_mcqs.md.
+  // Q11/Q12 (red_giant_fuel + red_giant_fusion_active) reframed per Wispr-
+  // correction as a single combined MCQ (red_giant_fusion_mcq) capturing the
+  // simultaneous shell-hydrogen + core-helium fusion. After this batch, atom
+  // coverage is 35/35.
+  // ==========================================================================
+
+  // --- stellar gap-coverage: nebula -----------------------------------------
+
+  {
+    "id": "nebula_state_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["nebula_state"],
+    "prompt": "What is a nebula?",
+    "choices": [
+      "A large cloud of gas and dust",
+      "A hot, dense ball of fusing hydrogen",
+      "An expanded outer shell of an old star",
+      "A small, dense remnant of a dead star"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "That describes a main sequence star, the stage that begins after a nebula has collapsed and started fusion. A nebula is before that stage.",
+      "2": "That describes a red giant, a much later stage in the lifecycle. A nebula is the very first stage.",
+      "3": "That describes a white dwarf, the final stage of a Sun-mass star's life — the opposite end of the lifecycle from a nebula."
+    },
+    "marks": 1,
+    "explanation": "A nebula is a large, diffuse cloud of gas (mostly hydrogen) and dust in space. A Sun-mass star is born when gravity pulls a region of a nebula together and compresses it. At this earliest stage, no fusion is happening yet.",
+    "examinerNote": "The three distractors are the three other lifecycle stages — picking one of them tells you which stage you've confused with a nebula."
+  },
+
+  {
+    "id": "nebula_size_fuel_fusion_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 2,
+    "type": "mcq",
+    "atoms": ["nebula_size", "nebula_fuel", "nebula_fusion_active"],
+    "prompt": "Which statement is correct about a nebula?",
+    "choices": [
+      "It is a vast cloud, much larger than a star, and no fusion is happening yet",
+      "It is roughly the same size as a star, with hydrogen fusing in its core",
+      "It is much smaller than a star, with no fusion happening",
+      "It is roughly the size of a planet, with helium fusing in its core"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "A nebula has not yet collapsed enough to ignite fusion. Hydrogen fusion is the signature of a main sequence star, not a nebula.",
+      "2": "A nebula is much larger than a star, not smaller. The whole point of the nebula → main sequence transition is that gravity squeezes a vast cloud down to a much smaller, denser ball.",
+      "3": "A nebula is enormous (much larger than a star), and no fusion of any kind is happening in it. Helium fusion happens in a red giant's core, much later in the lifecycle."
+    },
+    "marks": 1,
+    "explanation": "A nebula is much larger than a star — a vast cloud of gas and dust spanning many light-years. No fusion is happening because the gas isn't dense or hot enough yet; it has to collapse under gravity first before fusion can begin.",
+    "examinerNote": "Three properties of a nebula are tested at once: its size, its fuel, and whether fusion is happening. The correct answer pinpoints all three."
+  },
+
+  {
+    "id": "nebula_temperature_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["nebula_temperature"],
+    "prompt": "What is the temperature inside a nebula, before it begins to collapse into a star?",
+    "choices": [
+      "Very cold",
+      "As hot as the surface of the Sun",
+      "Hot enough for hydrogen fusion",
+      "Hot enough for helium fusion"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "The Sun's surface is around 5800 K — that's the temperature of a star, not of an unformed cloud of gas. A nebula has no fusion to heat it up.",
+      "2": "Hydrogen fusion requires temperatures of millions of kelvin. A nebula is far too cold for that — fusion only starts once gravity has compressed and heated the cloud enough.",
+      "3": "Helium fusion requires even higher temperatures than hydrogen fusion, and only occurs in the cores of red giant stars. A nebula has not yet become a star, let alone reached the helium-fusion stage."
+    },
+    "marks": 1,
+    "explanation": "Before gravitational collapse has compressed and heated a forming star, a nebula sits at the cold temperature of interstellar space — only a few kelvin above absolute zero. The collapse is what heats the core enough to start hydrogen fusion.",
+    "examinerNote": "Distractors mark progressively hotter conditions — picking one signals you think the nebula is already farther along the lifecycle than it actually is."
+  },
+
+  // --- stellar gap-coverage: main sequence ----------------------------------
+
+  {
+    "id": "main_sequence_state_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["main_sequence_state"],
+    "prompt": "What is the physical form of a main sequence star?",
+    "choices": [
+      "A hot ball of plasma, fusing hydrogen in its core",
+      "A diffuse cloud of gas and dust",
+      "An expanded outer shell with a contracted hot core",
+      "A small, dense remnant, no longer fusing"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "A diffuse cloud of gas and dust is a nebula — the stage before a main sequence star forms.",
+      "2": "An expanded outer shell with a contracted hot core describes a red giant, the stage after the main sequence.",
+      "3": "A small, dense remnant that is no longer fusing describes a white dwarf, the final stage."
+    },
+    "marks": 1,
+    "explanation": "A main sequence star is a hot ball of plasma in steady balance: the inward pull of gravity is matched by the outward push of energy released by hydrogen fusion in its core. The Sun has been on the main sequence for around 4.6 billion years.",
+    "examinerNote": "All three distractors are other stages of the lifecycle, so the question forces you to discriminate between the four physical forms."
+  },
+
+  {
+    "id": "main_sequence_size_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["main_sequence_size"],
+    "prompt": "Compared with a red giant, the Sun on the main sequence is:",
+    "choices": [
+      "Much smaller",
+      "Roughly the same size",
+      "Much larger",
+      "Hundreds of times larger"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "The transition from main sequence to red giant is a dramatic expansion. Saying the two are the same size misses the whole point of why a red giant is called 'giant'.",
+      "2": "This reverses the relationship. A red giant is much larger than a main sequence Sun-mass star, not the other way around.",
+      "3": "Same direction error as the previous choice — a red giant is much larger than the main sequence Sun, not the reverse."
+    },
+    "marks": 1,
+    "explanation": "When a Sun-mass star leaves the main sequence and becomes a red giant, its outer layers expand enormously — to roughly 100 times the size of the original star. So the main sequence Sun is much smaller than the red giant it will become."
+  },
+
+  {
+    "id": "main_sequence_colour_mcq",
+    "tags": ["lifecycle_stages_detail", "colour_temperature"],
+    "specRefs": ["8.7", "8.8"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["main_sequence_colour"],
+    "prompt": "The Sun is currently a main sequence star. What is the colour of its surface?",
+    "choices": ["Yellow", "Red", "White", "Blue"],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Red stars are cooler than the Sun. The Sun's surface is around 5800 K, which is in the yellow part of the colour-temperature scale, not the red.",
+      "2": "White stars are hotter than yellow stars. The Sun's surface is yellow at its current main sequence temperature.",
+      "3": "Blue stars are the hottest of all — much hotter than the Sun. The Sun is yellow on the colour-temperature scale."
+    },
+    "marks": 1,
+    "explanation": "The Sun is a yellow main sequence star with a surface temperature of around 5800 K. Hotter stars look white or blue; cooler stars look orange or red. Yellow places the Sun in the middle of the range tested by 4SS0."
+  },
+
+  {
+    "id": "main_sequence_fusion_active_mcq",
+    "tags": ["lifecycle_stages_detail", "fusion_in_stars"],
+    "specRefs": ["8.9", "7.25"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["main_sequence_fusion_active", "main_sequence_fuel"],
+    "prompt": "What is happening in the core of a main sequence star?",
+    "choices": [
+      "Hydrogen is being fused into helium",
+      "Helium is being fused into heavier elements",
+      "No fusion is happening; the core is collapsing",
+      "The core is fusing all the way to iron"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Helium fusion is what happens in a red giant's core, not a main sequence star's. A main sequence star fuses hydrogen.",
+      "2": "If no fusion were happening and the core were collapsing, the star wouldn't be on the main sequence. The main sequence is defined by stable hydrogen fusion.",
+      "3": "Fusion all the way to iron is something that happens inside very high-mass stars (4PH1 territory, not 4SS0). A Sun-mass main sequence star only fuses hydrogen into helium."
+    },
+    "marks": 1,
+    "explanation": "On the main sequence, the core of a Sun-mass star is fusing hydrogen nuclei into helium. The energy released by this fusion is what stops the star collapsing under its own gravity, and is also the energy that radiates away as the star's light and heat.",
+    "examinerNote": "The canonical 4SS0 phrasing is 'hydrogen is fused into helium' — both the fuel and the product are part of the answer."
+  },
+
+  // --- stellar gap-coverage: red giant --------------------------------------
+
+  {
+    "id": "red_giant_state_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["red_giant_state"],
+    "prompt": "What is the physical form of a red giant?",
+    "choices": [
+      "A greatly expanded outer envelope around a smaller, hotter core",
+      "A diffuse cloud of gas and dust",
+      "A hot ball of plasma fusing hydrogen",
+      "A small, dense, Earth-sized remnant"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "A diffuse cloud of gas and dust is a nebula — the very first stage of the lifecycle, not the stage after the main sequence.",
+      "2": "A hot ball of plasma fusing hydrogen is a main sequence star. A red giant has expanded and its core has switched to fusing helium, not hydrogen.",
+      "3": "A small, dense, Earth-sized remnant is a white dwarf — the final stage. A red giant is the much bigger, expanded stage that comes before the white dwarf."
+    },
+    "marks": 1,
+    "explanation": "A red giant has a greatly expanded outer envelope (the parts the student would actually see) wrapped around a small, hot core where helium is now fusing. The expanded outer surface is much cooler than a main sequence star's surface, which is why the colour shifts from yellow to red.",
+    "examinerNote": "Don't picture a red giant as just 'a bigger main sequence star'. The expanded envelope and the contracted hot core are doing very different things."
+  },
+
+  {
+    "id": "red_giant_size_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["red_giant_size"],
+    "prompt": "Compared with the Sun on the main sequence, a red giant is:",
+    "choices": [
+      "Much larger",
+      "Roughly the same size",
+      "Much smaller",
+      "About the size of a planet"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "The transition from main sequence to red giant is a dramatic expansion of the outer layers. The two stages are very different sizes.",
+      "2": "Much smaller than the main sequence Sun describes a white dwarf, not a red giant. A red giant is bigger than the Sun, not smaller.",
+      "3": "Planet-sized describes a white dwarf (about the size of the Earth). A red giant is on a totally different scale — much bigger than the Sun."
+    },
+    "marks": 1,
+    "explanation": "When the Sun becomes a red giant, its outer layers expand to around 100 times their main sequence size. The Sun's red giant phase will be large enough to swallow the orbits of the inner planets, including possibly Earth's."
+  },
+
+  {
+    "id": "red_giant_fusion_mcq",
+    "tags": ["lifecycle_stages_detail", "fusion_in_stars"],
+    "specRefs": ["8.9", "7.25"],
+    "difficultyRating": 2,
+    "type": "mcq",
+    "atoms": ["red_giant_fuel", "red_giant_fusion_active"],
+    "prompt": "What is happening with fusion inside a red giant?",
+    "choices": [
+      "Helium fuses in the core, while hydrogen continues to fuse in a surrounding shell",
+      "Hydrogen fuses in the core, as in a main sequence star",
+      "No fusion is happening; the core is collapsing",
+      "The core is fusing all the way to iron"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "This is the main sequence picture, not the red giant picture. By the time a star is a red giant, its core has run out of hydrogen and switched to helium fusion; only the surrounding shell still fuses hydrogen.",
+      "2": "If no fusion were happening, the star would no longer be a red giant. Fusion is what holds the outer envelope up against gravity. The 'no fusion' stage is the white dwarf, which comes later.",
+      "3": "Fusion all the way to iron only happens in very high-mass stars (4PH1 supergiant territory). In a Sun-mass red giant, fusion stops at helium, in the core, plus hydrogen fusion in a surrounding shell."
+    },
+    "marks": 1,
+    "explanation": "A red giant has two fusion processes happening at the same time: helium fuses to heavier elements in the contracted hot core, and hydrogen continues to fuse to helium in a shell around that core. This double fusion is part of why the outer layers expand so much.",
+    "examinerNote": "The 'two fusions at once' picture is the trickier part of red giant physics. Don't assume the main sequence picture (hydrogen-only, in the core) still applies."
+  },
+
+  // --- stellar gap-coverage: white dwarf ------------------------------------
+
+  {
+    "id": "white_dwarf_state_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["white_dwarf_state"],
+    "prompt": "What is a white dwarf?",
+    "choices": [
+      "The hot, dense core left behind after a red giant ejects its outer layers",
+      "A vast cloud of gas and dust collapsing under gravity",
+      "A hot ball of plasma fusing hydrogen",
+      "An exploded massive star"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "A vast cloud of gas and dust collapsing under gravity describes a nebula — the very start of a star's life, not the end.",
+      "2": "A hot ball of plasma fusing hydrogen is a main sequence star, the long stable middle of a star's life. A white dwarf has run out of fuel and no longer fuses.",
+      "3": "An exploded massive star is a 4PH1-only supernova outcome, outside 4SS0 scope. The 4SS0 lifecycle for a Sun-mass star ends at a white dwarf, not an explosion."
+    },
+    "marks": 1,
+    "explanation": "A white dwarf is the small, dense, hot core left behind once a red giant has thrown off its outer layers. It no longer fuses anything; it just slowly cools and fades over very long timescales. This is the final stage in the 4SS0 lifecycle of a Sun-mass star.",
+    "examinerNote": "The 'exploded massive star' distractor is deliberately a 4PH1-only outcome — flagging that high-mass stellar evolution sits outside 4SS0."
+  },
+
+  {
+    "id": "white_dwarf_size_mcq",
+    "tags": ["lifecycle_stages_detail"],
+    "specRefs": ["8.9"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["white_dwarf_size"],
+    "prompt": "How does the size of a white dwarf compare with the Sun?",
+    "choices": [
+      "Much smaller — roughly the size of the Earth",
+      "Much larger — hundreds of times bigger",
+      "Roughly the same size as the Sun",
+      "Smaller than a planet's moon"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Hundreds of times bigger than the Sun describes a red giant, not a white dwarf. A white dwarf is much smaller than the Sun, not larger.",
+      "2": "When a red giant ejects its outer layers, the core that remains is far smaller than the original star. A white dwarf is roughly Earth-sized, not Sun-sized.",
+      "3": "A white dwarf is small but not that small. It's roughly the size of the Earth, much bigger than a moon."
+    },
+    "marks": 1,
+    "explanation": "A white dwarf is the leftover core of a Sun-mass star, with most of the original mass packed into a volume only about the size of the Earth. That makes it incredibly dense — a teaspoonful of white dwarf material would weigh tonnes.",
+    "examinerNote": "The Sun-vs-Earth size contrast is the easiest mental model: take a Sun-mass star and squash it down to Earth size."
+  },
+
+  {
+    "id": "white_dwarf_fuel_fusion_mcq",
+    "tags": ["lifecycle_stages_detail", "fusion_in_stars"],
+    "specRefs": ["8.9", "7.25"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["white_dwarf_fuel", "white_dwarf_fusion_active"],
+    "prompt": "What is happening inside a white dwarf?",
+    "choices": [
+      "No fusion — the white dwarf is slowly cooling",
+      "Hydrogen is being fused into helium",
+      "Helium is being fused into heavier elements",
+      "The core is collapsing to start fusion"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Hydrogen fusion happens in main sequence stars, not in white dwarfs. By the time a star is a white dwarf, all of its hydrogen fuel has long since been used up.",
+      "2": "Helium fusion happens in the core of a red giant, the stage before. By the white dwarf stage, fusion has stopped altogether.",
+      "3": "Core collapse leading to fusion describes the early protostar phase, not a white dwarf. A white dwarf is the end of the lifecycle, not the start."
+    },
+    "marks": 1,
+    "explanation": "A white dwarf has no fuel left for fusion, so no fusion is happening. It's just a hot, dense cinder slowly radiating its leftover heat into space. Over timescales much longer than the age of the universe, it would gradually cool and fade.",
+    "examinerNote": "Both atoms (no fuel + no active fusion) are tied together: a white dwarf is what's left over after fusion has finished."
+  },
+
+  {
+    "id": "white_dwarf_colour_temperature_mcq",
+    "tags": ["lifecycle_stages_detail", "colour_temperature"],
+    "specRefs": ["8.8", "8.9"],
+    "difficultyRating": 2,
+    "type": "mcq",
+    "atoms": ["white_dwarf_temperature", "white_dwarf_colour"],
+    "prompt": "A white dwarf has a high surface temperature. Based on the colour-temperature link, what colour does its surface appear?",
+    "choices": [
+      "White",
+      "Red",
+      "Yellow",
+      "Black (because it's no longer fusing)"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Red is the colour of cool stellar surfaces, not hot ones. A high surface temperature corresponds to a hotter colour, towards white or blue.",
+      "2": "Yellow is the colour of a Sun-temperature star, around 5800 K. A white dwarf is hotter than this — its surface temperature is higher, so its colour is whiter.",
+      "3": "This confuses 'no fusion' with 'no light'. A white dwarf's surface is still extremely hot from the leftover heat of the star's earlier life, so it glows brightly even without fusion."
+    },
+    "marks": 1,
+    "explanation": "The colour-temperature link works for any glowing surface, not just main sequence stars: hotter glows whiter or bluer, cooler glows redder. A white dwarf's surface is very hot, so it glows white. The fact that fusion has stopped doesn't change the colour — it just means the star will gradually cool over time.",
+    "examinerNote": "This is a derivation question: you start from the temperature fact and use the colour-temperature link to infer the colour. The 'black because no fusion' distractor catches students who think 'no fusion = dark'."
+  },
+
+  // --- orbit gap-coverage ---------------------------------------------------
+
+  {
+    "id": "comet_period_mcq",
+    "tags": ["orbit_periods", "orbit_properties"],
+    "specRefs": ["8.5"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["comet_period"],
+    "prompt": "Comets typically take how long to complete one orbit around the Sun?",
+    "choices": [
+      "Many years, often decades or centuries",
+      "About one day",
+      "About one month",
+      "About one Earth year"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "About one day is the period of Earth's rotation on its axis, not an orbit. None of the orbital periods studied at 4SS0 are anywhere near a day long.",
+      "2": "About one month is the period of the Moon's orbit around the Earth. Comets orbit the Sun, much further out, on a much larger and slower orbit.",
+      "3": "About one Earth year is the period of the Earth's orbit around the Sun. Comets are typically far from the Sun for most of their orbit, so their periods are much longer than a planet like Earth's."
+    },
+    "marks": 1,
+    "explanation": "Comets travel on highly elliptical orbits that take them far from the Sun for most of their journey. As a result they have very long orbital periods — typically decades to centuries, sometimes much longer. Halley's Comet, for example, has a period of about 76 years.",
+    "examinerNote": "The three distractors are the day, month and year facts that the spec also expects you to know — the trap is to confuse them with comet periods."
+  },
+
+  {
+    "id": "comet_planet_orbits_sun_mcq",
+    "tags": ["gravity_causes_orbits", "orbit_properties"],
+    "specRefs": ["8.4"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["comet_orbits", "planet_orbits"],
+    "prompt": "In our solar system, what do comets and planets both orbit?",
+    "choices": [
+      "The Sun",
+      "A planet",
+      "The Moon",
+      "The centre of the galaxy"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Things orbit planets too — moons do — but planets and comets themselves orbit the Sun, because the Sun is the largest mass in the solar system.",
+      "2": "The Moon is much smaller than the Sun and only the Earth orbits it (well, more accurately, they orbit each other). Comets and planets are not held in orbit by the Moon.",
+      "3": "The Sun (and the whole solar system with it) does orbit the centre of the Milky Way galaxy, but at the scale of the solar system, planets and comets orbit the Sun."
+    },
+    "marks": 1,
+    "explanation": "Gravity from the largest nearby mass holds smaller objects in orbit. In the solar system, the Sun is by far the most massive object, so both planets and comets are held in orbit around it. Moons, by contrast, are held in orbit around their planets.",
+    "examinerNote": "Questions like this are about scale: at the solar system scale, the Sun is what everything orbits — even though at the galactic scale, the Sun itself is in orbit."
+  },
+
+  {
+    "id": "moon_shape_mcq",
+    "tags": ["orbit_shapes", "orbit_properties"],
+    "specRefs": ["8.5"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["moon_shape"],
+    "prompt": "What is the shape of the orbit of a moon around its planet?",
+    "choices": [
+      "Roughly circular",
+      "Highly elliptical",
+      "A perfect square",
+      "A straight line"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Highly elliptical orbits are characteristic of comets, not moons. Moons orbit their planets on roughly circular paths.",
+      "2": "Orbits in a gravitational field are never square. The shape of an orbit comes from gravity always pulling the orbiting body towards the centre, which traces out a smooth curve.",
+      "3": "A straight-line path would mean no orbit at all — the object would either fly off into space or fall directly into the planet. Orbiting requires a curved path."
+    },
+    "marks": 1,
+    "explanation": "Moons orbit their planets on roughly circular paths, in the same way that planets orbit the Sun on roughly circular paths. The whole moon-around-planet system is a smaller-scale version of the planet-around-Sun system."
+  },
+
+  {
+    "id": "moon_speed_mcq",
+    "tags": ["orbit_speeds", "orbit_properties"],
+    "specRefs": ["8.5"],
+    "difficultyRating": 1,
+    "type": "mcq",
+    "atoms": ["moon_speed"],
+    "prompt": "A moon orbits its planet in a roughly circular orbit. How does its orbital speed behave?",
+    "choices": [
+      "Stays roughly constant throughout the orbit",
+      "Varies a lot — fastest when closest to the planet",
+      "Increases steadily during each orbit",
+      "The moon is stationary; the planet rotates underneath it"
+    ],
+    "answerIndex": 0,
+    "distractorRationales": {
+      "1": "Highly variable orbital speed (fastest when closest) is the comet-orbit pattern, because comets travel on stretched-out elliptical paths. Moons travel on roughly circular paths and have nearly constant orbital speed.",
+      "2": "If the orbital speed kept increasing, the moon would eventually fly off. A stable orbit needs a steady speed (for a circular orbit) or a regular speed-up-then-slow-down (for an elliptical one), not a one-way increase.",
+      "3": "This is the geostationary satellite picture, not the moon picture. A real moon really moves around its planet — it's not parked in the sky like a TV satellite."
+    },
+    "marks": 1,
+    "explanation": "Because a moon's orbit is roughly circular, its distance from its planet stays roughly the same. The pull of gravity therefore stays roughly the same, and the moon's orbital speed stays roughly constant throughout the orbit.",
+    "examinerNote": "Distractor B is the comet-orbit pattern — picking it suggests confusion between moon (circular) and comet (elliptical) speed behaviour."
   }
 
 ];

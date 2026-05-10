@@ -484,13 +484,25 @@ body {
   border-radius: var(--radius-sm);
   color: var(--ink-2);
 }
-.fb-mp-hit li {
+/* v1.5.25: support both patterns —
+   (a) <ul class="fb-mp fb-mp-hit"><li>...  (short/long markscheme lists)
+   (b) <ul class="fb-mp"><li class="fb-mp-hit">...  (categorise/matching/etc.)
+   For (a) the renderer doesn't add its own ✓/✗ glyph, so we add one via ::before.
+   For (b) the renderer adds its own mark span (fb-mp-mark), so we DON'T add a ::before.
+   Plus stronger colour for the miss row — red border-left and tinted background
+   instead of muted grey, so partial-credit incorrect rows are visually obvious.
+*/
+.fb-mp-hit li,
+li.fb-mp-hit {
   border-left: 3px solid var(--ok);
+  background: color-mix(in oklab, var(--ok) 4%, var(--paper));
 }
 .fb-mp-hit li::before { content: "✓ "; color: var(--ok); font-weight: 700; }
-.fb-mp-miss li {
-  border-left: 3px solid var(--line-2);
-  color: var(--muted);
+.fb-mp-miss li,
+li.fb-mp-miss {
+  border-left: 3px solid var(--bad);
+  background: color-mix(in oklab, var(--bad) 5%, var(--paper));
+  color: var(--ink-2);
 }
 .fb-mp-miss li::before { content: "○ "; color: var(--muted); font-weight: 700; }
 
@@ -1857,26 +1869,38 @@ body {
   flex-direction: column;
   gap: 8px;
 }
+/* v1.5.24: centre-aligned, equation-sized inputs in a fixed grid template.
+   All four rows share the same column structure so line 4's value box sits
+   directly under the right input boxes on lines 1-3, with the `=` sign in
+   the same column as lines 1-3's `=`. Visually line 4 continues from line 3.
+
+   Columns (left to right):
+     1. label (right-aligned, 84px)
+     2. left input (or empty space on line 4)
+     3. = sign
+     4. right input (lines 1-3) or value input (line 4)
+     5. unit input (line 4 only; empty on lines 1-3)
+*/
 .calc-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 84px 160px auto 160px 70px;
+  column-gap: 8px;
   align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
 }
 .calc-row-label {
+  grid-column: 1;
   font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
   font-weight: 700;
-  width: 84px;
-  flex-shrink: 0;
   text-align: right;
 }
 .calc-input {
-  flex: 1 1 0;
-  min-width: 0;
   font-family: "Iowan Old Style", "Source Serif Pro", Georgia, serif;
   font-size: 16px;
   padding: 8px 10px;
@@ -1885,28 +1909,55 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
+  min-width: 0;
+  width: 100%;
 }
 .calc-input:focus {
   border-color: var(--accent);
   outline: none;
 }
+.calc-input-left { grid-column: 2; }
+.calc-input-right { grid-column: 4; }
+.calc-cell-empty { grid-column: 2; }
+.calc-eq {
+  grid-column: 3;
+  font-family: "Iowan Old Style", "Source Serif Pro", Georgia, serif;
+  font-size: 18px;
+  color: var(--ink-2);
+  text-align: center;
+  padding: 0 4px;
+}
+.calc-input-final { grid-column: 4; }
 .calc-input-unit {
-  flex: 0 0 70px;
+  grid-column: 5;
   font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   text-align: center;
 }
-.calc-eq {
-  font-family: "Iowan Old Style", "Source Serif Pro", Georgia, serif;
-  font-size: 18px;
-  color: var(--ink-2);
-  flex-shrink: 0;
-}
 
 @media (max-width: 600px) {
-  .calc-row { gap: 4px; }
-  .calc-row-label { width: 60px; font-size: 9px; }
+  .calc-row {
+    grid-template-columns: 60px 110px auto 110px 54px;
+    column-gap: 4px;
+  }
+  .calc-row-label { font-size: 9px; }
   .calc-input { font-size: 14px; padding: 6px 8px; }
-  .calc-input-unit { flex-basis: 50px; font-size: 12px; }
+  .calc-input-unit { font-size: 12px; }
   .calc-eq { font-size: 15px; }
+}
+
+/* v1.5.24: per-line feedback. Each list item has a row (mark + line text)
+   and an optional italic reason line below it. */
+.fb-calc .fb-calc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.fb-calc .fb-calc-reason {
+  margin-left: 22px;
+  margin-top: 2px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
 }

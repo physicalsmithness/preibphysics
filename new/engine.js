@@ -1074,14 +1074,62 @@
       .toLowerCase();
   }
 
+  // v1.5.24: pre-tokenizer normalisation for lines 1-3 of calc_workings.
+  // Lowercases everything (case-insensitive symbol matching), normalises
+  // typographic operators, and replaces standalone `x` with `*` when `x` is
+  // not in the question's symbol set (knowns + unknown, lowercased).
+  // Lets students write `2x5` instead of `2 × 5` or `2 * 5` at GCSE level.
+  function calcPreNorm(str, lowerSymSet) {
+    let s = String(str || "")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/[−–—]/g, "-")
+      .toLowerCase();
+    if (!lowerSymSet["x"]) {
+      // Replace `x` with `*` whenever it's a standalone letter (not part of
+      // a longer identifier — but our tokens are single-letter anyway).
+      s = s.replace(/x/g, "*");
+    }
+    return s;
+  }
+
+  // Build lowercased knowns + lowercased unknown for case-insensitive eval.
+  function calcLowerVars(knowns, unknown, unknownVal) {
+    const out = {};
+    Object.keys(knowns || {}).forEach(function (k) {
+      out[String(k).toLowerCase()] = knowns[k];
+    });
+    const u = unknown ? String(unknown).toLowerCase() : "";
+    if (u && unknownVal !== null && unknownVal !== undefined) {
+      out[u] = unknownVal;
+    }
+    return { vars: out, unknownLower: u };
+  }
+
+  // Collect numeric literals appearing in an AST. Used to detect whether
+  // a line shows substitution (line 2) vs is purely symbolic (line 1).
+  function calcCollectNumericLiterals(ast) {
+    const out = [];
+    function walk(node) {
+      if (!node) return;
+      if (node.kind === "num") out.push(node.value);
+      if (node.kind === "neg") walk(node.arg);
+      if (node.kind === "binop") { walk(node.left); walk(node.right); }
+    }
+    walk(ast);
+    return out;
+  }
+
   // The marker: per-line check, returns marksAwarded out of 4 plus per-line
   // results so the renderer can show which line the student got wrong.
   function markCalcWorkings(q, lines) {
     const knowns = (q.knowns && typeof q.knowns === "object") ? q.knowns : {};
     const unknown = q.unknown || "";
     const expectedFinalValue = (typeof q.expectedFinalValue === "number") ? q.expectedFinalValue : null;
+    // v1.5.23: case-sensitive unit matching. In physics V (volts) ≠ v (velocity);
+    // mA ≠ Ma. Only whitespace is stripped before comparison.
     const expectedUnit = Array.isArray(q.expectedUnit)
-      ? q.expectedUnit.map(function (u) { return String(u || "").toLowerCase().trim(); })
+      ? q.expectedUnit.map(function (u) { return String(u || "").trim(); })
       : [];
     const tolerance = (typeof q.tolerance === "number") ? q.tolerance
                     : Math.max(Math.abs(expectedFinalValue || 0) * 0.005, 0.0001);
@@ -1098,95 +1146,196 @@
     const lineResults = [];
     let awarded = 0;
 
-    // Line 1: equation match (exact after normalisation)
+    // v1.5.24: build lowercased symbol set for case-insensitive line 1-3 marking.
+    const lowerSymSet = {};
+    Object.keys(knowns).forEach(function (k) { lowerSymSet[String(k).toLowerCase()] = true; });
+    if (unknown) lowerSymSet[String(unknown).toLowerCase()] = true;
+    const lvUnknown = calcLowerVars(knowns, unknown, expectedFinalValue);
+    const varsKnown = calcLowerVars(knowns, null, null).vars; // knowns only, no unknown bound
+
+    // Line 1: equation match. Two paths:
+    //   (a) Fast literal match against equationCanonicalForms (exact after norm).
+    //   (b) Algebraic equivalence: parse user's equation, substitute knowns
+    //       plus unknown=expectedFinalValue, accept if both sides agree.
+    // v1.5.24: case-insensitive symbol matching; `x` accepted as multiplication.
     const canonical = (q.equationCanonicalForms || []).map(calcNormEqn);
     const l1Norm = calcNormEqn(l1);
-    const line1Ok = l1Norm !== "" && canonical.indexOf(l1Norm) !== -1;
-    if (line1Ok) awarded++;
-    lineResults.push({ line: 1, ok: line1Ok, user: l1 });
-
-    // Line 2: substitution. Identify which side has the unknown, check the
-    // other side's numeric value matches (when evaluated with knowns).
-    let line2Ok = false;
-    try {
-      const eqn = calcParseEqn(l2);
-      const leftSyms = calcSymbols(eqn.left);
-      const rightSyms = calcSymbols(eqn.right);
-      const unknownInLeft = !!leftSyms[unknown];
-      const unknownInRight = !!rightSyms[unknown];
-      if (unknownInLeft && !unknownInRight) {
-        const val = calcEval(eqn.right, knowns);
-        if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line2Ok = true;
-      } else if (unknownInRight && !unknownInLeft) {
-        const leftVal = calcEval(eqn.left, knowns);
-        if (expectedFinalValue !== null && Math.abs(leftVal - expectedFinalValue) > tolerance) {
-          // Left side numeric doesn't match expected — could still be a valid substitution
-          // where left is the known-from-prompt value. Accept if leftVal is one of the knowns.
-          const knownVals = Object.keys(knowns).map(function (k) { return knowns[k]; });
-          if (knownVals.some(function (v) { return Math.abs(v - leftVal) <= tolerance; })) {
-            // Substitute leftVal for unknown into right and check it's consistent.
-            const ext = Object.assign({}, knowns); ext[unknown] = leftVal;
-            try {
-              const rightVal = calcEval(eqn.right, ext);
-              if (Math.abs(leftVal - rightVal) <= tolerance) line2Ok = true;
-            } catch (e2) {}
+    let line1Ok = l1Norm !== "" && canonical.indexOf(l1Norm) !== -1;
+    let line1Reason = "";
+    if (!line1Ok) {
+      if (l1.trim() === "") {
+        line1Reason = "Write the equation here (e.g. as shown in the data booklet).";
+      } else if (expectedFinalValue !== null) {
+        try {
+          const eqn = calcParseEqn(calcPreNorm(l1, lowerSymSet));
+          const allSyms = Object.assign({}, calcSymbols(eqn.left), calcSymbols(eqn.right));
+          let unboundSym = null;
+          Object.keys(allSyms).forEach(function (s) {
+            if (!Object.prototype.hasOwnProperty.call(lvUnknown.vars, s)) unboundSym = s;
+          });
+          if (unboundSym) {
+            line1Reason = "Unknown symbol '" + unboundSym + "' in your equation. Use the variables given in the question.";
+          } else {
+            const lhs = calcEval(eqn.left, lvUnknown.vars);
+            const rhs = calcEval(eqn.right, lvUnknown.vars);
+            if (isFinite(lhs) && isFinite(rhs) && Math.abs(lhs - rhs) <= tolerance) {
+              line1Ok = true;
+            } else {
+              line1Reason = "The two sides don't balance. Check the equation.";
+            }
           }
-        } else if (expectedFinalValue !== null) {
-          line2Ok = true;
+        } catch (e) {
+          line1Reason = "Couldn't read this as an equation. Check operators and brackets.";
         }
       }
-    } catch (e) { line2Ok = false; }
+    }
+    if (line1Ok) awarded++;
+    lineResults.push({ line: 1, ok: line1Ok, user: l1, reason: line1Reason });
+
+    // Line 2: substitution. v1.5.24: rewritten to use the algebraic-equivalence
+    // approach. Requirements:
+    //   (a) The equation must contain at least one numeric literal — line 2 is
+    //       where the student "plugs in the values".
+    //   (b) The equation must be algebraically consistent under knowns +
+    //       unknown=expectedFinalValue (i.e., both sides agree numerically).
+    // This means natural rearranged-substitution like `5 = V/2` (when line 1
+    // was R = V/I) is accepted, not just the canonical `V = 2 × 5`.
+    let line2Ok = false;
+    let line2Reason = "";
+    if (l2.trim() === "") {
+      line2Reason = "Write the equation again with the known values plugged in.";
+    } else if (expectedFinalValue !== null) {
+      try {
+        const eqn = calcParseEqn(calcPreNorm(l2, lowerSymSet));
+        const numLits = calcCollectNumericLiterals(eqn.left).concat(calcCollectNumericLiterals(eqn.right));
+        if (numLits.length === 0) {
+          line2Reason = "You haven't substituted any numbers. Line 2 should show the values plugged in.";
+        } else {
+          const allSyms = Object.assign({}, calcSymbols(eqn.left), calcSymbols(eqn.right));
+          let unboundSym = null;
+          Object.keys(allSyms).forEach(function (s) {
+            if (!Object.prototype.hasOwnProperty.call(lvUnknown.vars, s)) unboundSym = s;
+          });
+          if (unboundSym) {
+            line2Reason = "Unknown symbol '" + unboundSym + "' in your substitution. Use the variables given in the question.";
+          } else {
+            const lhs = calcEval(eqn.left, lvUnknown.vars);
+            const rhs = calcEval(eqn.right, lvUnknown.vars);
+            if (isFinite(lhs) && isFinite(rhs) && Math.abs(lhs - rhs) <= tolerance) {
+              line2Ok = true;
+            } else {
+              line2Reason = "The two sides don't agree. Check that you've used the right values.";
+            }
+          }
+        }
+      } catch (e) {
+        line2Reason = "Couldn't read this as an equation. Check operators and brackets.";
+      }
+    }
     if (line2Ok) awarded++;
-    lineResults.push({ line: 2, ok: line2Ok, user: l2 });
+    lineResults.push({ line: 2, ok: line2Ok, user: l2, reason: line2Reason });
 
     // Line 3: rearrangement. Unknown should be alone on one side; other side
     // evaluates to expectedFinalValue. If allowRepeat and line3 == line2, accept.
+    // v1.5.24: case-insensitive; reason text on failure.
     let line3Ok = false;
-    if (allowRepeat && calcNormEqn(l3) === calcNormEqn(l2) && line2Ok) {
+    let line3Reason = "";
+    if (l3.trim() === "") {
+      line3Reason = "Rearrange so the unknown is alone on one side, then evaluate the other side.";
+    } else if (allowRepeat && calcNormEqn(l3) === calcNormEqn(l2) && line2Ok) {
       line3Ok = true;
     } else {
       try {
-        const eqn = calcParseEqn(l3);
+        const eqn = calcParseEqn(calcPreNorm(l3, lowerSymSet));
         const leftSyms = calcSymbols(eqn.left);
         const rightSyms = calcSymbols(eqn.right);
         const leftKeys = Object.keys(leftSyms);
         const rightKeys = Object.keys(rightSyms);
-        const unknownInLeft = !!leftSyms[unknown];
-        const unknownInRight = !!rightSyms[unknown];
-        if (unknownInLeft && leftKeys.length === 1 && !rightSyms[unknown]) {
-          const val = calcEval(eqn.right, knowns);
-          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line3Ok = true;
-        } else if (unknownInRight && rightKeys.length === 1 && !leftSyms[unknown]) {
-          const val = calcEval(eqn.left, knowns);
-          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line3Ok = true;
+        const uLower = lvUnknown.unknownLower;
+        const unknownInLeft = !!leftSyms[uLower];
+        const unknownInRight = !!rightSyms[uLower];
+        const allSyms = Object.assign({}, leftSyms, rightSyms);
+        let unboundSym = null;
+        Object.keys(allSyms).forEach(function (s) {
+          if (s !== uLower && !Object.prototype.hasOwnProperty.call(varsKnown, s)) unboundSym = s;
+        });
+        if (unboundSym) {
+          line3Reason = "Unknown symbol '" + unboundSym + "' in your line. Use the variables given in the question.";
+        } else if (unknownInLeft && leftKeys.length === 1 && !rightSyms[uLower]) {
+          const val = calcEval(eqn.right, varsKnown);
+          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) {
+            line3Ok = true;
+          } else {
+            line3Reason = "Right-hand side evaluates to " + val + ", not " + expectedFinalValue + ".";
+          }
+        } else if (unknownInRight && rightKeys.length === 1 && !leftSyms[uLower]) {
+          const val = calcEval(eqn.left, varsKnown);
+          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) {
+            line3Ok = true;
+          } else {
+            line3Reason = "Left-hand side evaluates to " + val + ", not " + expectedFinalValue + ".";
+          }
+        } else if (!unknownInLeft && !unknownInRight) {
+          line3Reason = "Your line doesn't contain the unknown '" + unknown + "'.";
+        } else {
+          line3Reason = "The unknown '" + unknown + "' should be alone on one side.";
         }
-      } catch (e) { line3Ok = false; }
+      } catch (e) {
+        line3Reason = "Couldn't read this as an equation. Check operators and brackets.";
+      }
     }
     if (line3Ok) awarded++;
-    lineResults.push({ line: 3, ok: line3Ok, user: l3 });
+    lineResults.push({ line: 3, ok: line3Ok, user: l3, reason: line3Reason });
 
-    // Line 4: final answer (numeric value) + unit.
+    // Line 4: final answer (numeric value) + unit. v1.5.24: per-fault reasons.
     let line4Ok = false;
+    let line4Reason = "";
     let valueStr = l4Value.trim();
-    // Strip optional "X = " prefix
+    // Strip optional "X = " prefix (case-insensitive — we don't penalise V/v here).
     if (unknown) {
       const prefixRe = new RegExp("^\\s*" + unknown + "\\s*=\\s*", "i");
       valueStr = valueStr.replace(prefixRe, "");
     }
     valueStr = valueStr.replace(/[−–—]/g, "-").trim();
     const numMatch = valueStr.match(/^[+\-]?[\d.]+(?:[eE][+\-]?\d+)?/);
-    if (numMatch && expectedFinalValue !== null) {
+    if (valueStr === "" && l4Unit.trim() === "") {
+      line4Reason = "Write the final answer and its unit.";
+    } else if (!numMatch || expectedFinalValue === null) {
+      if (valueStr === "") {
+        line4Reason = "Write the final numeric answer.";
+      } else {
+        line4Reason = "Couldn't read '" + valueStr + "' as a number.";
+      }
+    } else {
       const value = parseFloat(numMatch[0]);
       const valueOk = isFinite(value) && Math.abs(value - expectedFinalValue) <= tolerance;
-      let unitOk = true;
-      if (requireUnit) {
-        const userUnit = l4Unit.toLowerCase().trim();
-        unitOk = userUnit !== "" && expectedUnit.indexOf(userUnit) !== -1;
+      const userUnit = l4Unit.trim();  // v1.5.23: case-sensitive
+      const unitOk = !requireUnit || (userUnit !== "" && expectedUnit.indexOf(userUnit) !== -1);
+      if (valueOk && unitOk) {
+        line4Ok = true;
+      } else if (!valueOk && !unitOk) {
+        line4Reason = "Value " + value + " doesn't match the expected " + expectedFinalValue +
+                      ", and the unit '" + (userUnit || "(missing)") + "' isn't accepted.";
+      } else if (!valueOk) {
+        line4Reason = "Value " + value + " doesn't match the expected " + expectedFinalValue + ".";
+      } else if (!unitOk) {
+        if (userUnit === "") {
+          line4Reason = "Don't forget the unit.";
+        } else {
+          // Case-sensitive failure detection: did they get the right letters but wrong case?
+          const userLower = userUnit.toLowerCase();
+          const matchesLower = expectedUnit.some(function (u) { return u.toLowerCase() === userLower; });
+          if (matchesLower) {
+            line4Reason = "Unit case matters: try '" + (expectedUnit[0] || "") + "' instead of '" + userUnit + "'.";
+          } else {
+            line4Reason = "Unit '" + userUnit + "' isn't one of the accepted units (" + expectedUnit.join(", ") + ").";
+          }
+        }
       }
-      if (valueOk && unitOk) line4Ok = true;
     }
     if (line4Ok) awarded++;
-    lineResults.push({ line: 4, ok: line4Ok, user: (l4Value + " " + l4Unit).trim() });
+    const userLine4Display = ((l4Value || "").trim() + (l4Unit ? " " + l4Unit : "")).trim() || "(blank)";
+    lineResults.push({ line: 4, ok: line4Ok, user: userLine4Display, reason: line4Reason });
 
     return {
       marksAwarded: awarded,
@@ -1296,7 +1445,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.22";
+  const APP_VERSION = "v1.5.25";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -1821,6 +1970,36 @@
     });
   }
 
+  // v1.5.25: inline-math helper, factored out of renderPromptText so the
+  // same $...$ → KaTeX rendering is available for short item-text strings:
+  // categorise items, MCQ choices, matching pairs, ordering items, multiselect
+  // choices, fillblank tokens. Single-line only (no line-break / bullet
+  // handling — those are prompt-formatting concerns).
+  function renderInlineMathInto(text, container) {
+    if (text == null) return;
+    const parts = String(text).split(/(\$[^$]+\$)/);
+    parts.forEach(function (p) {
+      if (p.length >= 2 && p.charAt(0) === "$" && p.charAt(p.length - 1) === "$") {
+        const math = p.substring(1, p.length - 1);
+        if (typeof window.katex !== "undefined" && window.katex.render) {
+          const span = document.createElement("span");
+          span.className = "prompt-katex";
+          try {
+            window.katex.render(math, span, { throwOnError: false, displayMode: false });
+          } catch (err) {
+            span.textContent = math;
+            span.className = "prompt-math";
+          }
+          container.appendChild(span);
+        } else {
+          container.appendChild(el("code", { class: "prompt-math" }, math));
+        }
+      } else if (p !== "") {
+        container.appendChild(document.createTextNode(p));
+      }
+    });
+  }
+
   // -- Diagram placeholder (§3.5) --
   // Defensively reads both q.diagram.params and q.diagram for the bare-params
   // bug flagged in IMPLEMENTATION_BRIEF_v1.md §9.
@@ -2240,9 +2419,11 @@
           onClick: function () {
             state.selectedItem = (state.selectedItem === i) ? null : i;
             refresh();
-          },
-          text: item.text
+          }
         });
+        // v1.5.25: render KaTeX math in item text rather than dropping it as
+        // a raw string. Items often contain nuclide notation ($^{16}_{8}O$).
+        renderInlineMathInto(item.text, it);
         attachDragSource(it, i);
         itemEls[i] = it;
         strip.appendChild(it);
@@ -2272,6 +2453,8 @@
             },
             text: "×"
           });
+          const itemTextSpan = el("span", { class: "cat-item-text" });
+          renderInlineMathInto(item.text, itemTextSpan);  // v1.5.25
           const placedItem = el("div", {
             class: "cat-item is-placed",
             "data-idx": String(i),
@@ -2281,7 +2464,7 @@
               e.stopPropagation();
             }
           }, [
-            el("span", { class: "cat-item-text", text: item.text }),
+            itemTextSpan,
             removeBtn
           ]);
           attachDragSource(placedItem, i);
@@ -2457,28 +2640,24 @@
     ];
     const inputs = {};
     linesMeta.forEach(function (line) {
-      const row = el("div", { class: "calc-row" });
+      const row = el("div", { class: "calc-row" + (line.num === 4 ? " calc-row-final" : "") });
       row.appendChild(el("div", { class: "calc-row-label", text: line.label }));
-      const left = el("input", {
-        class: "calc-input calc-input-left",
-        type: "text",
-        autocomplete: "off",
-        autocapitalize: "none",
-        spellcheck: "false"
-      });
-      row.appendChild(left);
-      row.appendChild(el("span", { class: "calc-eq", text: "=" }));
-      const right = el("input", {
-        class: "calc-input calc-input-right",
-        type: "text",
-        autocomplete: "off",
-        autocapitalize: "none",
-        spellcheck: "false"
-      });
-      row.appendChild(right);
-      inputs["line" + line.num + "L"] = left;
-      inputs["line" + line.num + "R"] = right;
       if (line.num === 4) {
+        // v1.5.24: line 4 keeps an empty placeholder where the LHS box was
+        // on lines 1-3, renders an = sign in the same column as lines 1-3,
+        // and puts the value box in the RIGHT-input column. The unit follows.
+        // Visually this continues line 3 with `= [value] [unit]`.
+        row.appendChild(el("div", { class: "calc-cell-empty" }));
+        row.appendChild(el("span", { class: "calc-eq", text: "=" }));
+        const value = el("input", {
+          class: "calc-input calc-input-final",
+          type: "text",
+          placeholder: "value",
+          autocomplete: "off",
+          autocapitalize: "none",
+          spellcheck: "false"
+        });
+        row.appendChild(value);
         const unit = el("input", {
           class: "calc-input calc-input-unit",
           type: "text",
@@ -2488,7 +2667,28 @@
           spellcheck: "false"
         });
         row.appendChild(unit);
+        inputs.line4Value = value;
         inputs.line4Unit = unit;
+      } else {
+        const left = el("input", {
+          class: "calc-input calc-input-left",
+          type: "text",
+          autocomplete: "off",
+          autocapitalize: "none",
+          spellcheck: "false"
+        });
+        row.appendChild(left);
+        row.appendChild(el("span", { class: "calc-eq", text: "=" }));
+        const right = el("input", {
+          class: "calc-input calc-input-right",
+          type: "text",
+          autocomplete: "off",
+          autocapitalize: "none",
+          spellcheck: "false"
+        });
+        row.appendChild(right);
+        inputs["line" + line.num + "L"] = left;
+        inputs["line" + line.num + "R"] = right;
       }
       wrap.appendChild(row);
     });
@@ -2500,7 +2700,7 @@
         line1: lr(inputs.line1L, inputs.line1R),
         line2: lr(inputs.line2L, inputs.line2R),
         line3: lr(inputs.line3L, inputs.line3R),
-        line4Value: lr(inputs.line4L, inputs.line4R),
+        line4Value: inputs.line4Value ? inputs.line4Value.value : "",
         line4Unit: inputs.line4Unit ? inputs.line4Unit.value : ""
       };
     }
@@ -2568,8 +2768,8 @@
       current = null;
       card.classList.add("empty");
       card.appendChild(el("div", { class: "qcard-empty" }, [
-        el("div", { class: "qcard-empty-h", text: "You've answered this question." }),
-        el("div", { class: "qcard-empty-p", text: "Click another cell or tile in the coverage map to move on, or use \"Show all\" to broaden the pool." })
+        el("div", { class: "qcard-empty-h", text: "You've just answered this question." }),
+        el("div", { class: "qcard-empty-p", text: "Try one other question first before coming back to this one. Click another cell or tile in the coverage map to move on, or use \"Show all\" to broaden the pool." })
       ]));
       return;
     }
@@ -3028,14 +3228,21 @@
         list
       ]));
     } else if (v.type === "categorise") {
+      // v1.5.25: render math in item text, plus stronger visual distinction
+      // for correct vs incorrect placements (border-left colour + tinted
+      // background). Classes go on the li directly; styling targets li.fb-mp-hit
+      // / li.fb-mp-miss in CSS.
       const items = Array.isArray(v.items) ? v.items : [];
       const placements = result.placements || (meta && meta.placements) || {};
       const list = el("ul", { class: "fb-mp" });
       items.forEach(function (item, i) {
         const userBin = placements[i] || "(unplaced)";
         const correct = (placements[i] === item.bin);
+        const textSpan = el("span", { class: "fb-mp-text" });
+        renderInlineMathInto(item.text, textSpan);
+        textSpan.appendChild(document.createTextNode(" → " + userBin));
         list.appendChild(el("li", { class: correct ? "fb-mp-hit" : "fb-mp-miss" }, [
-          el("span", { class: "fb-mp-text", text: item.text + " → " + userBin }),
+          textSpan,
           correct ? null : el("span", { class: "fb-mp-correct", text: " (correct: " + item.bin + ")" })
         ]));
       });
@@ -3056,6 +3263,45 @@
       });
       fb.appendChild(el("div", { class: "fb-block" }, [
         el("div", { class: "fb-h", text: "Your answers" }),
+        list
+      ]));
+    } else if (v.type === "calc_workings") {
+      // v1.5.23: per-line feedback. Show each of the four lines as the
+      // student typed them, marked ✓ or ✗ from result.lineResults.
+      // Replaces the v1.5.22 fallback that dumped raw JSON.
+      const lineLabels = ["Equation", "Substitute", "Rearrange", "Answer"];
+      const lns = (meta && meta.calcLines) || (result && result.calcLines) || {};
+      const lineResults = (result && result.lineResults) || [];
+      function lineUserText(num) {
+        if (num === 4) {
+          const val = (lns.line4Value || "").trim();
+          const unit = (lns.line4Unit || "").trim();
+          if (val === "" && unit === "") return "(blank)";
+          return (val + (unit ? " " + unit : "")).trim();
+        }
+        const txt = (lns["line" + num] || "").trim();
+        // The renderer concatenates left + " = " + right even when both are
+        // empty, leaving just "=". Treat that as blank.
+        return (txt === "" || txt === "=") ? "(blank)" : txt;
+      }
+      const list = el("ul", { class: "fb-mp fb-calc" });
+      [1, 2, 3, 4].forEach(function (num) {
+        const lr = lineResults.find(function (r) { return r.line === num; });
+        const ok = lr && lr.ok;
+        const reason = lr && lr.reason;
+        const children = [
+          el("div", { class: "fb-calc-row" }, [
+            el("span", { class: "fb-mp-mark", text: ok ? "✓" : "✗" }),
+            el("span", { class: "fb-mp-text", text: " " + lineLabels[num - 1] + ": " + lineUserText(num) })
+          ])
+        ];
+        if (!ok && reason) {
+          children.push(el("div", { class: "fb-calc-reason", text: reason }));
+        }
+        list.appendChild(el("li", { class: ok ? "fb-mp-hit" : "fb-mp-miss" }, children));
+      });
+      fb.appendChild(el("div", { class: "fb-block" }, [
+        el("div", { class: "fb-h", text: "Your working" }),
         list
       ]));
     } else if (v.type === "grid") {

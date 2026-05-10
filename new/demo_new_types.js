@@ -249,6 +249,50 @@
       markingMode: "per_row",
       explanation: "Alpha is short-range and ionising (smoke detector, static eliminator). Beta has a moderate range (paper thickness). Gamma is highly penetrating (steel gauging, medical tracer, sterilisation).",
       examinerNote: ""
+    },
+
+    // ── calc_workings (v1.5.22 — added 2026-05-08; revised v1.5.23) ──────
+    // This is an electricity question (V = I × R), not a Topic 7 question.
+    // Tagged under `units` so it shows up somewhere in the coverage map; the
+    // sole purpose is to give Smith something to poke at to verify the
+    // four-line calculation interface and per-line marking behave correctly.
+    //
+    // Lines 1-3 are split into [left] = [right] inputs. Line 4 is just a
+    // [value] [unit] pair (no `=` shown).
+    //
+    // Should score 4/4:
+    //   Line 1: "V" / "I × R"  (or "V" / "IR", or rearranged like "R" / "V/I")
+    //   Line 2: "V" / "2 × 5"
+    //   Line 3: "V" / "10"     (allowRepeat=true means same as line 2 is ok)
+    //   Line 4: "10" / "V"
+    //
+    // Edge cases worth poking:
+    //   - Wrong arithmetic line 2 ("V = 2 + 5" → 1/4 — line 1 only)
+    //   - Right value with lowercase v unit ("10" / "v" → 3/4: case-sensitive)
+    //   - Rearranged line 1 ("R" / "V/I" → still scores line 1 from algebraic-equivalence)
+    {
+      id: "demo_calc_workings_ohm",
+      type: "calc_workings",
+      tags: ["units"],
+      specRefs: [],
+      difficultyRating: 1,
+      marks: 4,
+      prompt: "(DEMO — not a Topic 7 question.) A current of 2 A flows through a resistor of resistance 5 Ω. Calculate the potential difference across the resistor.",
+      knowns: { I: 2, R: 5 },
+      unknown: "V",
+      equationCanonicalForms: [
+        "V = I × R",
+        "V = IR",
+        "V = R × I",
+        "V = RI"
+      ],
+      expectedFinalValue: 10,
+      expectedUnit: ["V", "volts", "volt"],
+      tolerance: 0.005,
+      allowRepeat: true,
+      requireUnit: true,
+      explanation: "V = I × R, so V = 2 × 5 = 10 V. The potential difference across the resistor is 10 volts.",
+      examinerNote: "Demo question for the calc_workings type. Not from any past paper; not on the 4SS0 spec; here only to verify the four-line marker behaves correctly."
     }
 
   ];
