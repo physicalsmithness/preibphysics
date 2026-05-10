@@ -894,6 +894,310 @@
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
+     3b-bis. calc_workings type (v1.5.22, added 2026-05-08)
+
+     Four-line structured calculation question. Mirrors how calculations are
+     taught: equation, substitute, rearrange, final answer with unit. Lets
+     students earn credit for method even if they slip on arithmetic.
+
+     The marker needs to parse user-entered equations like "12 = I × 5" and
+     "I = 12 / 5". A small recursive-descent expression parser handles
+     numbers, single-letter symbols, +-×÷, parens. No symbolic algebra — just
+     enough to identify which side has the unknown and evaluate the other
+     side numerically given the known values.
+
+     See SCHEMA_v0_5_NEW_TYPES.md §7 for the full type spec.
+     ────────────────────────────────────────────────────────────────────────── */
+
+  // Tokenize an expression or equation string.
+  function calcTokenize(str) {
+    const tokens = [];
+    const s = String(str || "")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/[−–—]/g, "-")
+      .trim();
+    let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (/[0-9.]/.test(c)) {
+        // Number, possibly with e-notation
+        let j = i + 1;
+        while (j < s.length) {
+          if (/[0-9.]/.test(s[j])) { j++; continue; }
+          if ((s[j] === "e" || s[j] === "E") && j + 1 < s.length) {
+            j++;
+            if (s[j] === "+" || s[j] === "-") j++;
+            continue;
+          }
+          break;
+        }
+        const numStr = s.slice(i, j);
+        const num = parseFloat(numStr);
+        if (!isFinite(num)) { tokens.push({ kind: "unknown", value: numStr }); }
+        else tokens.push({ kind: "num", value: num });
+        i = j;
+      } else if (/[a-zA-Z]/.test(c)) {
+        // Single-character symbol (multi-char treated as separate; physics symbols are one letter)
+        tokens.push({ kind: "sym", value: c });
+        i++;
+      } else if ("+-*/".indexOf(c) !== -1) {
+        tokens.push({ kind: "op", value: c });
+        i++;
+      } else if (c === "(") { tokens.push({ kind: "lparen" }); i++; }
+      else if (c === ")") { tokens.push({ kind: "rparen" }); i++; }
+      else if (c === "=") { tokens.push({ kind: "eq" }); i++; }
+      else { tokens.push({ kind: "unknown", value: c }); i++; }
+    }
+    return tokens;
+  }
+
+  // Parse a token stream into an AST. Recursive descent. Returns [ast, nextPos].
+  function calcParseExpr(tokens, pos) {
+    function parsePrimary(p) {
+      const t = tokens[p];
+      if (!t) throw new Error("Unexpected end");
+      if (t.kind === "num") return [{ kind: "num", value: t.value }, p + 1];
+      if (t.kind === "sym") {
+        // Implicit multiplication: "IR" is two adjacent syms — treat as I*R
+        let node = { kind: "sym", value: t.value };
+        let p2 = p + 1;
+        while (tokens[p2] && tokens[p2].kind === "sym") {
+          node = { kind: "binop", op: "*", left: node, right: { kind: "sym", value: tokens[p2].value } };
+          p2++;
+        }
+        // Number-then-sym (e.g. "2I"): handle in higher level via primary chain
+        return [node, p2];
+      }
+      if (t.kind === "lparen") {
+        const [expr, p2] = parseAddSub(p + 1);
+        if (tokens[p2] && tokens[p2].kind === "rparen") return [expr, p2 + 1];
+        throw new Error("Missing )");
+      }
+      if (t.kind === "op" && (t.value === "-" || t.value === "+")) {
+        const [expr, p2] = parsePrimary(p + 1);
+        if (t.value === "-") return [{ kind: "neg", arg: expr }, p2];
+        return [expr, p2];
+      }
+      throw new Error("Unexpected token: " + JSON.stringify(t));
+    }
+    function parseImplicit(p) {
+      // Handle "2I" as 2*I
+      let [left, p2] = parsePrimary(p);
+      while (tokens[p2] && (tokens[p2].kind === "sym" || tokens[p2].kind === "lparen")) {
+        const [right, p3] = parsePrimary(p2);
+        left = { kind: "binop", op: "*", left: left, right: right };
+        p2 = p3;
+      }
+      return [left, p2];
+    }
+    function parseMulDiv(p) {
+      let [left, p2] = parseImplicit(p);
+      while (tokens[p2] && tokens[p2].kind === "op" && (tokens[p2].value === "*" || tokens[p2].value === "/")) {
+        const op = tokens[p2].value;
+        const [right, p3] = parseImplicit(p2 + 1);
+        left = { kind: "binop", op: op, left: left, right: right };
+        p2 = p3;
+      }
+      return [left, p2];
+    }
+    function parseAddSub(p) {
+      let [left, p2] = parseMulDiv(p);
+      while (tokens[p2] && tokens[p2].kind === "op" && (tokens[p2].value === "+" || tokens[p2].value === "-")) {
+        const op = tokens[p2].value;
+        const [right, p3] = parseMulDiv(p2 + 1);
+        left = { kind: "binop", op: op, left: left, right: right };
+        p2 = p3;
+      }
+      return [left, p2];
+    }
+    return parseAddSub(pos);
+  }
+
+  // Parse "left = right" into { left: AST, right: AST }.
+  function calcParseEqn(str) {
+    const tokens = calcTokenize(str);
+    let eqIdx = -1;
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].kind === "eq") { eqIdx = i; break; }
+    }
+    if (eqIdx === -1) throw new Error("No '=' in equation");
+    const leftToks = tokens.slice(0, eqIdx);
+    const rightToks = tokens.slice(eqIdx + 1);
+    if (leftToks.length === 0 || rightToks.length === 0) throw new Error("Empty side");
+    const [left] = calcParseExpr(leftToks, 0);
+    const [right] = calcParseExpr(rightToks, 0);
+    return { left: left, right: right };
+  }
+
+  // Evaluate an AST given a variable bindings object.
+  function calcEval(ast, vars) {
+    if (!ast) throw new Error("Null AST");
+    if (ast.kind === "num") return ast.value;
+    if (ast.kind === "sym") {
+      if (vars && Object.prototype.hasOwnProperty.call(vars, ast.value)) return vars[ast.value];
+      throw new Error("Unbound symbol: " + ast.value);
+    }
+    if (ast.kind === "neg") return -calcEval(ast.arg, vars);
+    if (ast.kind === "binop") {
+      const l = calcEval(ast.left, vars);
+      const r = calcEval(ast.right, vars);
+      if (ast.op === "+") return l + r;
+      if (ast.op === "-") return l - r;
+      if (ast.op === "*") return l * r;
+      if (ast.op === "/") return l / r;
+    }
+    throw new Error("Unknown AST kind: " + ast.kind);
+  }
+
+  // Collect all symbols in an AST.
+  function calcSymbols(ast) {
+    const out = {};
+    function walk(node) {
+      if (!node) return;
+      if (node.kind === "sym") out[node.value] = true;
+      if (node.kind === "neg") walk(node.arg);
+      if (node.kind === "binop") { walk(node.left); walk(node.right); }
+    }
+    walk(ast);
+    return out;
+  }
+
+  // Light normalization for line 1 exact-match comparison.
+  function calcNormEqn(str) {
+    return String(str || "")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/[−–—]/g, "-")
+      .replace(/\s+/g, "")
+      .toLowerCase();
+  }
+
+  // The marker: per-line check, returns marksAwarded out of 4 plus per-line
+  // results so the renderer can show which line the student got wrong.
+  function markCalcWorkings(q, lines) {
+    const knowns = (q.knowns && typeof q.knowns === "object") ? q.knowns : {};
+    const unknown = q.unknown || "";
+    const expectedFinalValue = (typeof q.expectedFinalValue === "number") ? q.expectedFinalValue : null;
+    const expectedUnit = Array.isArray(q.expectedUnit)
+      ? q.expectedUnit.map(function (u) { return String(u || "").toLowerCase().trim(); })
+      : [];
+    const tolerance = (typeof q.tolerance === "number") ? q.tolerance
+                    : Math.max(Math.abs(expectedFinalValue || 0) * 0.005, 0.0001);
+    const allowRepeat = !!q.allowRepeat;
+    const requireUnit = q.requireUnit !== false;
+    const possible = q.marks || 4;
+
+    const l1 = (lines && lines.line1) ? String(lines.line1) : "";
+    const l2 = (lines && lines.line2) ? String(lines.line2) : "";
+    const l3 = (lines && lines.line3) ? String(lines.line3) : "";
+    const l4Value = (lines && lines.line4Value) ? String(lines.line4Value) : "";
+    const l4Unit = (lines && lines.line4Unit) ? String(lines.line4Unit) : "";
+
+    const lineResults = [];
+    let awarded = 0;
+
+    // Line 1: equation match (exact after normalisation)
+    const canonical = (q.equationCanonicalForms || []).map(calcNormEqn);
+    const l1Norm = calcNormEqn(l1);
+    const line1Ok = l1Norm !== "" && canonical.indexOf(l1Norm) !== -1;
+    if (line1Ok) awarded++;
+    lineResults.push({ line: 1, ok: line1Ok, user: l1 });
+
+    // Line 2: substitution. Identify which side has the unknown, check the
+    // other side's numeric value matches (when evaluated with knowns).
+    let line2Ok = false;
+    try {
+      const eqn = calcParseEqn(l2);
+      const leftSyms = calcSymbols(eqn.left);
+      const rightSyms = calcSymbols(eqn.right);
+      const unknownInLeft = !!leftSyms[unknown];
+      const unknownInRight = !!rightSyms[unknown];
+      if (unknownInLeft && !unknownInRight) {
+        const val = calcEval(eqn.right, knowns);
+        if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line2Ok = true;
+      } else if (unknownInRight && !unknownInLeft) {
+        const leftVal = calcEval(eqn.left, knowns);
+        if (expectedFinalValue !== null && Math.abs(leftVal - expectedFinalValue) > tolerance) {
+          // Left side numeric doesn't match expected — could still be a valid substitution
+          // where left is the known-from-prompt value. Accept if leftVal is one of the knowns.
+          const knownVals = Object.keys(knowns).map(function (k) { return knowns[k]; });
+          if (knownVals.some(function (v) { return Math.abs(v - leftVal) <= tolerance; })) {
+            // Substitute leftVal for unknown into right and check it's consistent.
+            const ext = Object.assign({}, knowns); ext[unknown] = leftVal;
+            try {
+              const rightVal = calcEval(eqn.right, ext);
+              if (Math.abs(leftVal - rightVal) <= tolerance) line2Ok = true;
+            } catch (e2) {}
+          }
+        } else if (expectedFinalValue !== null) {
+          line2Ok = true;
+        }
+      }
+    } catch (e) { line2Ok = false; }
+    if (line2Ok) awarded++;
+    lineResults.push({ line: 2, ok: line2Ok, user: l2 });
+
+    // Line 3: rearrangement. Unknown should be alone on one side; other side
+    // evaluates to expectedFinalValue. If allowRepeat and line3 == line2, accept.
+    let line3Ok = false;
+    if (allowRepeat && calcNormEqn(l3) === calcNormEqn(l2) && line2Ok) {
+      line3Ok = true;
+    } else {
+      try {
+        const eqn = calcParseEqn(l3);
+        const leftSyms = calcSymbols(eqn.left);
+        const rightSyms = calcSymbols(eqn.right);
+        const leftKeys = Object.keys(leftSyms);
+        const rightKeys = Object.keys(rightSyms);
+        const unknownInLeft = !!leftSyms[unknown];
+        const unknownInRight = !!rightSyms[unknown];
+        if (unknownInLeft && leftKeys.length === 1 && !rightSyms[unknown]) {
+          const val = calcEval(eqn.right, knowns);
+          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line3Ok = true;
+        } else if (unknownInRight && rightKeys.length === 1 && !leftSyms[unknown]) {
+          const val = calcEval(eqn.left, knowns);
+          if (expectedFinalValue !== null && Math.abs(val - expectedFinalValue) <= tolerance) line3Ok = true;
+        }
+      } catch (e) { line3Ok = false; }
+    }
+    if (line3Ok) awarded++;
+    lineResults.push({ line: 3, ok: line3Ok, user: l3 });
+
+    // Line 4: final answer (numeric value) + unit.
+    let line4Ok = false;
+    let valueStr = l4Value.trim();
+    // Strip optional "X = " prefix
+    if (unknown) {
+      const prefixRe = new RegExp("^\\s*" + unknown + "\\s*=\\s*", "i");
+      valueStr = valueStr.replace(prefixRe, "");
+    }
+    valueStr = valueStr.replace(/[−–—]/g, "-").trim();
+    const numMatch = valueStr.match(/^[+\-]?[\d.]+(?:[eE][+\-]?\d+)?/);
+    if (numMatch && expectedFinalValue !== null) {
+      const value = parseFloat(numMatch[0]);
+      const valueOk = isFinite(value) && Math.abs(value - expectedFinalValue) <= tolerance;
+      let unitOk = true;
+      if (requireUnit) {
+        const userUnit = l4Unit.toLowerCase().trim();
+        unitOk = userUnit !== "" && expectedUnit.indexOf(userUnit) !== -1;
+      }
+      if (valueOk && unitOk) line4Ok = true;
+    }
+    if (line4Ok) awarded++;
+    lineResults.push({ line: 4, ok: line4Ok, user: (l4Value + " " + l4Unit).trim() });
+
+    return {
+      marksAwarded: awarded,
+      marksPossible: possible,
+      status: statusFromFraction(awarded, possible),
+      lineResults: lineResults,
+      calcLines: lines
+    };
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
      3c. Per-atom score attribution (v0.6+, added 2026-05-08)
 
      For multi-cell question types (multiselect, grid, categorise, fillblank),
@@ -992,13 +1296,13 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.21";
+  const APP_VERSION = "v1.5.22";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
   // v1.5: structured-interaction types added (matching, multiselect, etc.).
   // v1.5.1: grid type added for matrix multi-select (practical safety etc.).
-  const TYPES = ["mcq", "short", "long", "numeric", "matching", "multiselect", "ordering", "categorise", "fillblank", "grid"];
+  const TYPES = ["mcq", "short", "long", "numeric", "matching", "multiselect", "ordering", "categorise", "fillblank", "grid", "calc_workings"];
 
   const TYPE_LABELS = {
     mcq: "MCQ",
@@ -2138,6 +2442,96 @@
     }));
   }
 
+  // calc_workings renderer (v1.5.22). Four lines, each with two text inputs
+  // either side of an "=" sign. Line 4 has an additional unit input.
+  // Submit reads each input, concatenates left/right with " = ", and calls
+  // markCalcWorkings. Per-line correctness is in result.lineResults; the
+  // standard feedback panel shows the overall score (4 marks possible).
+  function renderCalcWorkingsInput(v, inputWrap) {
+    const wrap = el("div", { class: "calc-workings" });
+    const linesMeta = [
+      { num: 1, label: "Equation" },
+      { num: 2, label: "Substitute" },
+      { num: 3, label: "Rearrange" },
+      { num: 4, label: "Answer" }
+    ];
+    const inputs = {};
+    linesMeta.forEach(function (line) {
+      const row = el("div", { class: "calc-row" });
+      row.appendChild(el("div", { class: "calc-row-label", text: line.label }));
+      const left = el("input", {
+        class: "calc-input calc-input-left",
+        type: "text",
+        autocomplete: "off",
+        autocapitalize: "none",
+        spellcheck: "false"
+      });
+      row.appendChild(left);
+      row.appendChild(el("span", { class: "calc-eq", text: "=" }));
+      const right = el("input", {
+        class: "calc-input calc-input-right",
+        type: "text",
+        autocomplete: "off",
+        autocapitalize: "none",
+        spellcheck: "false"
+      });
+      row.appendChild(right);
+      inputs["line" + line.num + "L"] = left;
+      inputs["line" + line.num + "R"] = right;
+      if (line.num === 4) {
+        const unit = el("input", {
+          class: "calc-input calc-input-unit",
+          type: "text",
+          placeholder: "unit",
+          autocomplete: "off",
+          autocapitalize: "none",
+          spellcheck: "false"
+        });
+        row.appendChild(unit);
+        inputs.line4Unit = unit;
+      }
+      wrap.appendChild(row);
+    });
+    inputWrap.appendChild(wrap);
+
+    function readLines() {
+      function lr(L, R) { return (L.value + " = " + R.value).trim(); }
+      return {
+        line1: lr(inputs.line1L, inputs.line1R),
+        line2: lr(inputs.line2L, inputs.line2R),
+        line3: lr(inputs.line3L, inputs.line3R),
+        line4Value: lr(inputs.line4L, inputs.line4R),
+        line4Unit: inputs.line4Unit ? inputs.line4Unit.value : ""
+      };
+    }
+
+    function doSubmit() {
+      dbg("input.submit.calc_workings", null);
+      const lns = readLines();
+      const result = markCalcWorkings(v, lns);
+      showFeedback(result, { rawResponse: JSON.stringify(lns), chosenIndex: null, calcLines: lns });
+    }
+
+    inputWrap.appendChild(el("button", {
+      class: "btn btn-primary submit-btn",
+      type: "button",
+      onClick: doSubmit,
+      text: "Check answer"
+    }));
+
+    // Enter on any input submits the whole thing.
+    Object.keys(inputs).forEach(function (k) {
+      inputs[k].addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          doSubmit();
+        }
+      });
+    });
+
+    setTimeout(function () { if (inputs.line1L) inputs.line1L.focus(); }, 30);
+  }
+
 
   // -- Question card rendering --
   function renderQuestion() {
@@ -2253,6 +2647,12 @@
       brokenReason = "Fill-in-the-blank question is missing blanks.";
     } else if (type === "grid" && (!Array.isArray(v.rows) || !Array.isArray(v.columns) || v.rows.length === 0 || v.columns.length === 0)) {
       brokenReason = "Grid question is missing rows or columns.";
+    } else if (type === "calc_workings" && (
+      !Array.isArray(v.equationCanonicalForms) || v.equationCanonicalForms.length === 0
+      || typeof v.expectedFinalValue !== "number"
+      || !v.unknown
+    )) {
+      brokenReason = "calc_workings question is missing equationCanonicalForms, expectedFinalValue, or unknown.";
     } else if ((type === "short" || type === "long") && !Array.isArray(v.markPoints)) {
       // Not strictly broken — a 0-mark FYI question could exist — but flag it
       // because most short/long questions need markPoints to mark anything.
@@ -2367,6 +2767,8 @@
       renderFillblankInput(v, inputWrap);
     } else if (type === "grid") {
       renderGridInput(v, inputWrap);
+    } else if (type === "calc_workings") {
+      renderCalcWorkingsInput(v, inputWrap);
     } else { // short
       const inp = el("input", {
         class: "ans-text",
