@@ -1337,13 +1337,111 @@
     const userLine4Display = ((l4Value || "").trim() + (l4Unit ? " " + l4Unit : "")).trim() || "(blank)";
     lineResults.push({ line: 4, ok: line4Ok, user: userLine4Display, reason: line4Reason });
 
+    // v1.5.26: derive canonical error-type codes from the line-level reasons.
+    // Soft launch — these are stored on the attempt record but NOT shown to
+    // the student. See ERROR_TYPES registry below for the canonical code list
+    // and Smith's hand-marking taxonomy in project_error_taxonomy.md memory.
+    const errorTypes = calcDeriveErrorTypes(lineResults);
+
     return {
       marksAwarded: awarded,
       marksPossible: possible,
       status: statusFromFraction(awarded, possible),
       lineResults: lineResults,
+      errorTypes: errorTypes,
       calcLines: lines
     };
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     3b-ter. Error-type taxonomy (v1.5.26, added 2026-05-10)
+
+     Smith's hand-marking taxonomy mapped to canonical codes. Each code is
+     snake_case and stable; the display label can change without breaking
+     stored data. Two label variants: `internal` (Smith / teacher view, uses
+     Smith's terminology like "SubF") and `student` (gentler; not shown yet
+     but reserved).
+
+     Currently populated only for calc_workings line-level errors (Band 1 of
+     the taxonomy). Band 2 (dimensioned knowns, prefix conversions, expected
+     form) will land as schema additions; Band 3 (question-shape metadata) is
+     parked; Band 4 (descriptive / conceptual) is partially covered by the
+     per-distractor MCQ tagging (v1.5.26 schema; not yet authored).
+     ────────────────────────────────────────────────────────────────────────── */
+
+  const ERROR_TYPES = {
+    // Line 1 (equation)
+    equation_wrong:           { internal: "Wrong equation",        student: "The equation isn't quite right." },
+    equation_made_up:         { internal: "Made an equation up",   student: "The equation doesn't follow from the data." },
+    equation_blank:           { internal: "Left blank (equation)", student: "No equation written." },
+    equation_unknown_symbol:  { internal: "Unknown symbol",        student: "Used a variable that isn't in the question." },
+    // Line 2 (substitution)
+    sub_failure:              { internal: "SubF",                  student: "Values weren't substituted in." },
+    sub_inconsistent:         { internal: "SubP / calc",           student: "Substitution doesn't balance — wrong value or arithmetic." },
+    // Line 3 (rearrangement)
+    algebra_error:            { internal: "Algebra errors",        student: "Rearrangement isn't right." },
+    rearrange_not_isolated:   { internal: "Algebra errors",        student: "Unknown not isolated on one side." },
+    rearrange_blank:          { internal: "Calc unattempted",      student: "No rearrangement attempted." },
+    // Line 4 (final answer)
+    value_wrong:              { internal: "Calculation error",     student: "Final value doesn't match." },
+    unit_missing:             { internal: "unit",                  student: "Unit missing." },
+    unit_wrong_case:          { internal: "unit",                  student: "Unit case matters." },
+    unit_wrong:               { internal: "unit",                  student: "Unit isn't accepted." },
+    final_unreadable:         { internal: "Care",                  student: "Final answer isn't a number." },
+    // Catch-all
+    parse_error:              { internal: "Randomly combines numbers", student: "Couldn't read this line." }
+  };
+
+  // Map a single line's failure reason to one or more canonical error codes.
+  // Mapping is deterministic by reason-string content (the reasons are author-
+  // controlled fixed strings emitted by markCalcWorkings).
+  function calcLineToErrorCodes(line, reason) {
+    if (!reason) return [];
+    const r = reason.toLowerCase();
+    const out = [];
+    if (line === 1) {
+      if (r.indexOf("write the equation") === 0) out.push("equation_blank");
+      else if (r.indexOf("unknown symbol") === 0) out.push("equation_unknown_symbol");
+      else if (r.indexOf("two sides don't balance") !== -1) out.push("equation_wrong");
+      else if (r.indexOf("couldn't read") !== -1) out.push("equation_made_up");
+    } else if (line === 2) {
+      if (r.indexOf("plugged in") !== -1 && r.indexOf("again") !== -1) out.push("sub_failure"); // blank line
+      else if (r.indexOf("haven't substituted any numbers") !== -1) out.push("sub_failure");
+      else if (r.indexOf("unknown symbol") === 0) out.push("equation_unknown_symbol");
+      else if (r.indexOf("two sides don't agree") !== -1) out.push("sub_inconsistent");
+      else if (r.indexOf("couldn't read") !== -1) out.push("parse_error");
+    } else if (line === 3) {
+      if (r.indexOf("rearrange so the unknown is alone") !== -1) out.push("rearrange_blank");
+      else if (r.indexOf("unknown symbol") === 0) out.push("equation_unknown_symbol");
+      else if (r.indexOf("unknown") !== -1 && r.indexOf("alone on one side") !== -1) out.push("rearrange_not_isolated");
+      else if (r.indexOf("evaluates to") !== -1 && r.indexOf("not") !== -1) out.push("algebra_error");
+      else if (r.indexOf("doesn't contain the unknown") !== -1) out.push("rearrange_not_isolated");
+      else if (r.indexOf("couldn't read") !== -1) out.push("parse_error");
+    } else if (line === 4) {
+      if (r.indexOf("write the final answer") !== -1) out.push("rearrange_blank");
+      else if (r.indexOf("couldn't read") !== -1 && r.indexOf("as a number") !== -1) out.push("final_unreadable");
+      else if (r.indexOf("unit case matters") !== -1) out.push("unit_wrong_case");
+      else if (r.indexOf("don't forget the unit") !== -1) out.push("unit_missing");
+      else if (r.indexOf("unit") !== -1 && r.indexOf("isn't one of the accepted") !== -1) out.push("unit_wrong");
+      else if (r.indexOf("value") !== -1 && r.indexOf("doesn't match") !== -1) {
+        out.push("value_wrong");
+        if (r.indexOf("unit") !== -1) out.push("unit_wrong");
+      }
+    }
+    return out;
+  }
+
+  // Aggregate per-line error codes into a deduped list for the whole question.
+  function calcDeriveErrorTypes(lineResults) {
+    const seen = {};
+    const out = [];
+    (lineResults || []).forEach(function (lr) {
+      if (lr.ok) return;
+      calcLineToErrorCodes(lr.line, lr.reason).forEach(function (code) {
+        if (!seen[code]) { seen[code] = true; out.push(code); }
+      });
+    });
+    return out;
   }
 
   /* ──────────────────────────────────────────────────────────────────────────
@@ -1445,7 +1543,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.25";
+  const APP_VERSION = "v1.5.26";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -3091,6 +3189,21 @@
     // The full score map is stored on the attempt so coverageForAtom can
     // average the right value per atom rather than always using marks/possible.
     const atomScores = computeAtomScores(v, result);
+    // v1.5.26: error-type tagging (soft launch). Three sources:
+    //   (a) result.errorTypes — emitted by calc_workings marker (Band 1).
+    //   (b) MCQ chosen distractor's distractorErrorTypes[chosenIndex] — declared
+    //       per-question by the author (Band 4 via tagged distractors).
+    //   (c) (future) result.errorTypes from other markers as they grow.
+    // Stored on the attempt but not shown to the student. Used for analytics.
+    let errorTypes = Array.isArray(result.errorTypes) ? result.errorTypes.slice() : [];
+    if (v.type === "mcq" && v.distractorErrorTypes && typeof meta.chosenIndex === "number") {
+      const distTypes = v.distractorErrorTypes[String(meta.chosenIndex)];
+      if (Array.isArray(distTypes)) {
+        distTypes.forEach(function (code) {
+          if (errorTypes.indexOf(code) === -1) errorTypes.push(code);
+        });
+      }
+    }
     const attempt = {
       timestamp: new Date().toISOString(),
       questionId: current.question.id,
@@ -3103,7 +3216,8 @@
       marksPossible: result.marksPossible,
       status: result.status,
       rawResponse: meta.rawResponse,
-      chosenIndex: meta.chosenIndex
+      chosenIndex: meta.chosenIndex,
+      errorTypes: errorTypes  // v1.5.26: canonical codes, see ERROR_TYPES registry
     };
     recordAttempt(attempt);
 
@@ -4652,6 +4766,29 @@
     store: function () { return store; },
     coverageForSubtag: coverageForSubtag,
     SUBTAG_COUNTS: SUBTAG_COUNTS,
+    // v1.5.26: error-type inspection helpers. Behind-the-scenes data
+    // collected for analysis; no UI yet. Smith pokes via dev console.
+    ERROR_TYPES: ERROR_TYPES,
+    errorTypeAttempts: function () {
+      return store.attempts.filter(function (a) { return Array.isArray(a.errorTypes) && a.errorTypes.length > 0; });
+    },
+    errorTypeCounts: function () {
+      const counts = {};
+      store.attempts.forEach(function (a) {
+        if (!Array.isArray(a.errorTypes)) return;
+        a.errorTypes.forEach(function (code) {
+          counts[code] = (counts[code] || 0) + 1;
+        });
+      });
+      return counts;
+    },
+    errorTypeReport: function () {
+      const counts = window.SmithicsDev.errorTypeCounts();
+      return Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).map(function (code) {
+        const entry = ERROR_TYPES[code] || { internal: "(unknown)" };
+        return { code: code, label: entry.internal, count: counts[code] };
+      });
+    },
     seedFakeAttempts: function (n) {
       const subtagIds = Object.keys(SUBTAG_INDEX).filter(function (id) { return SUBTAG_COUNTS[id] > 0; });
       for (let i = 0; i < n; i++) {
