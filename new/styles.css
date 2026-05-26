@@ -244,6 +244,17 @@ body {
   font-size: 12px;
   color: var(--ink-2);
 }
+.diagram-error {
+  border-color: var(--bad);
+  background: color-mix(in oklab, var(--bad) 4%, var(--paper));
+}
+/* v1.5.27: circuit-diagram wrapper for renderCircuitDSL SVG output. */
+.circuit-diagram {
+  margin: 14px 0 18px;
+  display: flex;
+  justify-content: center;
+}
+.circuit-diagram svg { max-width: 100%; height: auto; }
 
 /* Input area */
 .qinput { margin-top: 12px; }

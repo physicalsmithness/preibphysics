@@ -1543,7 +1543,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.26";
+  const APP_VERSION = "v1.5.28";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -2101,8 +2101,36 @@
   // -- Diagram placeholder (§3.5) --
   // Defensively reads both q.diagram.params and q.diagram for the bare-params
   // bug flagged in IMPLEMENTATION_BRIEF_v1.md §9.
+  //
+  // v1.5.27 (2026-05-10): kind === "circuit" routes to renderCircuitDSL from
+  // the loaded circuit_diagram.js module. Other kinds still fall through to
+  // the placeholder rendering. If the DSL parser throws, the placeholder
+  // shows with an error chip so the author can see what went wrong.
   function renderDiagramPlaceholder(diagram) {
     if (!diagram || !diagram.kind) return null;
+
+    // Circuit DSL — wire the canonical renderer if loaded.
+    if (diagram.kind === "circuit" && typeof window.renderCircuitDSL === "function") {
+      const source = (diagram.source != null) ? String(diagram.source)
+                   : (diagram.params && diagram.params.source != null) ? String(diagram.params.source)
+                   : "";
+      if (source.trim() !== "") {
+        try {
+          const svg = window.renderCircuitDSL(source);
+          const wrap = el("div", { class: "circuit-diagram" });
+          wrap.appendChild(svg);
+          return wrap;
+        } catch (e) {
+          // Fall through to placeholder with the parse-error message visible.
+          return el("div", { class: "diagram-placeholder diagram-error" }, [
+            el("div", { class: "dp-head", text: "[Circuit DSL error]" }),
+            el("div", { class: "dp-body", text: e && e.message ? e.message : String(e) }),
+            el("div", { class: "dp-body", text: "Source: " + source })
+          ]);
+        }
+      }
+    }
+
     // Prefer diagram.params; fall back to the diagram object itself for the
     // two `nuclide_symbol` entries authored with bare params.
     const params = (diagram.params && typeof diagram.params === "object") ? diagram.params : diagram;
