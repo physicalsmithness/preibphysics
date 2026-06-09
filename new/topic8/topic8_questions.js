@@ -2082,11 +2082,16 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "That describes a main sequence star, the stage that begins after a nebula has collapsed and started fusion. A nebula is before that stage.",
       "2": "That describes a red giant, a much later stage in the lifecycle. A nebula is the very first stage.",
-      "3": "That describes a white dwarf, the final stage of a Sun-mass star's life — the opposite end of the lifecycle from a nebula."
+      "3": "That describes a white dwarf, the final stage of a Sun-mass star's life. A nebula sits at the opposite end of the lifecycle."
     },
     "marks": 1,
     "explanation": "A nebula is a large, diffuse cloud of gas (mostly hydrogen) and dust in space. A Sun-mass star is born when gravity pulls a region of a nebula together and compresses it. At this earliest stage, no fusion is happening yet.",
-    "examinerNote": "The three distractors are the three other lifecycle stages — picking one of them tells you which stage you've confused with a nebula."
+    "examinerNote": "The three distractors are the three other lifecycle stages; picking one of them tells you which stage you've confused with a nebula.",
+    "commonMisconceptions": [
+      "nebula confused with another lifecycle stage",
+      "nebula thought to already be a fusing star",
+      "nebula assumed smaller than a star"
+    ]
   },
 
   {
@@ -2110,8 +2115,13 @@ window.PREIB_TOPIC8_QUESTIONS = [
       "3": "A nebula is enormous (much larger than a star), and no fusion of any kind is happening in it. Helium fusion happens in a red giant's core, much later in the lifecycle."
     },
     "marks": 1,
-    "explanation": "A nebula is much larger than a star — a vast cloud of gas and dust spanning many light-years. No fusion is happening because the gas isn't dense or hot enough yet; it has to collapse under gravity first before fusion can begin.",
-    "examinerNote": "Three properties of a nebula are tested at once: its size, its fuel, and whether fusion is happening. The correct answer pinpoints all three."
+    "explanation": "A nebula is much larger than a star: a vast cloud of gas and dust spanning many light-years. No fusion is happening because the gas isn't dense or hot enough yet; it has to collapse under gravity first before fusion can begin.",
+    "examinerNote": "Three properties of a nebula are tested at once: its size, its fuel, and whether fusion is happening. The correct answer pinpoints all three.",
+    "commonMisconceptions": [
+      "nebula thought to already fuse hydrogen",
+      "nebula thought smaller than a star (rather than vastly larger)",
+      "helium fusion attributed to wrong stage"
+    ]
   },
 
   {
@@ -2130,13 +2140,17 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "answerIndex": 0,
     "distractorRationales": {
-      "1": "The Sun's surface is around 5800 K — that's the temperature of a star, not of an unformed cloud of gas. A nebula has no fusion to heat it up.",
-      "2": "Hydrogen fusion requires temperatures of millions of kelvin. A nebula is far too cold for that — fusion only starts once gravity has compressed and heated the cloud enough.",
+      "1": "The Sun's surface is around 5800 K; that's the temperature of a star, not of an unformed cloud of gas. A nebula has no fusion to heat it up.",
+      "2": "Hydrogen fusion requires temperatures of millions of kelvin. A nebula is far too cold for that; fusion only starts once gravity has compressed and heated the cloud enough.",
       "3": "Helium fusion requires even higher temperatures than hydrogen fusion, and only occurs in the cores of red giant stars. A nebula has not yet become a star, let alone reached the helium-fusion stage."
     },
     "marks": 1,
-    "explanation": "Before gravitational collapse has compressed and heated a forming star, a nebula sits at the cold temperature of interstellar space — only a few kelvin above absolute zero. The collapse is what heats the core enough to start hydrogen fusion.",
-    "examinerNote": "Distractors mark progressively hotter conditions — picking one signals you think the nebula is already farther along the lifecycle than it actually is."
+    "explanation": "Before gravitational collapse has compressed and heated a forming star, a nebula sits at the cold temperature of interstellar space, only a few kelvin above absolute zero. The collapse is what heats the core enough to start hydrogen fusion.",
+    "examinerNote": "Distractors mark progressively hotter conditions; picking one signals you think the nebula is already farther along the lifecycle than it actually is.",
+    "commonMisconceptions": [
+      "nebula assumed to be hot like a star",
+      "nebula thought already hot enough for fusion"
+    ]
   },
 
   // --- stellar gap-coverage: main sequence ----------------------------------
@@ -2157,13 +2171,18 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "answerIndex": 0,
     "distractorRationales": {
-      "1": "A diffuse cloud of gas and dust is a nebula — the stage before a main sequence star forms.",
+      "1": "A diffuse cloud of gas and dust is a nebula, the stage before a main sequence star forms.",
       "2": "An expanded outer shell with a contracted hot core describes a red giant, the stage after the main sequence.",
       "3": "A small, dense remnant that is no longer fusing describes a white dwarf, the final stage."
     },
     "marks": 1,
     "explanation": "A main sequence star is a hot ball of plasma in steady balance: the inward pull of gravity is matched by the outward push of energy released by hydrogen fusion in its core. The Sun has been on the main sequence for around 4.6 billion years.",
-    "examinerNote": "All three distractors are other stages of the lifecycle, so the question forces you to discriminate between the four physical forms."
+    "examinerNote": "All three distractors are other stages of the lifecycle, so the question forces you to discriminate between the four physical forms.",
+    "commonMisconceptions": [
+      "main sequence confused with red giant",
+      "main sequence confused with nebula",
+      "main sequence confused with white dwarf"
+    ]
   },
 
   {
@@ -2184,10 +2203,14 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "The transition from main sequence to red giant is a dramatic expansion. Saying the two are the same size misses the whole point of why a red giant is called 'giant'.",
       "2": "This reverses the relationship. A red giant is much larger than a main sequence Sun-mass star, not the other way around.",
-      "3": "Same direction error as the previous choice — a red giant is much larger than the main sequence Sun, not the reverse."
+      "3": "Same direction error as the previous choice: a red giant is much larger than the main sequence Sun, not the reverse."
     },
     "marks": 1,
-    "explanation": "When a Sun-mass star leaves the main sequence and becomes a red giant, its outer layers expand enormously — to roughly 100 times the size of the original star. So the main sequence Sun is much smaller than the red giant it will become."
+    "explanation": "When a Sun-mass star leaves the main sequence and becomes a red giant, its outer layers expand enormously, to roughly 100 times the size of the original star. So the main sequence Sun is much smaller than the red giant it will become.",
+    "commonMisconceptions": [
+      "main sequence Sun and red giant assumed similar size",
+      "size direction reversed (main sequence thought larger than red giant)"
+    ]
   },
 
   {
@@ -2203,10 +2226,15 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "Red stars are cooler than the Sun. The Sun's surface is around 5800 K, which is in the yellow part of the colour-temperature scale, not the red.",
       "2": "White stars are hotter than yellow stars. The Sun's surface is yellow at its current main sequence temperature.",
-      "3": "Blue stars are the hottest of all — much hotter than the Sun. The Sun is yellow on the colour-temperature scale."
+      "3": "Blue stars are the hottest of all, much hotter than the Sun. The Sun is yellow on the colour-temperature scale."
     },
     "marks": 1,
-    "explanation": "The Sun is a yellow main sequence star with a surface temperature of around 5800 K. Hotter stars look white or blue; cooler stars look orange or red. Yellow places the Sun in the middle of the range tested by 4SS0."
+    "explanation": "The Sun is a yellow main sequence star with a surface temperature of around 5800 K. Hotter stars look white or blue; cooler stars look orange or red. Yellow places the Sun in the middle of the range tested by 4SS0.",
+    "commonMisconceptions": [
+      "Sun thought red because of sunset imagery",
+      "Sun thought white or blue because of brightness",
+      "colour-temperature link not internalised"
+    ]
   },
 
   {
@@ -2231,7 +2259,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     },
     "marks": 1,
     "explanation": "On the main sequence, the core of a Sun-mass star is fusing hydrogen nuclei into helium. The energy released by this fusion is what stops the star collapsing under its own gravity, and is also the energy that radiates away as the star's light and heat.",
-    "examinerNote": "The canonical 4SS0 phrasing is 'hydrogen is fused into helium' — both the fuel and the product are part of the answer."
+    "examinerNote": "The canonical 4SS0 phrasing is 'hydrogen is fused into helium'; both the fuel and the product are part of the answer.",
+    "commonMisconceptions": [
+      "helium fusion attributed to main sequence (which is hydrogen fusion)",
+      "no-fusion state attributed to main sequence",
+      "heavier-element or iron fusion (4PH1 scope leakage)"
+    ]
   },
 
   // --- stellar gap-coverage: red giant --------------------------------------
@@ -2252,13 +2285,18 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "answerIndex": 0,
     "distractorRationales": {
-      "1": "A diffuse cloud of gas and dust is a nebula — the very first stage of the lifecycle, not the stage after the main sequence.",
+      "1": "A diffuse cloud of gas and dust is a nebula, the very first stage of the lifecycle, not the stage after the main sequence.",
       "2": "A hot ball of plasma fusing hydrogen is a main sequence star. A red giant has expanded and its core has switched to fusing helium, not hydrogen.",
-      "3": "A small, dense, Earth-sized remnant is a white dwarf — the final stage. A red giant is the much bigger, expanded stage that comes before the white dwarf."
+      "3": "A small, dense, Earth-sized remnant is a white dwarf, the final stage. A red giant is the much bigger, expanded stage that comes before the white dwarf."
     },
     "marks": 1,
     "explanation": "A red giant has a greatly expanded outer envelope (the parts the student would actually see) wrapped around a small, hot core where helium is now fusing. The expanded outer surface is much cooler than a main sequence star's surface, which is why the colour shifts from yellow to red.",
-    "examinerNote": "Don't picture a red giant as just 'a bigger main sequence star'. The expanded envelope and the contracted hot core are doing very different things."
+    "examinerNote": "Don't picture a red giant as just 'a bigger main sequence star'. The expanded envelope and the contracted hot core are doing very different things.",
+    "commonMisconceptions": [
+      "red giant thought to fuse hydrogen like main sequence (simpler-model persistence)",
+      "red giant confused with white dwarf",
+      "red giant thought to still be a nebula-like cloud"
+    ]
   },
 
   {
@@ -2279,10 +2317,14 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "The transition from main sequence to red giant is a dramatic expansion of the outer layers. The two stages are very different sizes.",
       "2": "Much smaller than the main sequence Sun describes a white dwarf, not a red giant. A red giant is bigger than the Sun, not smaller.",
-      "3": "Planet-sized describes a white dwarf (about the size of the Earth). A red giant is on a totally different scale — much bigger than the Sun."
+      "3": "Planet-sized describes a white dwarf (about the size of the Earth). A red giant is on a totally different scale, much bigger than the Sun."
     },
     "marks": 1,
-    "explanation": "When the Sun becomes a red giant, its outer layers expand to around 100 times their main sequence size. The Sun's red giant phase will be large enough to swallow the orbits of the inner planets, including possibly Earth's."
+    "explanation": "When the Sun becomes a red giant, its outer layers expand to around 100 times their main sequence size. The Sun's red giant phase will be large enough to swallow the orbits of the inner planets, including possibly Earth's.",
+    "commonMisconceptions": [
+      "red giant assumed similar size to main sequence Sun",
+      "red giant confused with white dwarf (planet-sized)"
+    ]
   },
 
   {
@@ -2307,7 +2349,13 @@ window.PREIB_TOPIC8_QUESTIONS = [
     },
     "marks": 1,
     "explanation": "A red giant has two fusion processes happening at the same time: helium fuses to heavier elements in the contracted hot core, and hydrogen continues to fuse to helium in a shell around that core. This double fusion is part of why the outer layers expand so much.",
-    "examinerNote": "The 'two fusions at once' picture is the trickier part of red giant physics. Don't assume the main sequence picture (hydrogen-only, in the core) still applies."
+    "examinerNote": "The 'two fusions at once' picture is the trickier part of red giant physics. Don't assume the main sequence picture (hydrogen-only, in the core) still applies.",
+    "commonMisconceptions": [
+      "main-sequence model still applied to red giant (hydrogen-only, in core)",
+      "red giant thought to have no fusion (white-dwarf picture)",
+      "iron fusion attributed to Sun-mass star (4PH1 supergiant scope leakage)",
+      "shell-plus-core simultaneous fusion not recognised"
+    ]
   },
 
   // --- stellar gap-coverage: white dwarf ------------------------------------
@@ -2328,13 +2376,18 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "answerIndex": 0,
     "distractorRationales": {
-      "1": "A vast cloud of gas and dust collapsing under gravity describes a nebula — the very start of a star's life, not the end.",
+      "1": "A vast cloud of gas and dust collapsing under gravity describes a nebula, the very start of a star's life, not the end.",
       "2": "A hot ball of plasma fusing hydrogen is a main sequence star, the long stable middle of a star's life. A white dwarf has run out of fuel and no longer fuses.",
       "3": "An exploded massive star is a 4PH1-only supernova outcome, outside 4SS0 scope. The 4SS0 lifecycle for a Sun-mass star ends at a white dwarf, not an explosion."
     },
     "marks": 1,
     "explanation": "A white dwarf is the small, dense, hot core left behind once a red giant has thrown off its outer layers. It no longer fuses anything; it just slowly cools and fades over very long timescales. This is the final stage in the 4SS0 lifecycle of a Sun-mass star.",
-    "examinerNote": "The 'exploded massive star' distractor is deliberately a 4PH1-only outcome — flagging that high-mass stellar evolution sits outside 4SS0."
+    "examinerNote": "The 'exploded massive star' distractor is deliberately a 4PH1-only outcome, flagging that high-mass stellar evolution sits outside 4SS0.",
+    "commonMisconceptions": [
+      "white dwarf confused with supernova outcome (4PH1 scope leakage)",
+      "white dwarf confused with nebula",
+      "white dwarf thought to be a fusing star"
+    ]
   },
 
   {
@@ -2346,8 +2399,8 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "atoms": ["white_dwarf_size"],
     "prompt": "How does the size of a white dwarf compare with the Sun?",
     "choices": [
-      "Much smaller — roughly the size of the Earth",
-      "Much larger — hundreds of times bigger",
+      "Much smaller (roughly the size of the Earth)",
+      "Much larger (hundreds of times bigger)",
       "Roughly the same size as the Sun",
       "Smaller than a planet's moon"
     ],
@@ -2358,8 +2411,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
       "3": "A white dwarf is small but not that small. It's roughly the size of the Earth, much bigger than a moon."
     },
     "marks": 1,
-    "explanation": "A white dwarf is the leftover core of a Sun-mass star, with most of the original mass packed into a volume only about the size of the Earth. That makes it incredibly dense — a teaspoonful of white dwarf material would weigh tonnes.",
-    "examinerNote": "The Sun-vs-Earth size contrast is the easiest mental model: take a Sun-mass star and squash it down to Earth size."
+    "explanation": "A white dwarf is the leftover core of a Sun-mass star, with most of the original mass packed into a volume only about the size of the Earth. That makes it incredibly dense; a teaspoonful of white dwarf material would weigh tonnes.",
+    "examinerNote": "The Sun-vs-Earth size contrast is the easiest mental model: take a Sun-mass star and squash it down to Earth size.",
+    "commonMisconceptions": [
+      "white dwarf assumed Sun-sized",
+      "white dwarf confused with red giant (much larger)"
+    ]
   },
 
   {
@@ -2371,7 +2428,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "atoms": ["white_dwarf_fuel", "white_dwarf_fusion_active"],
     "prompt": "What is happening inside a white dwarf?",
     "choices": [
-      "No fusion — the white dwarf is slowly cooling",
+      "No fusion; the white dwarf is slowly cooling",
       "Hydrogen is being fused into helium",
       "Helium is being fused into heavier elements",
       "The core is collapsing to start fusion"
@@ -2384,7 +2441,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
     },
     "marks": 1,
     "explanation": "A white dwarf has no fuel left for fusion, so no fusion is happening. It's just a hot, dense cinder slowly radiating its leftover heat into space. Over timescales much longer than the age of the universe, it would gradually cool and fade.",
-    "examinerNote": "Both atoms (no fuel + no active fusion) are tied together: a white dwarf is what's left over after fusion has finished."
+    "examinerNote": "Both atoms (no fuel + no active fusion) are tied together: a white dwarf is what's left over after fusion has finished.",
+    "commonMisconceptions": [
+      "white dwarf thought to fuse hydrogen (main-sequence picture)",
+      "white dwarf thought to fuse helium (red-giant picture)",
+      "white dwarf thought to be on the verge of igniting fusion (protostar picture)"
+    ]
   },
 
   {
@@ -2404,12 +2466,17 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "answerIndex": 0,
     "distractorRationales": {
       "1": "Red is the colour of cool stellar surfaces, not hot ones. A high surface temperature corresponds to a hotter colour, towards white or blue.",
-      "2": "Yellow is the colour of a Sun-temperature star, around 5800 K. A white dwarf is hotter than this — its surface temperature is higher, so its colour is whiter.",
+      "2": "Yellow is the colour of a Sun-temperature star, around 5800 K. A white dwarf is hotter than this; its surface temperature is higher, so its colour is whiter.",
       "3": "This confuses 'no fusion' with 'no light'. A white dwarf's surface is still extremely hot from the leftover heat of the star's earlier life, so it glows brightly even without fusion."
     },
     "marks": 1,
-    "explanation": "The colour-temperature link works for any glowing surface, not just main sequence stars: hotter glows whiter or bluer, cooler glows redder. A white dwarf's surface is very hot, so it glows white. The fact that fusion has stopped doesn't change the colour — it just means the star will gradually cool over time.",
-    "examinerNote": "This is a derivation question: you start from the temperature fact and use the colour-temperature link to infer the colour. The 'black because no fusion' distractor catches students who think 'no fusion = dark'."
+    "explanation": "The colour-temperature link works for any glowing surface, not just main sequence stars: hotter glows whiter or bluer, cooler glows redder. A white dwarf's surface is very hot, so it glows white. The fact that fusion has stopped doesn't change the colour; it just means the star will gradually cool over time.",
+    "examinerNote": "This is a derivation question: you start from the temperature fact and use the colour-temperature link to infer the colour. The 'black because no fusion' distractor catches students who think 'no fusion = dark'.",
+    "commonMisconceptions": [
+      "colour-temperature direction reversed (hot thought red, cool thought blue)",
+      "no-fusion thought to mean dark or black",
+      "white dwarf assumed yellow like the Sun"
+    ]
   },
 
   // --- orbit gap-coverage ---------------------------------------------------
@@ -2435,8 +2502,12 @@ window.PREIB_TOPIC8_QUESTIONS = [
       "3": "About one Earth year is the period of the Earth's orbit around the Sun. Comets are typically far from the Sun for most of their orbit, so their periods are much longer than a planet like Earth's."
     },
     "marks": 1,
-    "explanation": "Comets travel on highly elliptical orbits that take them far from the Sun for most of their journey. As a result they have very long orbital periods — typically decades to centuries, sometimes much longer. Halley's Comet, for example, has a period of about 76 years.",
-    "examinerNote": "The three distractors are the day, month and year facts that the spec also expects you to know — the trap is to confuse them with comet periods."
+    "explanation": "Comets travel on highly elliptical orbits that take them far from the Sun for most of their journey. As a result they have very long orbital periods, typically decades to centuries, sometimes much longer. Halley's Comet, for example, has a period of about 76 years.",
+    "examinerNote": "The three distractors are the day, month and year facts that the spec also expects you to know; the trap is to confuse them with comet periods.",
+    "commonMisconceptions": [
+      "comet period confused with day, month or Earth-year",
+      "comet orbit period assumed similar to planet orbit period"
+    ]
   },
 
   {
@@ -2455,13 +2526,18 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "answerIndex": 0,
     "distractorRationales": {
-      "1": "Things orbit planets too — moons do — but planets and comets themselves orbit the Sun, because the Sun is the largest mass in the solar system.",
+      "1": "Things orbit planets too (moons do), but planets and comets themselves orbit the Sun, because the Sun is the largest mass in the solar system.",
       "2": "The Moon is much smaller than the Sun and only the Earth orbits it (well, more accurately, they orbit each other). Comets and planets are not held in orbit by the Moon.",
       "3": "The Sun (and the whole solar system with it) does orbit the centre of the Milky Way galaxy, but at the scale of the solar system, planets and comets orbit the Sun."
     },
     "marks": 1,
     "explanation": "Gravity from the largest nearby mass holds smaller objects in orbit. In the solar system, the Sun is by far the most massive object, so both planets and comets are held in orbit around it. Moons, by contrast, are held in orbit around their planets.",
-    "examinerNote": "Questions like this are about scale: at the solar system scale, the Sun is what everything orbits — even though at the galactic scale, the Sun itself is in orbit."
+    "examinerNote": "Questions like this are about scale: at the solar system scale, the Sun is what everything orbits, even though at the galactic scale, the Sun itself is in orbit.",
+    "commonMisconceptions": [
+      "comets thought to orbit a planet instead of the Sun",
+      "comet orbit confused with moon orbit (planet-central)",
+      "scale confusion (galactic-centre picture applied at solar-system scale)"
+    ]
   },
 
   {
@@ -2482,10 +2558,14 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "Highly elliptical orbits are characteristic of comets, not moons. Moons orbit their planets on roughly circular paths.",
       "2": "Orbits in a gravitational field are never square. The shape of an orbit comes from gravity always pulling the orbiting body towards the centre, which traces out a smooth curve.",
-      "3": "A straight-line path would mean no orbit at all — the object would either fly off into space or fall directly into the planet. Orbiting requires a curved path."
+      "3": "A straight-line path would mean no orbit at all; the object would either fly off into space or fall directly into the planet. Orbiting requires a curved path."
     },
     "marks": 1,
-    "explanation": "Moons orbit their planets on roughly circular paths, in the same way that planets orbit the Sun on roughly circular paths. The whole moon-around-planet system is a smaller-scale version of the planet-around-Sun system."
+    "explanation": "Moons orbit their planets on roughly circular paths, in the same way that planets orbit the Sun on roughly circular paths. The whole moon-around-planet system is a smaller-scale version of the planet-around-Sun system.",
+    "commonMisconceptions": [
+      "comet orbit pattern (highly elliptical) transferred to moons",
+      "orbit shape thought non-curved"
+    ]
   },
 
   {
@@ -2498,7 +2578,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "prompt": "A moon orbits its planet in a roughly circular orbit. How does its orbital speed behave?",
     "choices": [
       "Stays roughly constant throughout the orbit",
-      "Varies a lot — fastest when closest to the planet",
+      "Varies a lot (fastest when closest to the planet)",
       "Increases steadily during each orbit",
       "The moon is stationary; the planet rotates underneath it"
     ],
@@ -2506,11 +2586,16 @@ window.PREIB_TOPIC8_QUESTIONS = [
     "distractorRationales": {
       "1": "Highly variable orbital speed (fastest when closest) is the comet-orbit pattern, because comets travel on stretched-out elliptical paths. Moons travel on roughly circular paths and have nearly constant orbital speed.",
       "2": "If the orbital speed kept increasing, the moon would eventually fly off. A stable orbit needs a steady speed (for a circular orbit) or a regular speed-up-then-slow-down (for an elliptical one), not a one-way increase.",
-      "3": "This is the geostationary satellite picture, not the moon picture. A real moon really moves around its planet — it's not parked in the sky like a TV satellite."
+      "3": "This is the geostationary satellite picture, not the moon picture. A real moon really moves around its planet; it isn't parked in the sky like a TV satellite."
     },
     "marks": 1,
     "explanation": "Because a moon's orbit is roughly circular, its distance from its planet stays roughly the same. The pull of gravity therefore stays roughly the same, and the moon's orbital speed stays roughly constant throughout the orbit.",
-    "examinerNote": "Distractor B is the comet-orbit pattern — picking it suggests confusion between moon (circular) and comet (elliptical) speed behaviour."
+    "examinerNote": "Distractor B is the comet-orbit pattern; picking it suggests confusion between moon (circular) and comet (elliptical) speed behaviour.",
+    "commonMisconceptions": [
+      "comet speed pattern (fastest when closest) transferred to moon",
+      "geostationary misconception (moon thought stationary)",
+      "orbital speed thought to increase steadily"
+    ]
   }
 
 ];

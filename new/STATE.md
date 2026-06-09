@@ -13,7 +13,7 @@ A static-site revision driller for Edexcel International GCSE Single Award (4SS0
 ## Document index (role, then the file that fills it)
 
 - **Project / manifest:** `README.md` (Topic 7 code readme), `MANIFEST.md`, `FINAL_PACK_README.md`.
-- **Decisions:** `topic8_decisions.md` (Topic 8); Topic 7 decisions are embedded in `HANDOVER_NOTES.md` and the rationale in `topic7_atom_registries.md`.
+- **Decisions:** `DECISIONS.md` is the single canonical, numbered log (d001 to d105, 2026-04-28 to 2026-06-08), reconstructed 2026-06-08 from the full chat history. `topic8_decisions.md` (Topic 8) and the Topic 7 decisions embedded in `HANDOVER_NOTES.md` and `topic7_atom_registries.md` remain as the fuller per-topic narrative; DECISIONS.md is the scannable index over all of it.
 - **Design and schema:** `SCHEMA_v0_5_NEW_TYPES.md`, `CIRCUIT_DSL.md`, `engine.js`, and the registry files (`registry_*.js` with their `*_retrotag.md` diffs, plus `topic7_atom_registries.md`, `topic8_atom_mapping.md`, `topic8_vocabulary_proposal.md`).
 - **Open questions:** `HANDOVER_NOTES.md` (Q1 to Q8 plus the schema-and-tooling items), `TOPIC7_GOTCHAS.md`, `TOPIC8_GOTCHAS.md`.
 - **Author briefs:** `AUTHOR_BRIEF_topic7_v2.md`, `AUTHOR_BRIEF_topic8.md`, `BRIEF_diagrams_chat.md`.
@@ -31,4 +31,4 @@ These are the project's own open items, not new busywork. In rough priority:
 2. **Continue Topic 8.** `topic8_decisions.md`, `topic8_feedback_for_architecture.md`, and the Topic 8 gap analyses are the live thread; keep authoring and ratifying against them.
 3. **Adopt the inter_chat habit.** Put cross-chat communication in `inter_chat/` as named threads (see `INTER_CHAT_PROTOCOL.md`), and read threads addressed to you at session start. This is the one genuinely new practice; everything else already exists.
 
-You do not need to retrofit the whole estate's generic layout. If you ever want a single canonical `DECISIONS.md`, the cheap version is to append future decisions to one file going forward rather than rewriting the topic-specific history. Smith's call, not required.
+You do not need to retrofit the whole estate's generic layout. The single canonical `DECISIONS.md` now exists (created 2026-06-08 at Smith's request); append future decisions to it going forward, keeping the topic-specific docs as the fuller narrative.

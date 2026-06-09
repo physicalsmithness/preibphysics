@@ -256,6 +256,28 @@ body {
 }
 .circuit-diagram svg { max-width: 100%; height: auto; }
 
+/* Forces (Topic 1) diagram wrappers from forces_diagrams.js. Same centred,
+   responsive treatment as circuit-diagram; one class per kind so a question
+   can theme an individual diagram if ever needed. */
+.vt-graph-diagram,
+.dt-graph-diagram,
+.stopping-diagram,
+.stopping-vs-speed-diagram,
+.fbd-diagram,
+.apparatus-diagram,
+.object-scene-diagram {
+  margin: 14px 0 18px;
+  display: flex;
+  justify-content: center;
+}
+.vt-graph-diagram svg,
+.dt-graph-diagram svg,
+.stopping-diagram svg,
+.stopping-vs-speed-diagram svg,
+.fbd-diagram svg,
+.apparatus-diagram svg,
+.object-scene-diagram svg { max-width: 100%; height: auto; }
+
 /* Input area */
 .qinput { margin-top: 12px; }
 .qchoices { display: flex; flex-direction: column; gap: 8px; }

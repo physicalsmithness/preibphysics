@@ -1370,6 +1370,8 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const ERROR_TYPES = {
+    // ── calc_workings line-level codes (v1.5.26) ────────────────────────────
+    // Emitted automatically by calcDeriveErrorTypes from per-line reasons.
     // Line 1 (equation)
     equation_wrong:           { internal: "Wrong equation",        student: "The equation isn't quite right." },
     equation_made_up:         { internal: "Made an equation up",   student: "The equation doesn't follow from the data." },
@@ -1377,7 +1379,7 @@
     equation_unknown_symbol:  { internal: "Unknown symbol",        student: "Used a variable that isn't in the question." },
     // Line 2 (substitution)
     sub_failure:              { internal: "SubF",                  student: "Values weren't substituted in." },
-    sub_inconsistent:         { internal: "SubP / calc",           student: "Substitution doesn't balance — wrong value or arithmetic." },
+    sub_inconsistent:         { internal: "SubP / calc",           student: "Substitution doesn't balance, wrong value or arithmetic." },
     // Line 3 (rearrangement)
     algebra_error:            { internal: "Algebra errors",        student: "Rearrangement isn't right." },
     rearrange_not_isolated:   { internal: "Algebra errors",        student: "Unknown not isolated on one side." },
@@ -1389,7 +1391,26 @@
     unit_wrong:               { internal: "unit",                  student: "Unit isn't accepted." },
     final_unreadable:         { internal: "Care",                  student: "Final answer isn't a number." },
     // Catch-all
-    parse_error:              { internal: "Randomly combines numbers", student: "Couldn't read this line." }
+    parse_error:              { internal: "Randomly combines numbers", student: "Couldn't read this line." },
+
+    // ── MCQ distractor-tagged codes (v1.5.29, ratified 2026-06-09) ──────────
+    // Authors apply these to MCQ distractors via distractorErrorTypes per d095.
+    // Set unified from Topic 7 (concept_swap, property_value_swap, false_dependency,
+    // false_consequence, magnitude_wrong, context_inversion → direction_reversed)
+    // and Topic 8 (stage_confusion → concept_swap, simpler_model_persistence,
+    // scope_leakage, direction_reversed, pattern_transferred, causation_inverted)
+    // batches. geostationary_misconception rejected as too specific (lives in
+    // commonMisconceptions per question).
+    concept_swap:             { internal: "Concept swap",          student: "Picked another concept's identity." },
+    property_value_swap:      { internal: "Property value swap",   student: "Right concept, wrong specific value." },
+    false_dependency:         { internal: "False dependency",      student: "Treats one thing as depending on another when it doesn't." },
+    false_consequence:        { internal: "False consequence",     student: "Wrong outcome attributed to the process." },
+    causation_inverted:       { internal: "Causation inverted",    student: "Causal chain read in the wrong direction." },
+    magnitude_wrong:          { internal: "Magnitude wrong",       student: "Right kind, wrong order of magnitude." },
+    direction_reversed:       { internal: "Direction reversed",    student: "Right relationship, wrong direction or context." },
+    simpler_model_persistence:{ internal: "Simpler-model persistence", student: "An earlier or simpler model applied past its scope." },
+    scope_leakage:            { internal: "Scope leakage",         student: "Fact from outside the syllabus." },
+    pattern_transferred:      { internal: "Pattern transferred",   student: "Behaviour from one entity applied to another." }
   };
 
   // Map a single line's failure reason to one or more canonical error codes.
@@ -1543,7 +1564,7 @@
      ────────────────────────────────────────────────────────────────────────── */
 
   const STORAGE_KEY = TOPIC_CONFIG.storageKey || "smithics_topic7_v1";
-  const APP_VERSION = "v1.5.28";
+  const APP_VERSION = "v1.5.29";
 
   // v1.2: per-type include/exclude filtering. excludedTypes is an array of
   // type strings to hide from delivery: e.g. ["long", "short"].
@@ -2128,6 +2149,37 @@
             el("div", { class: "dp-body", text: "Source: " + source })
           ]);
         }
+      }
+    }
+
+    // Forces (Topic 1) renderers from forces_diagrams.js. Table-driven: each
+    // kind maps to a window.render<Kind> fn and a wrapper class, mirroring the
+    // circuit branch above. If the module is not loaded (Topic 7 / 8 pages), the
+    // guard fails and we fall through to the dashed placeholder unchanged.
+    const FORCES_DIAGRAM_KINDS = {
+      velocity_time_graph:        { fn: "renderVelocityTimeGraph",      cls: "vt-graph-diagram" },
+      distance_time_graph:        { fn: "renderDistanceTimeGraph",      cls: "dt-graph-diagram" },
+      stopping_distance_diagram:  { fn: "renderStoppingDistanceDiagram", cls: "stopping-diagram" },
+      stopping_distance_vs_speed: { fn: "renderStoppingDistanceVsSpeed", cls: "stopping-vs-speed-diagram" },
+      free_body_diagram:          { fn: "renderFreeBodyDiagram",        cls: "fbd-diagram" },
+      acceleration_apparatus:     { fn: "renderAccelerationApparatus",  cls: "apparatus-diagram" },
+      object_scene:               { fn: "renderObjectScene",            cls: "object-scene-diagram" }
+    };
+    const fdef = FORCES_DIAGRAM_KINDS[diagram.kind];
+    if (fdef && typeof window[fdef.fn] === "function") {
+      const fparams = (diagram.params && typeof diagram.params === "object") ? diagram.params : diagram;
+      try {
+        const svg = window[fdef.fn](fparams);
+        if (svg) {
+          const wrap = el("div", { class: fdef.cls });
+          wrap.appendChild(svg);
+          return wrap;
+        }
+      } catch (e) {
+        return el("div", { class: "diagram-placeholder diagram-error" }, [
+          el("div", { class: "dp-head", text: "[" + diagram.kind + " render error]" }),
+          el("div", { class: "dp-body", text: e && e.message ? e.message : String(e) })
+        ]);
       }
     }
 

@@ -211,6 +211,11 @@
      Loaded before engine.js so the diagram-render path can find it. -->
 <script src="circuit_diagram.js"></script>
 
+<!-- Forces (Topic 1) diagram renderers. Exposes window.renderVelocityTimeGraph etc.
+     Harmless on Topic 7 (no Forces questions); loaded before engine.js for hub
+     consistency so the diagram-render path can find the renderers. -->
+<script src="forces_diagrams.js"></script>
+
 <!-- Engine -->
 <script src="engine.js"></script>
 
