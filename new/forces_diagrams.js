@@ -200,29 +200,38 @@
       g.appendChild(text(px, m.t - 22, opts.title, { size: 14, weight: 600, serif: true, fill: "var(--ink)", baseline: "middle" }));
     }
 
-    // Minor ticks (hairlines) first, so majors sit on top.
+    // Gridlines span the whole plot so the deliberately hard-to-read values can
+    // actually be read off the grid: minor lines (faint) for the subdivisions,
+    // major lines (stronger) at the labelled ticks. Drawn first, behind the data.
     var xMaj = majorValues(xa), yMaj = majorValues(ya);
 
-    function drawMinors(ax, isX) {
-      if (ax.snap) return;
+    function gridLines(ax, isX) {
       var maj = isX ? xMaj : yMaj;
-      for (var i = 0; i < maj.length - 1; i++) {
-        var sub = ax.majorTick / ax.minorTicks;
-        for (var k = 1; k < ax.minorTicks; k++) {
-          var val = maj[i] + sub * k;
-          if (val > ax.max + 1e-9) break;
-          if (isX) {
-            var xx = toX(val);
-            g.appendChild(line(xx, py + ph, xx, py + ph - 5, "var(--line-2)", 0.6));
-          } else {
-            var yy = toY(val);
-            g.appendChild(line(px, yy, px + 5, yy, "var(--line-2)", 0.6));
+      // Minor gridlines (each subdivision).
+      if (!ax.snap) {
+        for (var i = 0; i < maj.length - 1; i++) {
+          var sub = ax.majorTick / ax.minorTicks;
+          for (var k = 1; k < ax.minorTicks; k++) {
+            var val = maj[i] + sub * k;
+            if (val > ax.max + 1e-9) break;
+            if (isX) { var xx = toX(val); g.appendChild(line(xx, py, xx, py + ph, "var(--line)", 0.5)); }
+            else { var yy = toY(val); g.appendChild(line(px, yy, px + pw, yy, "var(--line)", 0.5)); }
           }
         }
       }
+      // Major gridlines (at the labelled ticks); skip the value on the axis itself.
+      maj.forEach(function (v) {
+        if (Math.abs(v - ax.min) < 1e-9) return;
+        if (isX) { var xx = toX(v); g.appendChild(line(xx, py, xx, py + ph, "var(--line-2)", 0.6)); }
+        else { var yy = toY(v); g.appendChild(line(px, yy, px + pw, yy, "var(--line-2)", 0.6)); }
+      });
     }
-    drawMinors(xa, true);
-    drawMinors(ya, false);
+    // Qualitative (shape-only) graphs skip the grid and numbers entirely: axes,
+    // arrows, axis labels and the shape, nothing to read off.
+    if (!opts.qualitative) {
+      gridLines(xa, true);
+      gridLines(ya, false);
+    }
 
     // Axis lines with arrowheads.
     g.appendChild(E("line", {
@@ -234,17 +243,19 @@
       stroke: "var(--ink-2)", "stroke-width": 1, "marker-end": "url(#fd-axis-arrow)"
     }));
 
-    // Major ticks + numeric labels.
-    xMaj.forEach(function (v) {
-      var xx = toX(v);
-      g.appendChild(line(xx, py + ph, xx, py + ph + 7, "var(--ink-2)", 1));
-      g.appendChild(text(xx, py + ph + 21, fmt(v), { size: 11.5, anchor: "middle", fill: "var(--muted)" }));
-    });
-    yMaj.forEach(function (v) {
-      var yy = toY(v);
-      g.appendChild(line(px, yy, px - 7, yy, "var(--ink-2)", 1));
-      g.appendChild(text(px - 11, yy, fmt(v), { size: 11.5, anchor: "end", baseline: "middle", fill: "var(--muted)" }));
-    });
+    // Major ticks + numeric labels (suppressed in qualitative mode).
+    if (!opts.qualitative) {
+      xMaj.forEach(function (v) {
+        var xx = toX(v);
+        g.appendChild(line(xx, py + ph, xx, py + ph + 7, "var(--ink-2)", 1));
+        g.appendChild(text(xx, py + ph + 21, fmt(v), { size: 11.5, anchor: "middle", fill: "var(--muted)" }));
+      });
+      yMaj.forEach(function (v) {
+        var yy = toY(v);
+        g.appendChild(line(px, yy, px - 7, yy, "var(--ink-2)", 1));
+        g.appendChild(text(px - 11, yy, fmt(v), { size: 11.5, anchor: "end", baseline: "middle", fill: "var(--muted)" }));
+      });
+    }
 
     // Axis labels.
     if (xa.label) {
@@ -297,13 +308,17 @@
   function controlPoint(seg) {
     var f = seg.from, t = seg.to;
     if (seg.via) return seg.via;
+    var midx = (f[0] + t[0]) / 2;
+    // Control points sit at mid-x (not the end corner) so the curve is a clean
+    // parabola with a FINITE gradient at both ends. A corner control point would
+    // make the tangent vertical, implying infinite acceleration on a v-t graph.
     switch (seg.curve) {
-      case "curve_up_concave":
-      case "curve_down_concave":
-        return [t[0], f[1]];
-      case "curve_up_convex":
-      case "curve_down_convex":
-        return [f[0], t[1]];
+      case "curve_up_concave":   // rising, gradient increasing (v proportional to t^2)
+      case "curve_down_concave": // falling, gradient steepening
+        return [midx, f[1]];
+      case "curve_up_convex":    // rising, gradient decreasing (easing to a plateau)
+      case "curve_down_convex":  // falling, gradient flattening
+        return [midx, t[1]];
       default:
         return null; // straight
     }
@@ -392,6 +407,7 @@
       ariaTitle: defaults.ariaTitle,
       ariaDesc: buildSegmentAria(segments, xAxis, yAxis),
       xAxis: xAxis, yAxis: yAxis,
+      qualitative: params.qualitative,
       xDataMax: Math.max.apply(null, xs),
       yDataMax: Math.max.apply(null, ys)
     });
@@ -559,7 +575,8 @@
         y: Object.assign({ label: (params.axes && params.axes.y && params.axes.y.label) || "velocity / m s⁻¹", minorTicks: 5 },
                          params.axes && params.axes.y)
       },
-      width: params.width, height: params.height
+      width: params.width, height: params.height,
+      qualitative: params.qualitative
     };
     return renderSegmentGraph(built, {
       title: null,
@@ -596,6 +613,7 @@
         "braking distance is proportional to speed squared, total is their sum.",
       xAxis: Object.assign({ label: "speed / m s⁻¹", minorTicks: 5 }, params.axes && params.axes.x),
       yAxis: Object.assign({ label: "distance / m", minorTicks: 5 }, params.axes && params.axes.y),
+      qualitative: params.qualitative,
       xDataMax: maxSpeed,
       yDataMax: yMax
     });

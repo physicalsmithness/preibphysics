@@ -36,6 +36,26 @@ On by default for `velocity_time_graph`, `distance_time_graph`,
 reading the graph is part of the question: data lands off the major ticks and the
 student counts minor subdivisions to read a value.
 
+The renderer draws full graph paper, faint minor gridlines at every subdivision
+and stronger major gridlines at the labelled ticks, spanning the whole plot. This
+is required, not decoration: if a value is deliberately awkward to read, the
+student must be able to trace it to the axes off the grid. Hard-to-read never
+means impossible-to-read.
+
+## Qualitative (shape-only) graphs
+
+For questions that test the shape of the motion rather than reading values off,
+set `"qualitative": true` at the params top level. The renderer then draws the
+labelled axes with arrowheads and the line, and nothing else: no numbers, no grid,
+no ticks. (A numbered grid is pointless when there is nothing to read off.) The
+axis `label` text is still shown; pass empty labels to drop those too. Works on all
+four graph kinds.
+
+Everything else is optional too: segment `label` words are per-segment (omit them
+and no word is drawn), `shaded` regions are optional (omit the key), and
+`annotations` are optional. A bare qualitative shape is just `segments` plus
+`qualitative: true`.
+
 Each axis accepts:
 
 | field | meaning | default |
@@ -85,8 +105,10 @@ The headline kind. Quantitative (read values off) or qualitative (shape only).
   `curve_up_concave` (gradient increasing, the accelerating shape),
   `curve_up_convex` (gradient decreasing, easing off),
   `curve_down_concave` and `curve_down_convex` (the falling-velocity mirrors).
-  For full control give `"via": [x, y]` (an explicit Bezier control point) instead
-  of a keyword.
+  Each is a parabola with a finite gradient at both ends; a curve never goes
+  vertical, so an accelerating segment never implies infinite acceleration. For
+  full control give `"via": [x, y]` (an explicit Bezier control point) instead of a
+  keyword.
 - `shaded`: regions under the trajectory for area-under reasoning. `from`/`to` are
   x-values; `label` sits inside the region; `style` is `"diagonal"`, `"dots"`, or
   `"cross"` (distinct hatch patterns so two regions are separable). Defaults cycle

@@ -59,3 +59,19 @@ Files shipped to the live folder:
 Open for review: architecture can sample-render the harness or drop a `diagram` field on a scratch question to confirm against real cards. One small thing to confirm at leisure: the `forces_on_inclined_plane` dispatch entry is intentionally NOT in the table (deferred per Q1); say the word and I add it.
 
 `BLOCKED: none`. Stage 2 (`free_body_diagram` plus its object/icon library, `acceleration_apparatus`, `object_scene`) is next; it shares the icon library so it ships as one further pass.
+
+---
+
+## 2026-06-09 - Architecture (Smith) review of the v-t sample: two corrections
+
+1. The `curve_up_concave` accelerating curve rose to vertical at the top, implying infinite acceleration. Not physical on a v-t graph.
+2. Hard-to-read tick values are only fair if the student can actually read them off, which needs graph paper, not just tick stubs at the axes.
+
+## 2026-06-09 - ForcesDiagramsChat: both fixed in the graph-core (all four kinds)
+
+1. Curve control points now sit at mid-x rather than the end corner, so each `curve` keyword is a clean parabola with a finite gradient at both ends (an accelerating segment is v proportional to t squared: starts shallow, ends steep but finite, never vertical). `via` still allows an explicit control point. Re-verified: the accelerating sample now compiles to `Q 125 322 184 66.57` (control at t=2, not t=4), so the end tangent is finite.
+2. The core now draws full gridlines across the plot: faint minor lines at every subdivision, stronger major lines at the labelled ticks. Hard-to-read values are now readable off the grid. Updated `DIAGRAM_KINDS_FORCES.md` (tick-convention section plus the curve note). jsdom still green (7/7); re-eyeballed. Both fixes are in the graph-core so distance-time and the two stopping-distance kinds inherit them.
+
+## 2026-06-09 - ForcesDiagramsChat: qualitative (shape-only) mode added
+
+Per Smith's note that words and shading should be optional and shape-only graphs are a real case. Confirmed already-optional: per-segment `label`, `shaded`, and `annotations` are all omittable. Added a `qualitative: true` param (top level) on all four graph kinds: it draws the labelled axes with arrowheads and the line only, no numbers, no grid, no ticks, since there is nothing to read off a shape-only graph. Axis `label` text still shows (pass empty to drop). The curve vocabulary already covers straight, accelerating either way, and curving down. Verified under jsdom (quantitative keeps 17 numeric labels and the grid; qualitative has 0 numeric labels, keeps the two axis captions, draws axes plus shape only) and rendered a four-shape qualitative gallery (straight, concave-up, convex, rise-hold-fall) for visual check. `DIAGRAM_KINDS_FORCES.md` and the harness updated.
