@@ -114,3 +114,36 @@ No other action this turn, at Smith's instruction. Stage 1 drafting begins next,
 **Four questions for Architecture before stage 2** (proposal §8): (1) approve or amend the group/subtag structure; (2) ruling on `units` as a standalone parent group vs folding into calc coverage as Topic 8 did with 8.1; (3) ruling on the `mechanics_equations` registry candidate; (4) confirm the no-target-count principle.
 
 No questions are written until this is ratified. On approval, stage 2 starts with the first chunk and the past-paper sweep per d051 (past-paper anchoring) and widget review per d052.
+
+---
+
+## 2026-06-09, Architecture: stage 1 RATIFIED, all four questions ruled, no-target-count adopted as d108
+
+Stage 1 is ratified as proposed. Logged as d109 (Forces vocab approved). Proceed to stage 2 on the schedule below.
+
+The no-target-count principle is ratified as d108 (no target question counts; coverage drives, count is an output). Substance paragraph cites your framing of the two failure modes and supersedes the "negotiate a target volume" framing in d019 (calibration batch, negotiate volume) and d021 (Topic 7 target about 80 to 100 base questions). It applies to every commission going forward; the brief template inherits it. `AUTHOR_BRIEF_topic1_forces.md` is updated to match: §4 strips the "150 to 250 base questions" sentence and replaces with the coverage-driven framing; §4 "Soft targets, not quotas" demoted to "End-of-bank sanity glances, not targets" with explicit text that never to author toward; §17 strips the "30 random questions" check and the "type mix counts, difficulty mix counts" deliverable demand. Your retraction of the 70 to 120 figure is also recorded as part of the d108 substance.
+
+Q1 (the three-group, sixteen-subtag structure). **Approved as proposed.** The structure mirrors the 4SS0 Single Award spec sub-topics rather than inventing a pedagogical structure, which is the right move (the spec is the canonical organisation of what is being tested; manufacturing a structure on top risks d050 drift, and the teacher's notes already think in these groups). The §5 boundary table is also ratified as the in-scope cut and the routing for carved-out content. The 4SD0 and 4PH1 routing distinction (Double Award versus Physics-only) is correct and worth carrying forward; surface 4SD0 sub-parts on a `PreIB_DoubleAward_topic1_forces.md` thread and 4PH1 sub-parts on `PreIB_Trilogy_topic1_forces.md` when they appear during the sweep.
+
+Q2 (units as standalone parent group). **Ratified: standalone.** Your case is sound. Mechanics has seven distinct units across distinct quantities, both-directions recall is genuinely testable, and a dedicated `mechanics_units` registry attaches cleanly. Per d084 (registry-worthiness is shape, not topic volume), the shape justifies the group; Topic 8's fold-in of 8.1 was a Topic-8 judgement based on the sparser unit set there, not a general convention. Two parent-group treatments coexisting (standalone here, folded there) is fine.
+
+Q3 (mechanics_equations as a dedicated registry). **Ratified: do not build it. Per-equation atoms live inside the relevant subtags.** Reasoning: the four in-scope equations already sit naturally inside their conceptual subtags (`acceleration` for a=(v-u)/t, `newtons_second_law` for F=ma, `weight` for W=mg, `average_speed` for v=d/t). A dedicated registry would duplicate the subtag structure. More important, the registry shape that would be tempting (equation × rearranged-for-each-unknown) risks the matrix-completeness drift d077 named on nebula_colour: atoms for "v=d/t rearranged for d" are trivially identical to the equation itself; authoring them would be padding the registry to hit a matrix shape, not capturing distinct testable claims. Build instead per-equation atoms inside the subtag, where rearrangement-direction differences fall out of the questions (the calc_workings line-3 rearrangement marker handles the rearrangement direction at the marker level, not at the atom level).
+
+This ruling does not foreclose a `mechanics_equations` registry later. If during stage 2 you find cross-equation questions emerging ("which equation do you use here?", "match each equation to its conventional symbols") and they want a coherent set of equation-as-atom claims to test against, surface as NEW_FLAG and we revisit. For v1 of the Forces commission, per-equation-inside-subtag is the call. The four registry candidates that DO build are `motion_graphs`, `force_types`, `stopping_distance_factors`, `mechanics_units`.
+
+Q4 (no-target-count principle). **Ratified as d108.** Detail above. Brief is updated.
+
+Two short notes on what is in scope to surface during stage 2.
+
+Notes (1). When you sweep past papers and find a sub-part that is 4SD0 Double Award only, route to `PreIB_DoubleAward_topic1_forces.md`; that is a NEW thread name (the brief mentioned 4PH1 specifically because the boundary was the Physics-only one). The Double Award peer project is separate from 4PH1. Cross-spec sub-parts that are 4PH1-only still go on `PreIB_Trilogy_topic1_forces.md`. Surface either thread by opening it the first time you need it; architecture does not need to pre-open them.
+
+Note (2). The `mechanics_equations` ruling above gives you per-equation atoms inside subtags. When you coin those atoms during stage 2, the canonical pattern is one atom for the equation's statement form (e.g. `force_equals_mass_times_acceleration`) and as many follow-on atoms as the marking distinctions warrant (e.g. an atom for what F = ma says about the direction of acceleration, an atom for what W = m × g says about the difference between weight and mass). Per d066 (principle field) and d086 (group and principle orthogonal), the principle string captures the deeper physics ("Newton's second law as F = ma is a definition of the unit of force when applied to a unit mass at unit acceleration") even when the atom name is the equation itself. Per d079 (atoms-at-authoring) you coin freely; per d062 (default-build atom registries) the bar for skipping a registry is high; the four ratified registries above are the v1 set, and additional registries can emerge from the atoms you coin during stage 2 if shape surfaces.
+
+Stage 2 schedule, per your proposal: Units first, then Movement and position, then Forces and movement. Each chunk swept against the 4SS0 past papers per d051 (past-paper anchoring) before authoring; widget review at the chunk boundary per d052 (widget review formalised). DONE per chunk; architecture does the per-chunk review through this thread, not by editing the file (file ownership stays with you during chunk authoring).
+
+Two small architectural items that don't gate you but you might encounter:
+
+- The 17-versus-18 atoms inconsistency in `radiation_safety_principles` (engine.js comment says 18, array has 17) flagged by the Topic 7 author is parked for an architecture pass. Topic 7 unrelated to your work; flagging only because you might notice the comment if you read the engine's ATOMS block as a reference for atom structure.
+- The Topic 8 author has the parallel ten-code ratification (d106). If you see distractorErrorTypes usage in Topic 7 or Topic 8 question files as you read them, those tags refer to the d106 unified set.
+
+Proceed.
