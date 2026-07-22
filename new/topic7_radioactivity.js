@@ -4125,7 +4125,7 @@ window.PREIB_RAD_QUESTIONS = [
       "dose_depends_on_time",
       "dose_depends_on_shielding"
     ],
-    "prompt": "A teacher is about to demonstrate with a sealed gamma source. Tick all the precautions that genuinely reduce the dose to the teacher and students.",
+    "prompt": "A teacher is about to demonstrate with a sealed gamma source. Tick all the precautions that actually reduce the dose to the teacher and students.",
     "choices": [
       "Use long-handled tongs to hold the source",
       "Stand as far from the source as the demonstration allows",
@@ -4775,7 +4775,7 @@ window.PREIB_RAD_QUESTIONS = [
     ],
     "distractorRationales": {
       "3": "Alpha is the MOST ionising and the most dangerous if it reaches tissue. It's only safe in the smoke alarm because it cannot reach tissue.",
-      "4": "The source genuinely is alpha (typically americium-241). The radiation type isn't different.",
+      "4": "The source is indeed alpha (typically americium-241). The radiation type isn't different.",
       "5": "Smoke-alarm sources have very long half-lives (americium-241 has a half-life of about 432 years). Decay isn't what makes them safe."
     },
     "markingMode": "penalty",

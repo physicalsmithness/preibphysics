@@ -795,7 +795,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "marks": 4,
     "explanation": "Planets, moons and most artificial satellites all have approximately circular orbits around the body they go round. Only comets have highly elliptical orbits.",
-    "examinerNote": "If you wrongly believed every orbit was circular, you would score 3 out of 4 (the comet would be wrong); if you wrongly believed every orbit was elliptical, you would score 1 out of 4. So the question genuinely separates 'I know which ones are different' from 'I'm guessing'."
+    "examinerNote": "If you wrongly believed every orbit was circular, you would score 3 out of 4 (the comet would be wrong); if you wrongly believed every orbit was elliptical, you would score 1 out of 4. So the question separates 'I know which ones are different' from 'I'm guessing'."
   },
 
   // --- orbit_speeds -------------------------------------------------------
@@ -1201,7 +1201,7 @@ window.PREIB_TOPIC8_QUESTIONS = [
     ],
     "marks": 5,
     "explanation": "Planets and comets orbit a star (in our solar system, that's the Sun). Moons and artificial satellites orbit a planet (our Moon and the ISS both orbit the Earth). A star itself orbits the centre of its galaxy, so it doesn't belong in either of the other bins.",
-    "examinerNote": "The 'orbits something else' bin is there to break the temptation of putting everything in 'orbits a star'. If you really thought everything orbited a star, you'd score zero, which is fair: this question genuinely tests whether you can separate the orbit hierarchy."
+    "examinerNote": "The 'orbits something else' bin is there to break the temptation of putting everything in 'orbits a star'. If you really thought everything orbited a star, you'd score zero, which is fair: this question tests whether you can separate the orbit hierarchy."
   },
 
   {
